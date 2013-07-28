@@ -1,0 +1,17 @@
+<!-- $Id: recent_topics_body.html 68 2008-01-06 01:03:56Z nickvergessen $ -->
+<div class="panel bg2">
+	<div class="inner"><span class="corners-top"><span></span></span>
+<!-- BEGIN recenttopicrow -->
+	<!-- IF recenttopicrow.S_FIRST_ROW or not recenttopicrow.S_TOPIC_TYPE_SWITCH -->
+		<div style="text-align: center; padding-top: 6px; margin: 0 auto; font-weight: bold;"><a href="{U_SEARCH_NEW}">{L_RECENT_TOPICS}</a></div>
+		<hr /><br />
+	<!-- ENDIF -->
+				<div style="width: 90%;"><!-- IF recenttopicrow.S_UNREAD_TOPIC --><a href="{recenttopicrow.U_NEWEST_POST}">{NEWEST_POST_IMG}</a> <!-- ENDIF --><a href="{recenttopicrow.U_VIEW_TOPIC}" class="topictitle">{recenttopicrow.TOPIC_TITLE}</a> {L_POST_BY_AUTHOR} {recenttopicrow.LAST_POST_AUTHOR_FULL}</div>
+	<!-- IF recenttopicrow.S_LAST_ROW -->
+
+	<!-- ENDIF -->
+<!-- END recenttopicrow -->
+	<br />
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+<br />

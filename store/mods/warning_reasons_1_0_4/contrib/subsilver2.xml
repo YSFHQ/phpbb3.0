@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+<header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en">Warning Reasons</title>
+	<description lang="en">Allows an Administrator to set reasons for giving a warning.</description>
+	<author-notes lang="en"><![CDATA[For the warning description to show, user must have javascript active in their browser.  Mod is completely translatable.]]></author-notes>
+	<author-group>
+		<author>
+			<username>RMcGirr83</username>
+			<realname>Rich McGirr</realname>
+			<homepage>http://www.rmcgirr83.org/</homepage>
+			<email><![CDATA[rmcgirr83@rmcgirr83.org]]></email>
+		</author>
+	</author-group>
+	<mod-version>1.0.4</mod-version>
+	<installation>
+		<level>easy</level>
+		<time>60</time>
+		<target-version>3.0.8</target-version>
+	</installation>
+		<history>
+				<entry>
+						<date>2009-06-27</date>
+						<rev-version>1.0.0
+						</rev-version>
+						<changelog lang="en">
+							<change>Initial Release</change>
+						</changelog>
+				</entry>
+				<entry>
+						<date>2009-06-27</date>
+						<rev-version>1.0.1
+						</rev-version>
+						<changelog lang="en">
+							<change>Changed error notice if blank description for warning.  subsilver2 edits and external html files.</change>
+						</changelog>
+				</entry>
+				<entry>
+						<date>2009-06-29</date>
+						<rev-version>1.0.2
+						</rev-version>
+						<changelog lang="en">
+							<change>Ajaxed descriptions and added localization to ACP</change>
+						</changelog>
+				</entry>
+				<entry>
+						<date>2009-06-29</date>
+						<rev-version>1.0.2a
+						</rev-version>
+						<changelog lang="en">
+							<change>Fixes "Reason Description" from showing if "Please select a reason" is selected after choosing one of the other options.</change>
+						</changelog>
+				</entry>
+				<entry>
+						<date>2009-08-07</date>
+						<rev-version>1.0.3
+						</rev-version>
+						<changelog lang="en">
+							<change>Fixed issue with that wonderful POS browser IE.</change>
+						</changelog>
+				</entry>
+				<entry>
+						<date>2011-03-25</date>
+						<rev-version>1.0.4
+						</rev-version>
+						<changelog lang="en">
+							<change>User being warned gets message in their language</change>
+							<change>UMIL install file for the module</change>
+						</changelog>
+				</entry>				
+		</history>
+		<link-group>
+			<link type="parent" href="../install.xml" lang="en">Main install file</link>
+		</link-group>		
+</header>
+<action-group>
+		<copy>
+			<file from="root/styles/subsilver2/template/warning_reasons_body.html" to="styles/subsilver2/template/warning_reasons_body.html" />
+		</copy>
+		<open src="styles/subsilver2/template/mcp_warn_post.html">
+			<edit>
+				<find><![CDATA[<tr>
+	<td class="row1" align="center"><textarea name="warning" rows="10" cols="76">{L_WARNING_POST_DEFAULT}</textarea></td>]]></find>
+				<action type="after-add"><![CDATA[<!-- INCLUDE warning_reasons_body.html -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/subsilver2/template/mcp_warn_user.html">
+			<edit>
+				<find><![CDATA[<tr>
+	<td class="row1" align="center"><textarea name="warning" rows="10" cols="76"></textarea></td>]]></find>
+				<action type="before-add"><![CDATA[<!-- INCLUDE warning_reasons_body.html -->]]></action>
+			</edit>
+		</open>		
+	<diy-instructions lang="en"><![CDATA[Refresh the subsilver2 styles template.  Enjoy the mod!!]]></diy-instructions>
+</action-group>
+</mod>

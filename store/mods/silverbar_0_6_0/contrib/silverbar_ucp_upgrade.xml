@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.0.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+		<title lang="en">SilverBar MOD UCP UPGRADE</title>
+		<description lang="en">This is an add-on version of the SilverBar MOD that allows a user to decide
+		if they wish to view the sidebar, and on what side to view it on.  This requires the installation of the SilverBar MOD to begin with.</description>
+		<author-notes lang="en"><![CDATA[The souped up version of SilverBar, that the user can choose to have it display on either side or not at all.]]></author-notes>
+		<author-group>
+			<author>
+				<realname>sTraTo</realname>
+				<email>stratosphere.programming@gmail.com</email>
+				<username>Desdenova</username>
+			</author>
+		</author-group>
+		<mod-version>0.6.0</mod-version>
+		<installation>
+			<level>easy</level>
+			<time>300</time>
+			<target-version>
+				<target-primary>3.0.1</target-primary>
+				<target-major allow="exact">3</target-major>
+				<target-minor allow="exact">0</target-minor>
+			</target-version>
+		</installation>
+		<history>
+		
+			<entry>
+				<date>2008-06-13</date>
+				<rev-version>0.6.0</rev-version>
+				<changelog lang="en">
+					<change>Changed functions.php edit to be easier and use built-in functions in functions_sidebar.php</change>
+					<change>Updated the Sidebar UCP Template files to be compatible with Silverbar 0.6.0</change>
+				</changelog>
+			</entry>
+		</history>
+	</header>
+	<action-group>
+<copy>
+	<file from="root/styles/prosilver/template/sidebar_ucp_begin.html" to="styles/prosilver/template/sidebar_ucp_begin.html" />
+	<file from="root/styles/prosilver/template/sidebar_ucp_end.html" to="styles/prosilver/template/sidebar_ucp_end.html" />
+</copy>
+		<open src="includes/functions.php">
+			<edit>
+				<find><![CDATA[//setup_sidebar_ucp();]]></find>
+				<action type="replace-with"><![CDATA[setup_sidebar_ucp();]]></action>
+			</edit>
+			<edit>
+				<comment lang="en">Remove the following lines</comment>
+				<find><![CDATA[//-- mod : SilverBar MOD UCP EDITION --------------------------------------------------------
+//-- add
+		'S_SIDEBAR_SIDE'			=> $user->data['user_side'],
+		'S_SHOW_SIDEBAR'			=> $user->data['user_show_side'],
+//-- fin mod : SilverBar MOD UCP EDITION --------------------------------------------------------]]></find>
+				<action type="replace-with"><![CDATA[ 
+				]]></action>
+			</edit>
+		</open>
+			</open>
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<find><![CDATA[<!-- INCLUDE sidebar_begin.html -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- INCLUDE sidebar_ucp_begin.html -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/overall_footer.html">
+			<edit>
+				<find><![CDATA[<!-- INCLUDE sidebar_end.html -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- INCLUDE sidebar_ucp_end.html -->]]></action>
+			</edit>
+		</open>
+<diy-instructions lang="en"><![CDATA[Make sure to refresh the template in the ACP!
+ACP -> Styles -> Template -> Refresh]]></diy-instructions>
+	
+	</action-group>
+</mod>

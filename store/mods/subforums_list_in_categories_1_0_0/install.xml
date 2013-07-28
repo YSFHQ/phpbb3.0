@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+		<title lang="en"><![CDATA[Subforums list in categories]]></title>
+		<title lang="fr"><![CDATA[Liste des sous-forum depuis les catégories]]></title>
+		<description lang="en"><![CDATA[This MOD allow you to use, from a category, the options "List subforums in legend" and "List subforum in parent-forum’s legend"]]></description>
+		<description lang="fr"><![CDATA[Ce MOD permet d'utiliser, depuis une catégorie, les options "Lister les sous-forums dans la légende" et "Lister les sous-forums dans la légende"]]></description>
+		<author-group>
+			<author>
+				<realname><![CDATA[Skouat]]></realname>
+				<username><![CDATA[Skouat]]></username>
+				<homepage><![CDATA[http://www.ultima-world.com]]></homepage>
+				<contributions-group>
+					<contributions status="current" from="2009-08-01" position="Developer"/>
+				</contributions-group>
+			</author>
+		</author-group>
+		<mod-version>1.0.0</mod-version>
+		<installation>
+			<level>easy</level>
+			<time>180</time>
+			<target-version>3.0.10</target-version>
+		</installation>
+		<history>
+			<entry>
+				<date>2012-04-29</date>
+				<rev-version>1.0.0</rev-version>
+				<changelog lang="en">
+					<change>First release</change>
+				</changelog>
+				<changelog lang="fr">
+					<change>Première version.</change>
+				</changelog>
+			</entry>
+		</history>
+	</header>
+	<action-group>
+		<open src="adm/style/acp_forums.html">
+			<edit>
+				<find><![CDATA[		<dl>
+			<dt><label for="display_active">{L_DISPLAY_ACTIVE_TOPICS}:</label><br /><span>{L_DISPLAY_ACTIVE_TOPICS_EXPLAIN}</span></dt>
+			<dd><label><input type="radio" class="radio" name="display_active" value="1"<!-- IF S_ENABLE_ACTIVE_TOPICS --> id="display_active" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="display_active" value="0"<!-- IF not S_ENABLE_ACTIVE_TOPICS --> id="display_active" checked="checked"<!-- ENDIF --> /> {L_NO}</label></dd>
+		</dl>
+]]></find>
+				<action type="after-add"><![CDATA[		<dl>
+			<dt><label for="cat_display_subforum_list">{L_LIST_SUBFORUMS}:</label><br /><span>{L_LIST_SUBFORUMS_EXPLAIN}</span></dt>
+			<dd><label><input type="radio" class="radio" name="cat_display_subforum_list" value="1"<!-- IF S_DISPLAY_SUBFORUM_LIST --> id="cat_display_subforum_list" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="cat_display_subforum_list" value="0"<!-- IF not S_DISPLAY_SUBFORUM_LIST --> id="cat_display_subforum_list" checked="checked"<!-- ENDIF --> /> {L_NO}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="cat_display_on_index">{L_LIST_INDEX}:</label><br /><span>{L_LIST_INDEX_EXPLAIN}</span></dt>
+			<dd><label><input type="radio" class="radio" name="cat_display_on_index" value="1"<!-- IF S_DISPLAY_ON_INDEX --> id="cat_display_on_index" checked="checked"<!-- ENDIF --> /> {L_YES}</label>
+				<label><input type="radio" class="radio" name="cat_display_on_index" value="0"<!-- IF not S_DISPLAY_ON_INDEX --> id="cat_display_on_index" checked="checked"<!-- ENDIF --> /> {L_NO}</label></dd>
+		</dl>
+]]></action>
+			</edit>
+		</open>
+		<open src="includes/acp/acp_forums.php">
+			<edit>
+				<find><![CDATA[						$forum_data['display_on_index'] = request_var('link_display_on_index', false);
+					}
+]]></find>
+				<action type="after-add"><![CDATA[// Begin: Subforums list in categories
+// add
+					// Use cat_display_subforum_list and display_on_index settings if forum type is category
+					if ($forum_data['forum_type'] == FORUM_CAT)
+					{
+						$forum_data['display_subforum_list'] = request_var('cat_display_subforum_list', false);
+						$forum_data['display_on_index'] = request_var('cat_display_on_index', true);
+					}
+// End: Subforums list in categories
+]]></action>
+			</edit>
+		</open>
+		<open src="includes/functions_display.php">
+			<edit>
+				<find><![CDATA[		else if ($row['forum_type'] != FORUM_CAT)]]></find>
+				<action type="before-add"><![CDATA[// Begin: Subforums list in categories
+// add
+		else if ($row['forum_type'] == FORUM_CAT)
+		{
+			$subforums[$parent_id][$forum_id]['display'] = ($row['display_on_index']) ? true : false;
+			$subforums[$parent_id][$forum_id]['name'] = $row['forum_name'];
+			$subforums[$parent_id][$forum_id]['orig_forum_last_post_time'] = $row['forum_last_post_time'];
+		}
+// End: Subforums list in categories
+]]></action>
+			</edit>
+		</open>
+		<diy-instructions lang="en">Purge your cache.</diy-instructions>
+		<diy-instructions lang="fr">Purger le cache du forum.</diy-instructions>
+	</action-group>
+</mod>

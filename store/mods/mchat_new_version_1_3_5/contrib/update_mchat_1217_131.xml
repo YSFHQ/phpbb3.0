@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+	<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+		<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+		<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+			<title lang="en">mChat 1.2.17 to 1.3.1</title>
+				<description lang="en">Updates mod to 1.2.17 from 1.3.1</description>
+		<author-group>
+			<author>
+				<realname>Rich McGirr</realname>
+				<username>RMcGirr83</username>
+				<homepage>http://rmcgirr83.org</homepage>
+			</author>			
+		</author-group>
+		<mod-version>1.3.1</mod-version>
+		<installation>
+			<level>easy</level>
+			<time>600</time>
+			<target-version>3.0.7-PL1</target-version>
+		</installation>
+		<history>
+			<entry>
+				<date>2010-09-02</date>
+				<rev-version>1.3.0</rev-version>
+				<changelog lang="en">
+					<change>Fixes to mchat.php (root path)</change>
+					<change>IP changed to graphic</change>
+					<change>xsl 1.2.5</change>
+					<change>Remove copyright dependency</change>
+					<change>Place chats top to bottom and scroll baby scroll</change>
+					<change>Toggable "Whois chatting" on index page</change>
+					<change>Static message within chat display as well as translated within the mchat_lang.php file for proper translation (read the comments in the lang file to see how to do this)</change>
+					<change>Allow users to not display the chat on index.php and allow them to disable sound notifications</change>
+					<change>"View more smilies" link added</change>
+					<change>Default and Custom BBcodes displayed (if set to be shown on posting page) and removed if set in ACP entries</change>
+					<change>Allow minimum post characters and max smilies forum post settings to be overridden</change>
+					<change>Set the amount of time to deactivate autoupdate on users that just leave the chat open (optional)</change>
+					<change>Pause refresh on input of message (so focus is not removed from input area)</change>
+					<change>"Reset" input message area button (only active when in the input area of the chat)</change>
+					<change>Autogrow input area (max 750 pixels in width...changeable within the mchat_ajax_mini.js file..search for "750" and change the number if you desire)</change>
+					<change>Setting in ACP to allow messages to display new posts on the forum (you must have the "notification of new topics" add-on installed)</change>
+					<change>Add mchat_sessions table within the database</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-10-20</date>
+				<rev-version>1.3.1</rev-version>
+				<changelog lang="en">
+					<change>UCP fix</change>
+					<change>Validation fixes</change>
+				</changelog>
+			</entry>			
+		</history>			
+		<link-group>
+			<link type="parent" href="../install.xml" lang="en">Main Install File</link>
+		</link-group>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/*.*" to="*.*" />
+		</copy>
+		<delete>
+			<file name="mchat/jquery_core_mini.js" />
+			<file name="mchat/mchat_prosilver.css" />
+			<file name="mchat/mchat_subsilver2.css" />
+		</delete>
+		<open src="includes/acp/acp_users.php">
+			<edit>
+				<find><![CDATA[		}
+
+		// Assign general variables]]></find>
+				<action type="before-add"><![CDATA[//BEGIN	mChat Mod
+			case 'mchat':
+
+				$user->add_lang('mods/mchat_lang');
+
+				$data = array(
+
+					'user_mchat_index'	=> request_var('user_mchat_index', $user_row['user_mchat_index']),
+					'user_mchat_sound'	=> request_var('user_mchat_sound', $user_row['user_mchat_sound']),
+					'user_mchat_stats_index'	=> request_var('user_mchat_stats_index', $user_row['user_mchat_stats_index']),
+				);
+
+				if ($submit)
+				{
+					$error = array();
+					
+					if (!check_form_key($form_name))
+					{
+						$error[] = 'FORM_INVALID';
+					}
+
+					if (!sizeof($error))
+					{
+
+						$sql_ary = array(					
+							'user_mchat_index'	=> $data['user_mchat_index'],
+							'user_mchat_sound'	=> $data['user_mchat_sound'],
+							'user_mchat_stats_index'	=> $data['user_mchat_stats_index'],
+						);
+
+						$sql = 'UPDATE ' . USERS_TABLE . '
+							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
+							WHERE user_id = $user_id";
+						$db->sql_query($sql);
+
+						trigger_error($user->lang['USER_MCHAT_UPDATED'] . adm_back_link($this->u_action . '&amp;u=' . $user_id));
+					}
+
+					// Replace "error" strings with their real, localised form
+					$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
+				}
+
+				$template->assign_vars(array(
+					'S_MCHAT'		=> true,
+					'DISPLAY_MCHAT'	=> $data['user_mchat_index'],
+					'SOUND_MCHAT'	=> $data['user_mchat_sound'],
+					'STATS_MCHAT'	=> $data['user_mchat_stats_index'],
+					)
+				);
+			break;
+// END mChat Mod]]></action>
+			</edit>			
+		</open>
+		<open src="includes/constants.php">
+		  <edit>
+			<find><![CDATA[define('MCHAT_CONFIG_TABLE',		$table_prefix . 'mchat_config');
+	]]></find>
+			<action type="after-add"> <![CDATA[define('MCHAT_SESSIONS_TABLE',			$table_prefix . 'mchat_sessions');]]></action>
+		  </edit>
+		</open>
+		<open src="includes/functions.php">
+			<edit>
+				<find><![CDATA[	// The following assigns all _common_ variables that may be used at any point in a template.]]></find>
+				<action type="before-add"><![CDATA[// BEGIN mChat Mod
+	global $cache;
+	$mchat_custom_page = false;
+	if(!empty($config['mchat_enable']) && $cache->get('_mchat_config'))
+	{
+		$config_mchat = $cache->get('_mchat_config');
+		$mchat_custom_page = $config_mchat['custom_page'];
+		unset($config_mchat);
+	}
+// END mChat Mod]]></action>
+			</edit>		
+		  <edit>
+			<find><![CDATA[// BEGIN mChat Mod
+		'U_MCHAT'			=> $auth->acl_get('u_mchat_view') ? append_sid("{$phpbb_root_path}mchat.$phpEx") : '',
+		'S_MCHAT_ON_INDEX'		=> !empty($config['mchat_on_index']) ? true : false,
+		'S_MCHAT_ENABLE'		=> (!empty($config['mchat_enable']) && $auth->acl_get('u_mchat_view')) ? true : false,
+// END mChat Mod]]></find>
+			<action type="replace-with"> <![CDATA[// BEGIN mChat Mod
+		'U_MCHAT'				=> $auth->acl_get('u_mchat_view') && $mchat_custom_page ? append_sid("{$phpbb_root_path}mchat.$phpEx") : '',
+		'S_MCHAT_ON_INDEX'		=> (!empty($config['mchat_on_index']) && $user->data['user_mchat_index']) ? true : false,
+		'S_MCHAT_ENABLE'		=> (!empty($config['mchat_enable']) && $auth->acl_get('u_mchat_view')) ? true : false,
+// END mChat Mod]]></action>
+		  </edit>
+		</open>			
+		<open src="language/en/acp/common.php">
+			<edit>
+				<find><![CDATA[// BEGIN mChat Mod
+$lang = array_merge($lang, array(
+	// Prune Feature
+	'LOG_MCHAT_TABLE_PRUNED'	=> 'mChat Table was pruned',
+));
+// END mChat Mod]]></find>
+				<action type="replace-with"><![CDATA[// BEGIN mChat Mod
+$lang = array_merge($lang, array(
+	// Prune Feature
+	'LOG_MCHAT_TABLE_PRUNED'	=> 'mChat Table was pruned',
+	'ACP_USER_MCHAT'			=> 'mChat Settings',
+));
+// END mChat Mod]]></action>
+			</edit>
+		</open>	
+		<open src="adm/style/acp_users.html">
+			<edit>
+				<find><![CDATA[	<!-- INCLUDE permission_mask.html -->]]></find>
+				<action type="after-add"><![CDATA[<!-- ELSEIF S_MCHAT -->
+<!-- INCLUDE acp_users_mchat.html -->]]></action>
+			</edit>
+		</open>	
+		<open src="language/en/common.php">
+			<edit>
+				<find><![CDATA[// BEGIN mChat Mod
+$lang = array_merge($lang, array(
+	'MCHAT'			=> 'Chat',
+	'MCHAT_COPYRIGHT'	=> '&copy; <a href="http://www.phpbb3bbcodes.com/">phpBB3BBCodes.com</a>',
+));
+// END mChat Mod]]></find>
+				<action type="replace-with"><![CDATA[// BEGIN mChat Mod
+$lang = array_merge($lang, array(
+	'MCHAT_TITLE'				=> 'Mini-Chat',
+));
+// END mChat Mod]]></action>
+			</edit>
+		</open>
+		<open src="language/en/ucp.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[// BEGIN mChat Mod
+$lang = array_merge($lang, array(
+	'UCP_CAT_MCHAT'		=> 'mChat',
+	'UCP_MCHAT_CONFIG'	=> 'Preferences',
+));
+// END mChat Mod]]></action>
+			</edit>
+		</open>			
+		<open src="index.php">
+		  <edit>
+			<find><![CDATA[// BEGIN mChat Mod
+if(!defined('MCHAT_INCLUDE') && $config['mchat_on_index'] && $config['mchat_enable'] && $auth->acl_get('u_mchat_view'))
+{
+	define('MCHAT_INCLUDE', true);
+	$mchat_include_index = true;
+	include($phpbb_root_path.'mchat.'.$phpEx);
+}
+// END mChat Mod]]></find>
+			<action type="replace-with"> <![CDATA[// BEGIN mChat Mod
+$mchat_installed = (!empty($config['mchat_on_index']) && !empty($config['mchat_enable'])) ? true : false;
+if(!defined('MCHAT_INCLUDE') && $mchat_installed && $auth->acl_get('u_mchat_view') && $user->data['user_mchat_index'])
+{
+	define('MCHAT_INCLUDE', true);
+	$mchat_include_index = true;
+	include($phpbb_root_path.'mchat.'.$phpEx);
+}
+// END mChat Mod]]></action>
+		  </edit>
+		</open>
+		<open src="ucp.php">
+		  <edit>
+			<find><![CDATA[// Select the active module]]></find>
+			<action type="before-add"> <![CDATA[// BEGIN mChat Mod
+if (!$config['mchat_enable'])
+{
+	$module->set_display('mchat', '', false);
+}	
+// END mChat Mod]]></action>
+		  </edit>
+		</open>
+		<open src="viewonline.php">
+		  <edit>
+			<find><![CDATA[			$location = $user->lang['MCHAT'];]]></find>
+			<action type="replace-with"> <![CDATA[			$location = $user->lang['MCHAT_TITLE'];]]></action>
+		  </edit>
+		</open>		
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<find><![CDATA[<script type="text/javascript" src="{ROOT_PATH}mchat/jquery_core_mini.js"></script>]]></find>
+				<action type="replace-with"><![CDATA[<script type="text/javascript" src="{ROOT_PATH}mchat/jquery-1.4.2.min.js"></script>]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[<link rel="stylesheet" href="{ROOT_PATH}mchat/mchat_prosilver.css" type="text/css" />]]></find>
+				<action type="replace-with"><![CDATA[<link href="{T_THEME_PATH}/mchat_prosilver.css" rel="stylesheet" type="text/css" />]]></action>
+			</edit>			
+			<edit>
+				<find><![CDATA[				<!-- IF S_MCHAT_ENABLE and U_MCHAT --><li class="icon-bump"><a href="{U_MCHAT}" title="{L_MCHAT}">{L_MCHAT}</a></li><!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[				<!-- IF S_MCHAT_ENABLE and U_MCHAT --><li class="icon-bump"><a href="{U_MCHAT}#mChat" title="{L_MCHAT_TITLE}">{L_MCHAT_TITLE}</a></li><!-- ENDIF -->]]></action>
+			</edit>			
+		</open>		
+		<open src="styles/subsilver2/template/overall_header.html">
+			<edit>
+				<find><![CDATA[<script type="text/javascript" src="{ROOT_PATH}mchat/jquery_core_mini.js"></script>]]></find>
+				<action type="replace-with"><![CDATA[<script type="text/javascript" src="{ROOT_PATH}mchat/jquery-1.4.2.min.js"></script>]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[<link rel="stylesheet" href="{ROOT_PATH}mchat/mchat_subsilver2.css" type="text/css" />]]></find>
+				<action type="replace-with"><![CDATA[<link href="{T_THEME_PATH}/mchat_subsilver2.css" rel="stylesheet" type="text/css" />]]></action>
+			</edit>		
+			<edit>
+				<find><![CDATA[				<!-- IF S_MCHAT_ENABLE and U_MCHAT -->&nbsp; &nbsp;<a href="{U_MCHAT}"><img src="{T_THEME_PATH}/images/icon_mini_groups.gif" width="12" height="13" alt="*" /> {L_MCHAT}</a><!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[				<!-- IF S_MCHAT_ENABLE and U_MCHAT -->&nbsp; &nbsp;<a href="{U_MCHAT}#mChat"><img src="{T_THEME_PATH}/images/icon_mini_groups.gif" width="12" height="13" alt="{L_MCHAT_TITLE}" /> {L_MCHAT_TITLE}</a><!-- ENDIF -->]]></action>
+			</edit>			
+		</open>	
+	<php-installer><![CDATA[mchat_install.php]]></php-installer>
+<diy-instructions lang="en"><![CDATA[1. Browse to the mchat_install.php file, this will update your database.
+2. Delete the mchat_install.php file from the root of your forum.
+***NOTE if installing via Automod, please ignore step 3
+3. Upload files to your forum.
+4. Purge the cache and refresh the styles in the ACP      
+5. Enjoy the Mod!!
+]]></diy-instructions>
+</action-group>
+</mod>

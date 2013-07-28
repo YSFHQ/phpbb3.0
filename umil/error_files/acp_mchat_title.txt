@@ -1,0 +1,50 @@
+Mini-Chat
+PHP Version: 5.3.10-1ubuntu3.7
+DBMS: MySQL(i) 5.6.12-log
+phpBB3 Version: 3.0.11
+
+Adding a new database table: phpbb_mchat_config
+ERROR: Database table phpbb_mchat_config already exists.
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'refresh' for key 'PRIMARY'
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'prune_enable' for key 'PRIMARY'
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'location' for key 'PRIMARY'
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'whois_refresh' for key 'PRIMARY'
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'static_message' for key 'PRIMARY'
+
+Adding a new column named user_mchat_index to table phpbb_users
+ERROR: The column user_mchat_index already exists on table phpbb_users.
+
+Adding a new column named user_mchat_sound to table phpbb_users
+ERROR: The column user_mchat_sound already exists on table phpbb_users.
+
+Adding a new column named user_mchat_stats_index to table phpbb_users
+ERROR: The column user_mchat_stats_index already exists on table phpbb_users.
+
+Adding a new database table: phpbb_mchat_sessions
+ERROR: Database table phpbb_mchat_sessions already exists.
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'pause_on_input' for key 'PRIMARY'
+
+Adding a new column named user_mchat_topics to table phpbb_users
+ERROR: The column user_mchat_topics already exists on table phpbb_users.
+
+Adding a new column named user_mchat_avatars to table phpbb_users
+ERROR: The column user_mchat_avatars already exists on table phpbb_users.
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'rules' for key 'PRIMARY'
+
+Inserting data in the phpbb_mchat_config database table.
+SQL ERROR Duplicate entry 'avatars' for key 'PRIMARY'
+

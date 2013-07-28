@@ -1,0 +1,44 @@
+<script type="text/javascript">
+// <![CDATA[
+	/**
+	* Some functions for the AJAX checker
+	*/
+	function createRequestObject() {
+	    var ro;
+	    var browser = navigator.appName;
+	    if(browser == "Microsoft Internet Explorer"){
+	        ro = new ActiveXObject("Microsoft.XMLHTTP");
+	    } else {
+	        ro = new XMLHttpRequest();
+	    }
+	    return ro;
+	}	
+
+	var http = createRequestObject();	
+	function warningReq(value) {
+		// Make the request
+		var warningdescription_url = '{AJAX_WARNING_INFO}';
+		http.open('get', warningdescription_url.replace('WARNING_ID', value));
+	    http.onreadystatechange = handleResponse;
+	    http.send(null);
+	}
+	// fill in the response
+	function handleResponse() {
+		if(http.readyState == 4 ){		
+		var response = http.responseText;
+			document.getElementById('warningdescription').innerHTML = response;
+		}
+	}	
+// ]]>
+</script>
+
+<!-- IF ERROR -->
+	<tr>
+		<td class="row3" align="center"><span class="gen error">{ERROR}</span></td>
+	</tr>
+<!-- ENDIF -->
+	<tr> 
+		<td class="row1" align="center"><b class="genmed">{L_REASON}:</b>&nbsp;<select name="warning_reason_id" id="warning_reason_id" onchange="warningReq(this.options[this.selectedIndex].value)" class="full"><option value="0">{L_SELECT_REASON}</option><!-- BEGIN reason --><option value="{reason.ID}" <!-- IF reason.S_SELECTED --> selected="selected"<!-- ENDIF -->>{reason.TITLE}</option><!-- END reason --></select>
+						<span id="warningdescription"></span>
+		</td>
+	</tr>

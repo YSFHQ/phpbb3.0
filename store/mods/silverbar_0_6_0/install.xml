@@ -1,0 +1,296 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.0.xsd">
+<header>
+  <license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+  <title lang="en">Silverbar MOD</title>
+  <description lang="en">This MOD allows the board to have a global Sidebar containing useful links and such.  Included is a Quick Login module, a mini-MCP module to show if
+  posts are reported or topics/posts unapporved, a module showing recent topics, a mini-UCP module where you can get quick information and have a welcome message, 
+  and finally a lower module is included with basic board links and a built-in searchbar.</description>
+  <author-group>
+    <author>
+      <realname>sTraTo</realname>
+      <email>stratosphere.programming@gmail.com</email>
+      <username>Desdenova</username>
+    </author>
+  </author-group> 
+  <mod-version>0.6.0</mod-version>
+  <installation>
+    <level>easy</level>
+    <time>300</time>
+    <target-version>
+      <target-primary>3.0.1</target-primary>
+    </target-version>
+  </installation>
+<history>
+
+<entry>
+    <date>2007-06-18</date>
+    <rev-version>0.6.0</rev-version>
+    <changelog lang="en">
+	<change>Fixed install MODX file mistakes.</change>
+	<change>Made the MOD ZIP file compatible with Blinky.</change>
+	<change>Moved the web location that the MOD Version Check file will refer to.</change>
+	<change>Cleaned up the MODX install file for the UCP extension.</change>
+	<change>Removed the subsilver2 compatibility, too much work to keep up.</change>
+	<change>Using MODX 1.2.0 now.</change>
+	<change>Show/hide sidebar Javascript is now working like a charm.</change>
+	<change>Recent topics can be displayed in the sidebar with a slight alteration.</change>
+    </changelog>
+</entry>
+
+<entry>
+    <date>2007-04-23</date>
+    <rev-version>0.5.0</rev-version>
+    <changelog lang="en">
+	<change>Renamed MOD to Silverbar MOD, from Simple Sidebar MOD.  A lot less wordy that way.</change>
+	<change>Added separate language file to cut down edits.</change>
+	<change>Altered the sidebar_body.html file to begin using the new login anywhere method.</change>
+	<change>Subsilver version now included.</change>
+	<change>BUGFIX: Login now possible across the entire board, thanks to primehalo on phpbb.com 
+	letting me use some of the code from his Prime Quick Login MOD.</change>
+	<change>Tested and found to still be compatible with Simple Sidebar MOD UCP Extension for version 0.4.3.</change>
+	<change>BUGFIX: CSS Interference in profiles page fixed.</change>
+    </changelog>
+</entry>
+
+<entry>
+    <date>2007-04-09</date>
+    <rev-version>0.4.7</rev-version>
+    <changelog lang="en">
+	<change>Repaired language file edits to gain XHTML 1.0 Strict compliance.</change>
+	<change>Altered sidebar_body.html to gain XHTML 1.0 Strict compliance.</change>
+	<change>Tested and found compatible with Simple Sidebar MOD UCP Extension for version 0.4.3.</change>
+    </changelog>
+  </entry>
+
+<entry>
+    <date>2007-04-08</date>
+    <rev-version>0.4.6</rev-version>
+    <changelog lang="en">
+	<change>Cleaned up template code.  Not released.</change>
+    </changelog>
+  </entry>
+
+<entry>
+    <date>2007-04-06</date>
+    <rev-version>0.4.5</rev-version>
+    <changelog lang="en">
+	<change>Removed JS show hide function.  Was not released.</change>
+    </changelog>
+</entry>
+  
+<entry>
+    <date>2007-04-03</date>
+    <rev-version>0.4.4</rev-version>
+    <changelog lang="en">
+	<change>Began the testing of javascript show/hide function.  Was not released.</change>
+    </changelog>
+</entry>
+
+<entry>
+    <date>2007-04-02</date>
+    <rev-version>0.4.3</rev-version>
+    <changelog lang="en">
+	<change>Critical bugfix for template files.</change>
+    </changelog>
+  </entry>
+
+<entry>
+    <date>2007-04-02</date>
+    <rev-version>0.4.2</rev-version>
+    <changelog lang="en">
+	<change>Fixed the folder names in the directory of files to upload.  D'oh!</change>
+	<change>Cleaned out the sidebar_board_links.html file of my stuff that I accidentally left in there.</change>
+	<change>Now uses non-hardcoded language variables for testing to see if the sidebar should be included and shown.</change>
+	<change>Will not appear in the Moderator Control Panel or User Control Panel any longer.</change>
+    </changelog>
+  </entry>
+
+<entry>
+    <date>2007-03-30</date>
+    <rev-version>0.4.1</rev-version>
+    <changelog lang="en">
+	<change>Fixed the sidebar MODX install instructions...</change>
+	<change>Added another INCLUDE so that adding more board links is easier, such as the phpBB Arcade links and the User Blog links, you know, stuff like that.</change>
+    </changelog>
+  </entry>
+  
+  <entry>
+    <date>2007-03-29</date>
+    <rev-version>0.4.0</rev-version>
+    <changelog lang="en">
+      <change>Public Beta Release, saw it was finally fit for the bug reports to start rolling in.</change>
+	<change>Now uses common.php language edits instead of hardcoded language</change>
+    </changelog>
+  </entry>
+
+  <entry>
+	<date>2008-03-28</date>
+	<rev-version>0.3.6</rev-version>
+    <changelog lang="en">
+		<change>Added the UCP module.</change>
+		<change>Now an internal beta version</change>
+    </changelog>
+  </entry>
+
+  <entry>
+    <date>2008-03-27</date>
+    <rev-version>0.2.0</rev-version>
+    <changelog lang="en">
+		<change>Added the Quick Login module.</change>
+		<change>Added the search module that was later absorbed by the links module.</change>
+		<change>Added the Quick Links module.</change>
+		<change>Development truely started, set as 0.2.0 DEV</change>
+    </changelog>
+  </entry>
+</history>
+	<link-group>
+		<link type="Upgrade" href="./XML/upgrade_0-5-0_to_0-6-0.xml" lang="en">Upgrade from 0.5.0 to 0.6.0</link>
+		<link type="Extra" href="./XML/recent_topics.xml" lang="en">Modify install to show recent topics</link>
+		<link type="Extra" href="./XML/install-right.xml" lang="en">Modify install to display Sidebar on right side</link>
+		<link type="Extension" href="./contrib/silverbar_ucp.xml" lang="en">Silverbar UCP Extension - Allow users to decide to view the sidebar and on what side</link>
+		<link type="Extension-Upgrade" href="./contrib/silverbar_ucp_upgrade.xml" lang="en">Upgrade UCP Extension from 0.5.0 to 0.6.0</link>
+	</link-group>
+</header>
+
+<action-group>
+<copy>
+	<file from="root/adm/mods/silverbar_version.php" to="adm/mods/silverbar_version.php" />
+	<file from="root/includes/functions_sidebar.php" to="includes/functions_sidebar.php" />
+	<file from="root/styles/prosilver/template/sidebar_body.html" to="styles/prosilver/template/sidebar_body.html" />
+	<file from="root/styles/prosilver/template/sidebar_board_links.html" to="styles/prosilver/template/sidebar_board_links.html" />
+	<file from="root/language/en/mods/Silverbar_MOD.php" to="language/en/mods/Silverbar_MOD.php" />
+	<file from="root/styles/prosilver/template/sidebar_left_begin.html" to="styles/prosilver/template/sidebar_left_begin.html" />
+	<file from="root/styles/prosilver/template/sidebar_left_end.html" to="styles/prosilver/template/sidebar_left_end.html" />
+	<file from="root/styles/prosilver/template/sidebar_recent_topics.html" to="styles/prosilver/template/sidebar_recent_topics.html" />
+	<file from="root/styles/prosilver/theme/sidebar.css" to="styles/prosilver/theme/sidebar.css" />
+</copy>
+
+<open src="adm/index.php">
+	<edit>
+	<find><![CDATA[// End session management
+	]]></find>
+	<action type="after-add"><![CDATA[//-- mod: Silverbar MOD -------------------------------------------------------
+//-- add
+$template->assign_var('S_IN_ADMIN', true);
+//-- fin mod: Silverbar MOD --------------------------------------------------]]></action>
+	</edit>
+</open>
+
+<open src="includes/functions.php">
+
+	<edit>
+	<comment lang="en">Now, my thanks go to primehalo for letting me use his Prime Quick Login MOD's code to repair the login bug!</comment>
+	<find><![CDATA[	$url = redirect($url, true);]]></find>
+	<action type="after-add"><![CDATA[	//-- mod: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//
+	//-- add
+	$template->assign_var('SIDEBAR_AUTO_REFRESH', $time);
+	//-- end: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//]]></action>
+	</edit>
+
+	<edit>
+	<find><![CDATA[// The following assigns all _common_ variables that may be used at any point in a template.]]></find>
+		<action type="before-add"><![CDATA[    //-- mod: Silverbar MOD --------------------------------------------------
+	//-- add
+	include_once($phpbb_root_path . 'includes/functions_sidebar.' . $phpEx);
+	
+	//This sets up the sidebar with the info it needs.  :D
+	setup_sidebar_mods();
+	
+	//This sets up the recent posts display
+	//Uncomment it (remove the double slash in front of it) to use it!
+	//grab_recent_topics(5);
+	
+	//Uncomment the following if you have installed the UCP extension for Silverbar
+	//setup_sidebar_ucp();
+	
+	//-- fin mod: Silverbar MOD --------------------------------------------------
+]]></action>
+	</edit>
+
+	<edit>
+	<comment lang="en">Now, my thanks go to primehalo for letting me use his Prime Quick Login MOD's code to repair the login bug!</comment>
+	<find><![CDATA[	// application/xhtml+xml not used because of IE]]></find>
+	<action type="before-add"><![CDATA[	//-- mod: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//
+	//-- add
+	$user->add_lang('mods/Silverbar_MOD');
+	$redirectside = $user->page['page_dir'] ? '' : '&amp;redirect=' . urlencode(str_replace('&amp;', '&', build_url(array('_f_'))));
+	$template->assign_var('S_LOGIN_SIDE', append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login' .  $redirectside));
+	//-- end: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//
+]]></action>
+	</edit>
+</open>
+
+<open src="styles/prosilver/theme/stylesheet.css">
+	<edit>
+		<find><![CDATA[@import url("common.css");]]></find>
+		<action type="after-add"><![CDATA[@import url("sidebar.css");]]></action>
+	</edit>
+</open>
+
+<open src="styles/prosilver/template/overall_header.html">
+	<edit>
+		<find><![CDATA[var onunload_functions = new Array();]]></find>
+		<action type="after-add"><![CDATA[//-- mod: Silverbar MOD --------------------------------------------------
+//-- add
+		var side_state = 'shown';
+
+	/**
+	* Hiding/Showing the sidebar, reused/adapted from the ACP
+	*/
+	function switch_sidebar()
+	{
+		var sidebar = document.getElementById('side-bar');
+		var mainboard = document.getElementById('main-board');
+
+		switch (side_state)
+		{
+			// hide it
+			case 'shown':
+				mainboard.style.width = '100%';
+				side_state = 'hidden';
+				sidebar.style.display = 'none';
+			break;
+
+			// show it
+			case 'hidden':
+				mainboard.style.width = '74%';
+				side_state = 'shown';
+				sidebar.style.display = 'block';
+			break;
+		}
+	}
+//-- fin mod: Silverbar MOD --------------------------------------------------]]></action>
+	</edit>
+	<edit>
+		<find><![CDATA[<li class="icon-faq"><a href="{U_FAQ}" title="{L_FAQ_EXPLAIN}">{L_FAQ}</a></li>]]></find>
+		<action type="before-add"><![CDATA[<li class="icon-logout"><a href="#" onclick="switch_sidebar(); return false" title="{L_SHOW_HIDE}">{L_SHOW_HIDE}</a></li>]]></action>
+	</edit>
+	<edit>
+		<comment lang="en">Find the last line of the file.</comment>
+		<find><![CDATA[				<strong>{L_INFORMATION}:</strong> {L_BOARD_DISABLED}
+			<span class="corners-bottom"><span></span></span></div>
+		</div>
+		<!-- ENDIF -->]]></find>
+		<action type="after-add"><![CDATA[<!-- INCLUDE sidebar_left_begin.html -->]]></action>
+	</edit>
+</open>
+
+<open src="styles/prosilver/template/overall_footer.html">
+	<edit>
+		<comment lang="en">Find the first line of the file.</comment>
+		<find><![CDATA[</div>]]></find>
+		<action type="before-add"><![CDATA[<!-- INCLUDE sidebar_left_end.html -->]]></action>
+	</edit>
+</open>
+
+<diy-instructions lang="en"><![CDATA[Make sure to refresh the theme and the template in the ACP!
+ACP -> Styles -> Template -> Refresh
+ACP -> Styles -> Theme -> Refresh
+Once all that is done, if you wish to make the MOD a little more powerful (adds more edits though),
+go on to contrib/silverbar_ucp.xml to install the UCP extension.
+If you wish to change the side of the sidebar if you don't use the UCP extension, go on to XML/install-right.xml]]></diy-instructions>
+</action-group>
+</mod>

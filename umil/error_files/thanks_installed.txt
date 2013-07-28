@@ -1,0 +1,32 @@
+Thanks for the post
+PHP Version: 5.3.10-1ubuntu3.7
+DBMS: MySQL(i) 5.6.12-log
+phpBB3 Version: 3.0.11
+
+Removing permission option: m_thanks
+ERROR: Permission option m_thanks does not exist.
+
+Removing permission option: u_viewtoplist
+ERROR: Permission option u_viewtoplist does not exist.
+
+Removing acp module: ACP_THANKS_REPUT_SETTINGS
+ERROR: Module does not exist.
+
+Removing acp module: ACP_THANKS_TRUNCATE
+ERROR: Module does not exist.
+
+Removing acp module: ACP_THANKS_REFRESH
+ERROR: Module does not exist.
+
+Removing acp module: ACP_THANKS_SETTINGS
+ERROR: Module does not exist.
+
+Removing acp module: ACP_THANKS
+ERROR: Module does not exist.
+
+Removing permission option: u_viewthanks
+ERROR: Permission option u_viewthanks does not exist.
+
+Removing permission option: f_thanks
+ERROR: Permission option f_thanks does not exist.
+

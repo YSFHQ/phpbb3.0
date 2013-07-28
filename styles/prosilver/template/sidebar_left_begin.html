@@ -1,0 +1,13 @@
+<!-- IF not S_IN_ADMIN -->
+<!-- IF PAGE_TITLE eq L_LOGIN or PAGE_TITLE eq L_INFORMATION or PAGE_TITLE eq "Forum Chat" or PAGE_TITLE eq L_CONFIRM or S_IN_MCP or S_IN_UCP -->
+<!-- ELSE -->
+<!-- IF not S_IS_BOT -->
+<div id="side-bar">
+<!-- INCLUDE sidebar_body.html -->
+</div>
+<div id="main-board">
+<!-- ELSE -->
+{L_SIDEBAR_BOT_INFO}
+<!-- ENDIF -->
+<!-- ENDIF -->
+<!-- ENDIF -->

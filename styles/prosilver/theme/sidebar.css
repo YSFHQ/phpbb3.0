@@ -1,0 +1,125 @@
+/* ---------------------------------------------
+------        Sidebar CSS BEGIN
+--------------------------------------------- */
+
+/* DIV's for show & hide */
+
+#side-bar {
+	float: left;
+	width: 20%;
+	font-size: 1.00em;
+	border-right: 0px solid #FFFFFF;
+	display: block;
+	margin: 0 3% 0 0;
+}
+
+.rtl #side-bar {
+	float: right;
+	border: none;
+	border-left: 0px solid #FFFFFF;
+	margin: 0 0 0 3%;
+}
+
+#main-board {
+	float: left;
+	width: 74%;
+	display: block;
+}
+
+.rtl #main-board {
+	float: right;
+	width: 74%;
+}
+
+/* Quick-login on Sidebar */
+fieldset.side-login {
+	margin-top: 5px;
+}
+
+fieldset.side-login input {
+	width: auto;
+}
+
+fieldset.side-login input.inputbox {
+	width: 80%;
+	vertical-align: middle;
+	margin-right: 5px;
+	background-color: #f3f3f3;
+}
+
+fieldset.side-login label {
+	padding-right: 2px;
+}
+
+/* Side Horizontal lists
+----------------------------------------*/
+ul.sidebar-linklist {
+	display: block;
+         margin: 0;
+}
+
+ul.sidebar-linklist li {
+	display: block;
+	list-style-type: none;
+	width: auto;
+	margin-right: 5px;
+	font-size: 1.1em;
+	line-height: 1.8em;
+}
+
+ul.sidebar-linklist li.sidebar-rightside, p.sidebar-rightside {
+	margin-right: 0;
+	text-align: right;
+}
+
+ul.sidebar-leftside {
+	margin-left: 0;
+	margin-right: 5px;
+	text-align: left;
+}
+
+ul.sidebar-rightside {
+	margin-left: 5px;
+	margin-right: 0;
+	text-align: right;
+}
+
+/* Side Search box
+--------------------------------------------- */
+#side-search-box {
+	color: #FFFFFF;
+	margin-top: 5px;
+	margin-right: 0px;
+	margin-left: 0px;
+	display: block;
+	text-align: right;
+	white-space: nowrap; /* For Opera */
+}
+
+#side-search-box #keywords {
+	width: none;
+	background-color: #FFF;
+}
+
+#side-search-box input {
+	border: 1px solid #0075b0;
+}
+
+/* .button1 style defined later, just a few tweaks for the search button version */
+#side-search-box input.button1 {
+	padding: 1px 5px;
+}
+
+#side-search-box li {
+	text-align: right;
+	margin-top: 4px;
+}
+
+#side-search-box img {
+	vertical-align: middle;
+	margin-right: 3px;
+}
+
+/* ---------------------------------------------
+------        Sidebar CSS END
+--------------------------------------------- */

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+	<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+		<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+		<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en">Warning Reasons</title>
+	<description lang="en">Allows an Administrator to set reasons for giving a warning.</description>
+	<author-notes lang="en"><![CDATA[For the warning description to show, user must have javascript active in their browser.  Mod is completely translatable.]]></author-notes>
+	<author-group>
+		<author>
+			<username>RMcGirr83</username>
+			<realname>Rich McGirr</realname>
+			<homepage>http://www.rmcgirr83.org/</homepage>
+			<email><![CDATA[rmcgirr83@rmcgirr83.org]]></email>
+		</author>
+	</author-group>
+	<mod-version>1.0.4</mod-version>
+	<installation>
+		<level>easy</level>
+		<time>300</time>
+		<target-version>3.0.8</target-version>
+	</installation>
+		<history>
+			<entry>
+					<date>2011-03-25</date>
+					<rev-version>1.0.4
+					</rev-version>
+					<changelog lang="en">
+						<change>User being warned gets message in their language</change>
+						<change>UMIL install file for the module</change>
+					</changelog>
+			</entry>			
+		</history>			
+		<link-group>
+			<link type="parent" href="../install.xml" lang="en">Main Install File</link>
+		</link-group>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/includes/*.*" to="includes/*.*" />
+			<file from="root/adm/style/acp_warning_reasons.html" to="adm/style/acp_warning_reasons.html" />
+			<file from="root/wr_install.php" to="wr_install.php" />
+			<file from="root/ajax_warning_reasons.php" to="ajax_warning_reasons.php" />
+			<file from="root/umil/*.*" to="umil/*.*" />
+			<file from="root/language/en/mods/warning_reasons.php" to="language/en/mods/warning_reasons.php" />
+		</copy>
+		<open src="includes/mcp/mcp_warn.php">
+			<edit>
+				<remove><![CDATA[// BEGIN Warning Reasons Mod
+		$user->add_lang('mods/warning_reasons');
+		$warning_reason_id = request_var('warning_reason_id', 0);
+		$error = array();
+		
+		// must have a selection
+		if ($warning_reason_id == 0 && $action == 'add_warning')
+		{
+			$error[] = 'SELECT_REASON';
+		}
+		
+		if (!function_exists('warning_reasons'))
+		{
+			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
+		}
+		$warning_reason = warning_reasons($warning_reason_id);
+		
+		$warning = (strtolower($warning_reason['reason_title']) == 'other') ? $warning : sprintf($user->lang['WARNING_TEMPLATE'], $warning_reason['reason_description'], $warning);
+		if (!$warning)
+		{
+			$error[] = 'EMPTY_REPORT';
+		}
+// END Warning Reasons Mod]]></remove>
+			</edit>
+			<edit>
+				<find><![CDATA[		$user_id = $user_row['user_id'];]]></find>
+				<action type="after-add"><![CDATA[// BEGIN Warning Reasons Mod
+		$user->add_lang('mods/warning_reasons');
+		$warning_reason_id = request_var('warning_reason_id', 0);
+		$error = array();
+		
+		// must have a selection
+		if ($warning_reason_id == 0 && $action == 'add_warning')
+		{
+			$error[] = 'SELECT_REASON';
+		}
+		
+		if (!function_exists('warning_reasons'))
+		{
+			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
+		}
+		$warning_reason = warning_reasons($warning_reason_id, $user_id);
+		
+		$warning = (strtolower($warning_reason['reason_title']) == 'other') ? $warning : sprintf($user->lang['WARNING_TEMPLATE'], $warning_reason['reason_description'], $warning);
+		if (!$warning)
+		{
+			$error[] = 'EMPTY_REPORT';
+		}
+// END Warning Reasons Mod]]></action>
+			</edit>
+			<edit>
+				<remove><![CDATA[// BEGIN Warning Reasons Mod
+		$user->add_lang('mods/warning_reasons');
+		$warning_reason_id = request_var('warning_reason_id', 0);
+		$error = array();
+
+		// must have a selection
+		if ($warning_reason_id == 0 && $action == 'add_warning')
+		{
+			$error[] = 'SELECT_REASON';
+		}
+		
+		if (!function_exists('warning_reasons'))
+		{
+			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
+		}
+		
+		// build the select list
+		$warning_reason = warning_reasons($warning_reason_id);
+
+		$warning = strtolower($warning_reason['reason_title']) == 'other' ? $warning : sprintf($user->lang['WARNING_TEMPLATE'], $warning_reason['reason_description'], $warning);
+		if (!$warning)
+		{
+			$error[] = 'EMPTY_REPORT';
+		}		
+// END Warning Reasons Mod]]></remove>
+			</edit>
+			<edit>
+				<find><![CDATA[		$user_id = $user_row['user_id'];]]></find>
+				<action type="after-add"><![CDATA[// BEGIN Warning Reasons Mod
+		$user->add_lang('mods/warning_reasons');
+		$warning_reason_id = request_var('warning_reason_id', 0);
+		$error = array();
+		
+		// must have a selection
+		if ($warning_reason_id == 0 && $action == 'add_warning')
+		{
+			$error[] = 'SELECT_REASON';
+		}
+		
+		if (!function_exists('warning_reasons'))
+		{
+			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
+		}
+		$warning_reason = warning_reasons($warning_reason_id, $user_id);
+		
+		$warning = (strtolower($warning_reason['reason_title']) == 'other') ? $warning : sprintf($user->lang['WARNING_TEMPLATE'], $warning_reason['reason_description'], $warning);
+		if (!$warning)
+		{
+			$error[] = 'EMPTY_REPORT';
+		}
+// END Warning Reasons Mod]]></action>
+			</edit>			
+		</open>		
+	<php-installer>wr_install.php</php-installer>
+	<diy-instructions lang="en"><![CDATA[Login to your forum as admin and browse to the wr_install.php file located in the root of your forum.  This will update the database for you.  
+Refresh the prosilver styles template and delete the wr_install.php from your server.
+Enjoy the mod!!]]></diy-instructions>
+</action-group>
+</mod>

@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="./contrib/modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[National Flags]]></title>
+		<description lang="en"><![CDATA[Adds the ability for users to set their National flag which are then displayed in viewtopic, memberlist, profile page and also shows the top five countries.]]></description>
+		<author-group>
+			<author>
+				<realname><![CDATA[Rich McGirr]]></realname>
+				<username><![CDATA[RMcGirr83]]></username>
+				<homepage><![CDATA[http://www.rmcgirr83.org]]></homepage>
+				<email><![CDATA[rmcgirr83@rmcgirr83.org]]></email>
+			</author>		
+			<author>
+				<username><![CDATA[Anybloodyid]]></username>
+				<homepage><![CDATA[http://www.poem-n-verse.co.uk]]></homepage>
+				<contributions-group>
+					<contributions status="past" from="2009-01-01" to="2010-12-25" position="Developer"/>
+				</contributions-group>
+			</author>
+		</author-group>
+		<mod-version>2.0.4</mod-version>
+		<installation>
+			<level>intermediate</level>
+			<time>900</time>
+			<target-version>3.0.8</target-version>
+		</installation>
+		<history>
+			<entry>
+				<date>2009-06-11</date>
+				<rev-version>1.0.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Completed National Flags]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-02-06</date>
+				<rev-version>1.0.2</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added flags to Memberlist_view]]></change>
+					<change><![CDATA[Corrected some errors in the subsilver install]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-04-07</date>
+				<rev-version>2.0.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Added top five flags]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-11-01</date>
+				<rev-version>2.0.2</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Validation fixes]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-12-29</date>
+				<rev-version>2.0.3</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Validation fixes]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2011-01-23</date>
+				<rev-version>2.0.4</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Validation fixes]]></change>
+					<change><![CDATA[Add missing language for permissions]]></change>
+					<change><![CDATA[Fix ucp profile flag image]]></change>
+				</changelog>
+			</entry>			
+		</history>
+		<link-group>
+			<link type="template" href="contrib/subsilver2.xml" lang="en">subsilver2</link>
+			<link type="contrib" href="contrib/update_203_204.xml" lang="en">Update from 2.0.3 to 2.0.4</link>
+		</link-group>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/adm/*.*" to="adm/*.*" />
+			<file from="root/images/*.*" to="images/*.*" />
+			<file from="root/includes/*.*" to="includes/*.*" />
+			<file from="root/language/*.*" to="language/*.*" />
+			<file from="root/styles/prosilver/*.*" to="styles/prosilver/*.*" />
+			<file from="root/umil/*.*" to="umil/*.*" />
+			<file from="root/ajax_user_flag.php" to="ajax_user_flag.php" />
+			<file from="root/user_flags_install.php" to="user_flags_install.php" />
+		</copy>
+		<open src="index.php">
+			<edit>
+				<find><![CDATA[// Assign index specific vars]]></find>
+				<action type="before-add"><![CDATA[//Begin: National_Flag
+if (!empty($config['allow_flags']))
+{
+	if (!function_exists('top_flags'))
+	{
+		include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
+	}
+	top_flags();
+}
+//End: National_Flag]]></action>
+			</edit>
+		</open>
+		<open src="memberlist.php">
+			<edit>
+				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[//Begin: National_Flag
+include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
+//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[u.user_posts, u.user_allow_pm]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[u.user_allow_pm]]></inline-find>
+					<inline-action type="after-add"><![CDATA[, u.user_flag]]></inline-action>
+				</inline-edit>
+			</edit>
+			<edit>
+				<find><![CDATA[		$result = $db->sql_query($sql);]]></find>
+				<action type="after-add"><![CDATA[		//Begin: National_Flag
+		$flag_count = 0;
+		//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[			$rank_title = $rank_img = '';]]></find>
+				<action type="before-add"><![CDATA[			//Begin: National_Flag
+			if (!empty($config['allow_flags']) && !empty($row['user_flag']))
+			{
+				$user_flag = get_user_flag($row['user_flag']);
+				++$flag_count;
+			}
+			else
+			{
+				$user_flag = '';
+			}			
+			//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				'U_VIEW_PROFILE'	=> get_username_string('profile', $row['user_id'], $row['username'], $row['user_colour']),]]></find>
+				<action type="after-add"><![CDATA[				//Begin: National_Flag
+				'USER_FLAG'			=> $user_flag,
+				//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[			'PM_IMG'		=> $user->img('icon_contact_pm', $user->lang['SEND_PRIVATE_MESSAGE']))]]></find>
+				<action type="before-add"><![CDATA[			//Begin: National_Flag
+			'S_USER_FLAG'	=> $flag_count,
+			//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[	// Dump it out to the template]]></find>
+				<action type="after-add"><![CDATA[	//Begin: National_Flag
+	if (!empty($config['allow_flags']) && !empty($data['user_flag']))
+	{
+		$user_flag = get_user_flag($data['user_flag']);
+		$template->assign_vars(array(
+			'S_USER_FLAG'	=> true,
+		));		
+	}
+	else
+	{
+		$user_flag = '';
+	}			
+	//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		'USER_JABBER_IMG'	=> ($data['user_jabber']) ? $user->img('icon_contact_jabber', $data['user_jabber']) : '',]]></find>
+				<action type="after-add"><![CDATA[		//Begin: National_Flag
+		'USER_FLAG'		=> $user_flag,
+		//End: National_Flag]]></action>
+			</edit>
+		</open>
+		<open src="viewtopic.php">
+			<edit>
+				<find><![CDATA[include($phpbb_root_path . 'includes/bbcode.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[//Begin: National_Flag
+include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
+//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				'age'				=> '',]]></find>
+				<action type="after-add"><![CDATA[				//Begin: National_Flag
+				'flag'				=> '',
+				//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[			else
+			{
+				$user_cache[$poster_id]['icq_status_img'] = '';
+				$user_cache[$poster_id]['icq'] = '';
+			}]]></find>
+				<action type="after-add"><![CDATA[			//Begin: National_Flag
+			if (!empty($config['allow_flags']) && !empty($row['user_flag']))
+			{
+				$user_cache[$poster_id]['flag']	= get_user_flag($row['user_flag']);
+			}
+			else
+			{
+				$user_cache[$poster_id]['flag']	= '';
+			}			
+			//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		'POSTER_AGE'		=> $user_cache[$poster_id]['age'],]]></find>
+				<action type="after-add"><![CDATA[		//Begin: National_Flag
+		'POSTER_FLAG'		=> $user_cache[$poster_id]['flag'],
+		//End: National_Flag]]></action>
+			</edit>
+		</open>
+		<open src="adm/style/acp_users_profile.html">
+			<edit>
+				<find><![CDATA[		<dd>{L_DAY}: <select id="birthday" name="bday_day">{S_BIRTHDAY_DAY_OPTIONS}</select> {L_MONTH}: <select name="bday_month">{S_BIRTHDAY_MONTH_OPTIONS}</select> {L_YEAR}: <select name="bday_year">{S_BIRTHDAY_YEAR_OPTIONS}</select></dd>
+		</dl>]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_FLAG -->	
+	<dl>
+		<dt><label for="flag"><strong>{L_FLAG}:</strong></label><br /><span>{L_FLAG_EXPLAIN}</span></dt>
+		<dd><select name="flag" id="flag">{S_FLAG_OPTIONS}</select>&nbsp;&nbsp;{S_FLAG_IMAGE}</dd>
+	</dl>
+<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<open src="includes/constants.php">
+			<edit>
+				<find><![CDATA[// Additional constants]]></find>
+				<action type="after-add"><![CDATA[//Begin: National_Flag 
+define('FLAGS_DATA_TABLE',			$table_prefix . 'flags');
+define('USER_FLAG_TEXT', 1);
+define('USER_FLAG_IMAGE', 2);
+//End: National_Flag ]]></action>
+			</edit>
+		</open>				
+		<open src="includes/acp/acp_users.php">
+			<edit>
+				<find><![CDATA[				include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[				//Begin: National_Flag
+				include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
+				//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[					'bday_year'		=> 0,]]></find>
+				<action type="after-add"><![CDATA[					//Begin: National_Flag 
+					'flag'		=> request_var('flag', (int) $user_row['user_flag']),
+					//End: National_Flag ]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[						'user_birthday'	=> array('date', true),]]></find>
+				<action type="after-add"><![CDATA[						//Begin: National_Flag 
+						'flag'      	=> array('num', true, 0, 300),
+						//End: National_Flag ]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[							'user_birthday'	=> $data['user_birthday'],]]></find>
+				<action type="after-add"><![CDATA[							//Begin: National_Flag
+							'user_flag'		=> $data['flag'],
+							//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[					'S_BIRTHDAY_YEAR_OPTIONS'	=> $s_birthday_year_options,]]></find>
+				<action type="after-add"><![CDATA[					//Begin: National_Flag
+					'S_FLAG_OPTIONS'	=> list_all_flags($data['flag']),
+					'S_FLAG_IMAGE'		=> get_user_flag($data['flag']),
+					'S_FLAG'			=> !empty($config['allow_flags']) ? $config['allow_flags'] : false,
+					//End: National_Flag]]></action>
+			</edit>
+		</open>
+		<open src="includes/ucp/ucp_pm_viewmessage.php">
+			<edit>
+				<find><![CDATA[	$url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm');]]></find>
+				<action type="after-add"><![CDATA[//Begin: National_Flag 
+	include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
+//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		'AUTHOR_FROM'		=> (!empty($user_info['user_from'])) ? $user_info['user_from'] : '',]]></find>
+				<action type="after-add"><![CDATA[//Begin: National_Flag
+		'USER_FLAG'		=> get_user_flag($user_info['user_flag']),
+//End: National_Flag]]></action>
+			</edit>
+		</open>
+		<open src="includes/ucp/ucp_profile.php">
+			<edit>
+				<find><![CDATA[				include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[				//Begin: National_Flag
+				include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
+				//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[					$data['user_birthday'] = sprintf('%2d-%2d-%4d', $data['bday_day'], $data['bday_month'], $data['bday_year']);
+				}]]></find>
+				<action type="after-add"><![CDATA[				//Begin: National_Flag
+				if (!empty($config['allow_flags']))
+				{					
+					$data['flag'] = request_var('flag', (int) $user->data['user_flag']);					
+				}
+				//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[					if ($config['allow_birthdays'])
+					{
+						$validate_array = array_merge($validate_array, array(]]></find>
+				<action type="before-add"><![CDATA[					//Begin: National_Flag
+					//Currently set to validate up to 300, if you want more
+					//flags than 300 change to the amount you want
+					if (!empty($config['allow_flags']))
+					{
+						$validate_array = array_merge($validate_array, array(
+							'flag'      	=> array('num', true, 0, 300),
+						));
+					}
+					//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[						if ($config['allow_birthdays'])
+						{
+							$sql_ary['user_birthday'] = $data['user_birthday'];
+						}]]></find>
+				<action type="before-add"><![CDATA[						//Begin: National_Flag
+						if (!empty($config['allow_flags']))
+						{
+							$sql_ary['user_flag'] = $data['flag'];
+						}
+						//End: National_Flag]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[						'S_BIRTHDAYS_ENABLED'		=> true,
+					));
+				}]]></find>
+				<action type="after-add"><![CDATA[				//Begin: National_Flag
+				if (!empty($config['allow_flags']))
+				{
+					global $cache;
+					get_user_flag();
+					$flags = $cache->get('_user_flags');
+					$flag_name = '';
+					if ($data['flag'] && $config['flag_type'] != USER_FLAG_TEXT)
+					{
+						$flag_name = $flags[$data['flag']]['flag_image'];
+					}
+					unset($flags);				
+					$s_flag_options = list_all_flags($data['flag']);
+					
+					$template->assign_vars(array(
+						'S_FLAG_OPTIONS'	=> $s_flag_options,
+						'S_FLAGS_ENABLED'	=> true,
+						'FLAG_IMAGE'		=> ($flag_name) ? "{$phpbb_root_path}images/flags/$flag_name" : '',
+						'FLAG_NAME'			=> $flag_name,
+						'AJAX_FLAG_INFO'	=> append_sid("{$phpbb_root_path}ajax_user_flag.$phpEx", 'flag_id=FLAG_ID'),
+					));
+				}
+				//End: National_Flag]]></action>
+			</edit>
+		</open>
+		<open src="language/en/common.php">
+			<edit>
+				<find><![CDATA[?>]]></find>
+				<action type="before-add"><![CDATA[//Begin: National_Flag
+$lang = array_merge($lang, array(
+		'FLAG'				=> 'National Flag',
+		'FLAG_EXPLAIN'		=> 'Choose your Country Flag',
+		'TOP_FLAG_TITLE'	=> 'Top 5 National Flags',
+		'FLAG_USER'			=> '%s User',
+		'FLAG_USERS'		=> '%s Users',
+));
+//End: National_Flag]]></action>
+			</edit>
+		</open>
+		<open src="language/en/acp/permissions_phpbb.php">
+			<edit>
+				<find><![CDATA[	'acl_a_search'		=> array('lang' => 'Can manage search backends and settings', 'cat' => 'misc'),]]></find>
+				<action type="after-add"><![CDATA[//Begin: National_Flag 
+	'acl_a_flags'		=> array('lang' => 'Can manage country flags', 'cat' => 'misc'),
+//End: National_Flag ]]></action>
+			</edit>
+		</open>		
+		<open src="styles/prosilver/template/index_body.html">
+			<edit>
+				<find><![CDATA[<!-- IF S_DISPLAY_ONLINE_LIST -->]]></find>
+				<action type="before-add"><![CDATA[<!-- INCLUDE top_flags.html -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/memberlist_body.html">
+			<edit>
+				<find><![CDATA[			<!-- IF AVATAR_IMG -->{AVATAR_IMG}<!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[			<!-- IF USER_FLAG -->{USER_FLAG}<!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[			<th class="posts"><a href="{U_SORT_POSTS}#memberlist">{L_POSTS}</a></th>]]></find>
+				<action type="after-add"><![CDATA[			<!-- IF S_USER_FLAG --><th class="flag">{L_FLAG}</th><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[			<th class="posts"><a href="{U_SORT_POSTS}#memberlist">{L_POSTS}</a></th>]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF S_USER_FLAG --><th class="flag">{L_FLAG}</th><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<th class="posts">&nbsp;</th>]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF S_USER_FLAG --><th class="flag">&nbsp;</th><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<td class="posts"><!-- IF memberrow.POSTS and S_DISPLAY_SEARCH -->]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF S_USER_FLAG --><td class="flag"><div>{memberrow.USER_FLAG}</div></td><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/memberlist_leaders.html">
+			<edit>
+				<find><![CDATA[		<th class="name"><span class="rank-img">{L_RANK}&nbsp;</span>{L_ADMINISTRATORS}</th>]]></find>
+				<action type="after-add"><![CDATA[	   <!-- IF S_USER_FLAG --><th class="info">{L_FLAG}</th><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<td class="info"><!-- IF admin.U_GROUP -->]]></find>
+				<action type="before-add"><![CDATA[		<!-- IF S_USER_FLAG --><td><!-- IF admin.USER_FLAG--><span class="flag">{admin.USER_FLAG}</span><!-- ENDIF --></td><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<th class="name">{L_MODERATORS}</th>]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF S_USER_FLAG --><th class="info">&nbsp;</th><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<td class="info"><!-- IF mod.U_GROUP -->]]></find>
+				<action type="before-add"><![CDATA[		<!-- IF S_USER_FLAG --><td><!-- IF mod.USER_FLAG--><span class="flag">{mod.USER_FLAG}</span><!-- ENDIF --></td><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/memberlist_view.html">
+			<edit>
+				<find><![CDATA[		<!-- IF LOCATION --><dt>{L_LOCATION}:</dt> <dd>{LOCATION}</dd><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF USER_FLAG --><dt>{L_FLAG}:</dt> <dd>{USER_FLAG}</dd><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/ucp_pm_viewmessage.html">
+			<edit>
+				<find><![CDATA[		<!-- IF AUTHOR_FROM --><dd><strong>{L_LOCATION}:</strong> {AUTHOR_FROM}</dd><!-- ENDIF -->
+		]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF USER_FLAG --><dd><strong>{L_FLAG}:</strong><br />{USER_FLAG}</dd><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/ucp_profile_profile_info.html">
+			<edit>
+				<find><![CDATA[	<dl>
+		<dt><label for="interests">{L_INTERESTS}:</label></dt>
+		<dd><textarea name="interests" id="interests" class="inputbox" rows="3" cols="30">{INTERESTS}</textarea></dd>
+		</dl>]]></find>
+				<action type="after-add"><![CDATA[	<!-- INCLUDE ucp_user_flag.html -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[		<!-- IF postrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {postrow.POSTER_FROM}</dd><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF postrow.POSTER_FLAG --><dd><strong>{L_FLAG}:</strong><br /><strong>{postrow.POSTER_FLAG}</strong></dd><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<php-installer><![CDATA[user_flags_install.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[1. Make all edits to all files and upload them to your forum.     
+2. Open http://www.YOUR_DOMAIN.com/install.php in your web browser and follow the instructions.
+3. Purge the cache and refresh the template.
+4. Set the settings for National Flags in the .Mods tab of the ACP.
+5. Delete user_flags_install.php
+6. Enjoy the Mod!!]]></diy-instructions>
+	</action-group>
+</mod>

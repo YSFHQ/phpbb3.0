@@ -1,0 +1,108 @@
+<br />
+<!-- IF not S_USER_LOGGED_IN and S_LOGIN_ANYWHERE and not SIDEBAR_AUTO_REFRESH -->
+	<div class="panel bg2"><span class="corners-top"><span></span></span>
+        <div style="text-align: center; text-weight: bold;">{L_LOGIN_LOGOUT}</div>
+	<form method="post" action="{S_LOGIN_SIDE}">
+		<fieldset class="side-login">
+			<div style="text-align: center"><label for="username">{L_USERNAME}</label><br /><input type="text" name="username" id="username" size="10" class="inputbox" title="{L_USERNAME}" />
+			<label for="password">{L_PASSWORD}</label><br /><input type="password" name="password" id="password" size="10" class="inputbox" title="{L_PASSWORD}" />
+			<!-- IF S_AUTOLOGIN_ENABLED --><br /><label for="autologin" style="width: 140px; margin: 0 auto;">{L_SIDEBAR_REM_ME}&nbsp;<input type="checkbox" name="autologin" id="autologin" /></label><!-- ENDIF -->
+			<br /><br /><input type="submit" name="login" value="{L_LOGIN}" class="button2" /></div>
+		<br /></fieldset></form>
+	<span class="corners-bottom"><span></span></span></div>
+<br />
+<!-- ENDIF -->
+
+<!-- IF S_USER_LOGGED_IN and U_MCP -->
+<!-- IF S_NEW_REPORT or S_UNAPPROVED_TOPIC or S_UNAPPROVED_POSTS -->
+<div class="rules">
+<!-- ELSE -->
+<div class="panel bg2">
+<!-- ENDIF -->
+<span class="corners-top"><span></span></span>
+<div class="inner"><div style="text-align: center; padding-top: 6px; margin: 0 auto;"><a href="{U_MCP}"><strong>{L_MCP}</strong></a><br /><hr /><br />
+<!-- IF S_NEW_REPORT --><a href="{U_GOTO_MCP_REPORT}">{L_REPORTED_POST_ATT}</a><!-- ELSE -->{L_NO_REPORTED_POST_ATT}<!-- ENDIF --><br />
+<!-- IF S_UNAPPROVED_TOPIC --><a href="{U_MCP_UNAPPROVED_TOPIC}">{L_UNAPPROVED_TOPIC_ATT}</a><!-- ELSE -->{L_NO_APPROVED_TOPIC_ATT}<!-- ENDIF --><br />
+<!-- IF S_UNAPPROVED_POSTS --><a href="{U_MCP_UNAPPROVED_POSTS}">{L_UNAPPROVED_POSTS_ATT}</a><!-- ELSE -->{L_NO_APPROVED_POST_ATT}<!-- ENDIF --><br />
+<br />
+</div></div>
+<span class="corners-bottom"><span></span></span>
+<!-- IF S_NEW_REPORT or S_UNAPPROVED_TOPIC or S_UNAPPROVED_POSTS -->
+</div>
+<!-- ELSE -->
+</div>
+<!-- ENDIF -->
+<br />
+<!-- ENDIF -->
+<!-- IF S_RECENT_POSTS --><!-- ENDIF -->
+<!-- INCLUDE sidebar_recent_topics.html -->
+
+<!-- IF S_USER_LOGGED_IN -->
+<!-- IF S_USER_NEW_PRIVMSG or S_USER_UNREAD_PRIVMSG -->
+<div class="rules">
+<!-- ELSE -->
+<div class="panel bg2">
+<!-- ENDIF -->
+<div class="inner"><span class="corners-top"><span></span></span>
+<div style="text-align: center; padding-top: 6px; margin: 0 auto;">{L_SIDEBAR_WELC}<!-- IF S_USERCOLOUR --><span style="color: #{S_USERCOLOUR}; font-weight: bold;"><!-- ENDIF -->{S_USERNAME}<!-- IF S_USERCOLOUR --></span><!-- ENDIF --><br /><br /><a href="{U_VIEW_PROFILE}"><!-- IF S_USERAVATAR -->{S_USERAVATAR}<!-- ELSE --><img src="{T_THEME_PATH}/images/no_avatar.gif" alt="{L_USER_AVATAR}" /><!-- ENDIF --></a><br /></div><div style="width: 140px; text-align: center; margin: 0 auto;">{LAST_VISIT_DATE}</div><hr />
+<ul class="sidebar-linklist sidebar-rightside">
+<li class="icon-ucp sidebar-rightside"><a href="{U_PROFILE}" title="{L_PROFILE}">{L_PROFILE}</a></li></ul>
+<br />
+<!-- IF S_DISPLAY_PM --><div style="text-align: center;"> (<a href="{U_PRIVATEMSGS}">{PRIVATE_MESSAGE_INFO}</a>)</div><!-- ENDIF -->
+<hr />
+<ul class="sidebar-linklist sidebar-leftside">
+<!-- IF S_DISPLAY_SEARCH -->
+<li><a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a></li>
+<li><a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a></li>
+<li><a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a></li>
+<li><a href="{U_SEARCH_ACTIVE_TOPICS}">{L_SEARCH_ACTIVE_TOPICS}</a></li>
+<li><hr /></li>
+<!-- ENDIF -->
+<!-- IF U_RESTORE_PERMISSIONS --><li><br /><a href="{U_RESTORE_PERMISSIONS}">{L_RESTORE_PERMISSIONS}</a></li><!-- ENDIF -->
+</ul>
+<ul class="sidebar-linklist" style="text-align: center;">
+<!-- IF S_WATCH_FORUM_LINK --><!-- IF S_WATCHING_FORUM --><li class="icon-unsubscribe"><a href="{S_WATCH_FORUM_LINK}" title="{S_WATCH_FORUM_TITLE}">{S_WATCH_FORUM_TITLE}</a></li><!-- ELSE --><li class="icon-subscribe"><a href="{S_WATCH_FORUM_LINK}" title="{S_WATCH_FORUM_TITLE}">{S_WATCH_FORUM_TITLE}</a></li><!-- ENDIF --><!-- ENDIF -->
+<!-- IF U_WATCH_TOPIC --><!-- IF S_WATCHING_TOPIC --><li class="icon-unsubscribe"><a href="{U_WATCH_TOPIC}" title="{L_WATCH_TOPIC}">{L_WATCH_TOPIC}</a></li><!-- ELSE --><li class="icon-subscribe"><a href="{U_WATCH_TOPIC}" title="{L_WATCH_TOPIC}">{L_WATCH_TOPIC}</a></li><!-- ENDIF --><!-- ENDIF -->
+<!-- IF U_BOOKMARK_TOPIC --><li class="icon-bookmark"><a href="{U_BOOKMARK_TOPIC}" title="{L_BOOKMARK_TOPIC}">{L_BOOKMARK_TOPIC}</a></li><!-- ENDIF -->
+<!-- IF U_BUMP_TOPIC --><li class="icon-bump"><a href="{U_BUMP_TOPIC}" title="{L_BUMP_TOPIC}">{L_BUMP_TOPIC}</a></li><!-- ENDIF -->
+</ul>
+<div style="text-align: center;"><a href="{U_DELETE_COOKIES}">{L_DELETE_COOKIES}</a></div>
+<hr /><div style="text-align: center"><a href="{U_INDEX}" class="icon-home">{L_INDEX}</a></div><br />
+<span class="corners-bottom"><span></span></span></div>
+<!-- IF S_USER_NEW_PRIVMSG or S_USER_UNREAD_PRIVMSG -->
+</div>
+<!-- ELSE -->
+</div>
+<!-- ENDIF -->
+<br />
+<!-- ENDIF -->
+
+
+
+
+<div class="panel bg2">
+<span class="corners-top"><span></span></span>
+<!-- IF S_DISPLAY_SEARCH and not S_IN_SEARCH -->
+	<div id="side-search-box">
+	<form action="{U_SEARCH}" method="post" id="search">
+	<fieldset>
+	<input name="keywords" id="keywords" type="text" maxlength="128" title="{L_SEARCH_KEYWORDS}" class="inputbox search" onclick="if(this.value=='{LA_SEARCH_MINI}')this.value='';" onblur="if(this.value=='')this.value='{LA_SEARCH_MINI}';" value="{L_SEARCH_MINI}" /><br /> 
+	<a href="{U_SEARCH}" title="{L_SEARCH_ADV_EXPLAIN}" style="margin: 0 auto; padding-top: 2px;">{L_SEARCH_ADV}</a>&nbsp;&nbsp;<input class="button2" value="{L_SEARCH}" type="submit" style="padding-top: 1px;" /><br />
+	 {S_SEARCH_HIDDEN_FIELDS}
+	</fieldset>
+	</form>
+</div>
+<hr />
+<!-- ENDIF -->
+<ul class="sidebar-linklist sidebar-leftside">
+<!-- INCLUDE sidebar_board_links.html -->
+<li class="icon-faq"><a href="{U_FAQ}" title="{L_FAQ_EXPLAIN}">{L_FAQ}</a></li>
+<!-- IF S_DISPLAY_MEMBERLIST --><li class="icon-members"><a href="{U_MEMBERLIST}" title="{L_MEMBERLIST_EXPLAIN}">{L_MEMBERLIST}</a></li><!-- ENDIF -->
+<!-- IF not S_USER_LOGGED_IN --><li class="icon-register"><a href="{U_REGISTER}">{L_REGISTER}</a></li><!-- ENDIF -->
+<li class="icon-logout"><a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a></li>
+</ul>
+<hr />
+<div style="text-align: center;">{L_SIDEBAR_INFO}v {L_SIDEBAR_VER}</div>
+<span class="corners-bottom"><span></span></span></div>
+
+<br />

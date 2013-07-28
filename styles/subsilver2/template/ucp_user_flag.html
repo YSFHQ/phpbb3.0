@@ -1,0 +1,39 @@
+<!-- IF S_FLAGS_ENABLED -->
+<script type="text/javascript">
+// <![CDATA[
+	/**
+	* Some functions for the AJAX checker
+	*/
+	function createRequestObject() {
+	    var ro;
+	    var browser = navigator.appName;
+	    if(browser == "Microsoft Internet Explorer"){
+	        ro = new ActiveXObject("Microsoft.XMLHTTP");
+	    } else {
+	        ro = new XMLHttpRequest();
+	    }
+	    return ro;
+	}	
+
+	var http = createRequestObject();	
+	function flagIdReq(value) {
+		// Make the request
+		var flagimage_url = '{AJAX_FLAG_INFO}';
+		http.open('get', flagimage_url.replace('FLAG_ID', value));
+	    http.onreadystatechange = handleResponse;
+	    http.send(null);
+	}
+	// fill in the response
+	function handleResponse() {
+		if(http.readyState == 4 ){		
+		var response = http.responseText;
+			document.getElementById('flag_image').innerHTML = response;
+		}
+	}	
+// ]]>
+</script>
+	<tr>
+		<td class="row1" width="50%"><b class="genmed">{L_FLAG}:</b></td>
+		<td class="row2"><select name="flag" id="flag" onchange="flagIdReq(this.value);">{S_FLAG_OPTIONS}</select>&nbsp;<span id="flag_image" <!-- IF not FLAG_IMAGE -->style="display:none;"<!-- ENDIF -->><img src="{FLAG_IMAGE}" alt="{FLAG_NAME}" title="{FLAG_NAME}" style="vertical-align:middle;" /></span></td>	
+	</tr>
+<!-- ENDIF -->
