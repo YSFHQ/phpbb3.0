@@ -7,18 +7,17 @@ Include a <br /> tag after each, though.
 
 -->
 
-<li><a href="http://ysfhq.com/serverlist/" target="_blank" style="display: block; text-align: center; color: #f00; font-style: italic; font-weight: bold;">Online Servers List</a></li>
+<li><a href="http://ysfhq.com/serverlist/" target="_blank" style="display: block; text-align: center; color: #f00; font-style: italic; font-weight: bold;">Online Servers List</a><em style="font-size: 13px;font-weight: bold;text-decoration:underline;">Online Players</em></li>
 <li id="serverlist" style="line-height: 1em">
 </li>
 <script type="text/javascript">
-/*
-$('#serverlist').load('flying.php', function () {
-  $('#serverlist > font > *').unwrap();
-  $('#serverlist br:nth-child(2)').remove();
-  $('#serverlist').html($('#serverlist').html().replace(/• /g, ''));
-});
-*/
+$('#serverlist').load('/serverlist/players3.php table');
 </script>
+<style type="text/css">
+#serverlist table td {
+    vertical-align: top;
+}
+</style>
 <br>
 <li><a href="http://www.tsviewer.com/index.php?page=ts_viewer&ID=999816" target="_blank" style="display: block; text-align: center;"><img src="http://www.tsviewer.com/promotion/dynamic_sig/sig.php/clan160x283_fs/999816.png" alt="YSFlight YSFHQ TeamSpeak Viewer" title="YSFlight YSFHQ TeamSpeak Viewer" border="0" /></a></li>
 <br>
