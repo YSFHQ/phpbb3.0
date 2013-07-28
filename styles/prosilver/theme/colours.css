@@ -48,14 +48,14 @@ hr.dashed {
 /* Round cornered boxes and backgrounds
 ---------------------------------------- */
 .headerbar {
-	background: #216fbb; /* Old browsers */
-	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -moz-linear-gradient(top,  #216fbb 0%, #5486b9 57%, #9da8b2 74%, #e9ebed 75%, #daddd2 100%); /* FF3.6+ */
-	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -webkit-gradient(linear, left top, left bottom, color-stop(0%,#216fbb), color-stop(57%,#5486b9), color-stop(74%,#9da8b2), color-stop(75%,#e9ebed), color-stop(100%,#daddd2)); /* Chrome,Safari4+ */
-	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -webkit-linear-gradient(top,  #216fbb 0%,#5486b9 57%,#9da8b2 74%,#e9ebed 75%,#daddd2 100%); /* Chrome10+,Safari5.1+ */
-	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -o-linear-gradient(top,  #216fbb 0%,#5486b9 57%,#9da8b2 74%,#e9ebed 75%,#daddd2 100%); /* Opera 11.10+ */
-	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -ms-linear-gradient(top,  #216fbb 0%,#5486b9 57%,#9da8b2 74%,#e9ebed 75%,#daddd2 100%); /* IE10+ */
-	background-image: url("{T_THEME_PATH}/images/bg_header.png"), linear-gradient(to bottom,  #216fbb 0%,#5486b9 57%,#9da8b2 74%,#e9ebed 75%,#daddd2 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#216fbb', endColorstr='#daddd2',GradientType=0 ); /* IE6-9 */
+	background: #216fbc; /* Old browsers */
+	background-image: url("{T_THEME_PATH}/images/bg_header.png"); /* Old browsers */
+	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -moz-linear-gradient(top,  #216fbc 0%, #2871bc 19%, #3477ba 36%, #4c82b9 51%, #658eb6 59%, #a0a9b2 75%, #e7eaec 75%, #ebecec 84%, #e8e9ea 85%, #ccd2d4 86%, #c7ced0 86%, #c8cfd1 88%, #ccdbd4 89%, #cbdbd5 91%, #ced6cc 91%, #d2d5c8 92%, #d5d7cd 93%, #caccc3 93%, #d7d9d0 94%, #d7d9d0 95%, #caccc4 96%, #cdd0c5 98%, #daddd2 99%, #dadcd4 99%, #dededf 100%); /* FF3.6+ */
+	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -webkit-gradient(linear, left top, left bottom, color-stop(0%,#216fbc), color-stop(19%,#2871bc), color-stop(36%,#3477ba), color-stop(51%,#4c82b9), color-stop(59%,#658eb6), color-stop(75%,#a0a9b2), color-stop(75%,#e7eaec), color-stop(84%,#ebecec), color-stop(85%,#e8e9ea), color-stop(86%,#ccd2d4), color-stop(86%,#c7ced0), color-stop(88%,#c8cfd1), color-stop(89%,#ccdbd4), color-stop(91%,#cbdbd5), color-stop(91%,#ced6cc), color-stop(92%,#d2d5c8), color-stop(93%,#d5d7cd), color-stop(93%,#caccc3), color-stop(94%,#d7d9d0), color-stop(95%,#d7d9d0), color-stop(96%,#caccc4), color-stop(98%,#cdd0c5), color-stop(99%,#daddd2), color-stop(99%,#dadcd4), color-stop(100%,#dededf)); /* Chrome,Safari4+ */
+	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -webkit-linear-gradient(top,  #216fbc 0%,#2871bc 19%,#3477ba 36%,#4c82b9 51%,#658eb6 59%,#a0a9b2 75%,#e7eaec 75%,#ebecec 84%,#e8e9ea 85%,#ccd2d4 86%,#c7ced0 86%,#c8cfd1 88%,#ccdbd4 89%,#cbdbd5 91%,#ced6cc 91%,#d2d5c8 92%,#d5d7cd 93%,#caccc3 93%,#d7d9d0 94%,#d7d9d0 95%,#caccc4 96%,#cdd0c5 98%,#daddd2 99%,#dadcd4 99%,#dededf 100%); /* Chrome10+,Safari5.1+ */
+	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -o-linear-gradient(top,  #216fbc 0%,#2871bc 19%,#3477ba 36%,#4c82b9 51%,#658eb6 59%,#a0a9b2 75%,#e7eaec 75%,#ebecec 84%,#e8e9ea 85%,#ccd2d4 86%,#c7ced0 86%,#c8cfd1 88%,#ccdbd4 89%,#cbdbd5 91%,#ced6cc 91%,#d2d5c8 92%,#d5d7cd 93%,#caccc3 93%,#d7d9d0 94%,#d7d9d0 95%,#caccc4 96%,#cdd0c5 98%,#daddd2 99%,#dadcd4 99%,#dededf 100%); /* Opera 11.10+ */
+	background-image: url("{T_THEME_PATH}/images/bg_header.png"), -ms-linear-gradient(top,  #216fbc 0%,#2871bc 19%,#3477ba 36%,#4c82b9 51%,#658eb6 59%,#a0a9b2 75%,#e7eaec 75%,#ebecec 84%,#e8e9ea 85%,#ccd2d4 86%,#c7ced0 86%,#c8cfd1 88%,#ccdbd4 89%,#cbdbd5 91%,#ced6cc 91%,#d2d5c8 92%,#d5d7cd 93%,#caccc3 93%,#d7d9d0 94%,#d7d9d0 95%,#caccc4 96%,#cdd0c5 98%,#daddd2 99%,#dadcd4 99%,#dededf 100%); /* IE10+ */
+	background-image: url("{T_THEME_PATH}/images/bg_header.png"), linear-gradient(to bottom,  #216fbc 0%,#2871bc 19%,#3477ba 36%,#4c82b9 51%,#658eb6 59%,#a0a9b2 75%,#e7eaec 75%,#ebecec 84%,#e8e9ea 85%,#ccd2d4 86%,#c7ced0 86%,#c8cfd1 88%,#ccdbd4 89%,#cbdbd5 91%,#ced6cc 91%,#d2d5c8 92%,#d5d7cd 93%,#caccc3 93%,#d7d9d0 94%,#d7d9d0 95%,#caccc4 96%,#cdd0c5 98%,#daddd2 99%,#dadcd4 99%,#dededf 100%); /* W3C */
 	background-repeat: no-repeat;
 	color: #FFFFFF;
 }
