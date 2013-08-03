@@ -209,6 +209,9 @@ define('CAPTCHA_MIN_CHARS', 4);
 define('CAPTCHA_MAX_CHARS', 7);
 
 // Additional constants
+// Special and normal rank images
+define('SHOW_SPECIAL_AS_EXTRA', false); //Set to true if you want topics and profiles to show the special ranks, e.g. Administrator, as the 'extra' rank
+define('SHOW_ONLY_NORMAL_RANKS_ON_MEMBERLIST', false); //Set to true if you want the memberslist to show only normal ranks and not special ranks
 // BEGIN Topic solved
 define('TOPIC_SOLVED_YES', 1); // Topic starter and moderators
 define('TOPIC_SOLVED_MOD', 2); // Only moderators
