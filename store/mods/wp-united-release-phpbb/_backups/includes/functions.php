@@ -4615,7 +4615,7 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 	
 	//This sets up the recent posts display
 	//Uncomment it (remove the double slash in front of it) to use it!
-	//grab_recent_topics(5);
+	grab_recent_topics(5);
 	
 	//Uncomment the following if you have installed the UCP extension for Silverbar
 	//setup_sidebar_ucp();

@@ -1156,6 +1156,10 @@ while ($row = $db->sql_fetchrow($result))
 				'rank_title'		=> '',
 				'rank_image'		=> '',
 				'rank_image_src'	=> '',
+
+				'extra_rank_title'		=> '',
+				'extra_rank_image'		=> '',
+				'extra_rank_image_src'	=> '',
 				'sig'				=> '',
 				'profile'			=> '',
 				'pm'				=> '',
@@ -1216,6 +1220,10 @@ while ($row = $db->sql_fetchrow($result))
 				'rank_image'		=> '',
 				'rank_image_src'	=> '',
 
+
+				'extra_rank_title'		=> '',
+				'extra_rank_image'		=> '',
+				'extra_rank_image_src'	=> '',
 				'username'			=> $row['username'],
 				'user_colour'		=> $row['user_colour'],
 
@@ -1236,6 +1244,23 @@ while ($row = $db->sql_fetchrow($result))
 
 			get_user_rank($row['user_rank'], $row['user_posts'], $user_cache[$poster_id]['rank_title'], $user_cache[$poster_id]['rank_image'], $user_cache[$poster_id]['rank_image_src']);
 
+
+			if (!empty($row['user_rank']))
+			{
+				if (defined('SHOW_SPECIAL_AS_EXTRA') && SHOW_SPECIAL_AS_EXTRA)
+				{
+					$user_cache[$poster_id]['extra_rank_title'] = $user_cache[$poster_id]['rank_title'];
+					$user_cache[$poster_id]['extra_rank_image'] = $user_cache[$poster_id]['rank_image'];
+					$user_cache[$poster_id]['extra_rank_image_src'] = $user_cache[$poster_id]['rank_image_src'];
+					$user_cache[$poster_id]['rank_title'] = $user_cache[$poster_id]['rank_image'] = $user_cache[$poster_id]['rank_image_src'] = '';
+
+					get_user_additional_rank($row['user_rank'], $row['user_posts'], $user_cache[$poster_id]['rank_title'], $user_cache[$poster_id]['rank_image'], $user_cache[$poster_id]['rank_image_src']);
+				}
+				else
+				{
+					get_user_additional_rank($row['user_rank'], $row['user_posts'], $user_cache[$poster_id]['extra_rank_title'], $user_cache[$poster_id]['extra_rank_image'], $user_cache[$poster_id]['extra_rank_image_src']);
+				}
+			}
 			if ((!empty($row['user_allow_viewemail']) && $auth->acl_get('u_sendemail')) || $auth->acl_get('a_email'))
 			{
 				$user_cache[$poster_id]['email'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$poster_id") : (($config['board_hide_emails'] && !$auth->acl_get('a_email')) ? '' : 'mailto:' . $row['user_email']);
@@ -1287,6 +1312,7 @@ while ($row = $db->sql_fetchrow($result))
 			}
 		}
 	}
+
 }
 $db->sql_freeresult($result);
 
@@ -1664,6 +1690,9 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 		'RANK_TITLE'		=> $user_cache[$poster_id]['rank_title'],
 		'RANK_IMG'			=> $user_cache[$poster_id]['rank_image'],
 		'RANK_IMG_SRC'		=> $user_cache[$poster_id]['rank_image_src'],
+		'EXTRA_RANK_TITLE'	=> $user_cache[$poster_id]['extra_rank_title'],
+		'EXTRA_RANK_IMG'	=> $user_cache[$poster_id]['extra_rank_image'],
+		'EXTRA_RANK_IMG_SRC'=> $user_cache[$poster_id]['extra_rank_image_src'],
 		'POSTER_JOINED'		=> $user_cache[$poster_id]['joined'],
 		'POSTER_POSTS'		=> $user_cache[$poster_id]['posts'],
 		'POSTER_FROM'		=> $user_cache[$poster_id]['from'],
@@ -1746,6 +1775,7 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 	{
 		$postrow = array_merge($postrow, $cp_row['row']);
 	}
+
 
 	// Dump vars into template
 	$template->assign_block_vars('postrow', $postrow);

@@ -128,6 +128,9 @@
 					<!-- IF postrow.U_WARN --><li class="warn-icon"><a href="{postrow.U_WARN}" title="{L_WARN_USER}"><span>{L_WARN_USER}</span></a></li><!-- ENDIF -->
 					<!-- IF postrow.U_INFO --><li class="info-icon"><a href="{postrow.U_INFO}" title="{L_INFORMATION}"><span>{L_INFORMATION}</span></a></li><!-- ENDIF -->
 					<!-- IF postrow.DECODED_MESSAGE and S_QUICK_REPLY --><li class="quote-icon"><a href="#postingbox" onclick="addquote({postrow.POST_ID}, '{postrow.POSTER_QUOTE}', '{LA_WROTE}');" title="{L_QUOTE} {postrow.POST_AUTHOR}"><span>{L_QUOTE} {postrow.POST_AUTHOR}</span></a></li><!-- ELSEIF postrow.U_QUOTE --><li class="quote-icon"><a href="{postrow.U_QUOTE}" title="{L_REPLY_WITH_QUOTE}"><span>{L_REPLY_WITH_QUOTE}</span></a></li><!-- ENDIF -->
+					<!-- IF  not postrow.S_FIRST_POST_ONLY or postrow.S_ONLY_TOPICSTART -->
+						<!-- IF not postrow.S_GLOBAL_POST_THANKS and not postrow.S_POST_ANONYMOUS and postrow.S_FORUM_THANKS and S_USER_LOGGED_IN and not postrow.S_IS_OWN_POST and (not postrow.S_ALREADY_THANKED or postrow.S_REMOVE_THANKS) --><li class="{postrow.THANKS_IMG}"><a href="{postrow.THANKS_LINK}" title="{postrow.THANK_ALT}{postrow.POST_AUTHOR}"></a></li><!-- ENDIF -->				
+					<!-- ENDIF -->
 				</ul>
 			<!-- ENDIF -->
 		<!-- ENDIF -->
@@ -205,6 +208,7 @@
 			</dt>
 
 			<!-- IF postrow.RANK_TITLE or postrow.RANK_IMG --><dd>{postrow.RANK_TITLE}<!-- IF postrow.RANK_TITLE and postrow.RANK_IMG --><br /><!-- ENDIF -->{postrow.RANK_IMG}</dd><!-- ENDIF -->
+			<!-- IF postrow.EXTRA_RANK_TITLE or postrow.EXTRA_RANK_IMG --><dd>{postrow.EXTRA_RANK_TITLE}<!-- IF postrow.EXTRA_RANK_TITLE and postrow.EXTRA_RANK_IMG --><br /><!-- ENDIF -->{postrow.EXTRA_RANK_IMG}</dd><!-- ENDIF -->
 
 		<dd>&nbsp;</dd>
 

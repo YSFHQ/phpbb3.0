@@ -666,6 +666,7 @@ switch ($mode)
 		));
 
 
+
 		require_once($phpbb_root_path . 'wp-united/wpu-actions.' . $phpEx);
 		$GLOBALS['wpu_actions']->generate_profile_link($member['user_wpublog_id'], $template);
 		if (!empty($profile_fields['row']))

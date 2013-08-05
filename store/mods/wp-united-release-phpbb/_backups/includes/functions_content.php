@@ -638,17 +638,7 @@ function make_clickable_callback($type, $whitespace, $url, $relative_url, $class
 * Cuts down displayed size of link if over 50 chars, turns absolute links
 * into relative versions when the server/script path matches the link
 */
-if (!function_exists('make_clickable'))
-{
-	
-	function make_clickable($text, $server_url = false, $class = 'postlink') 
-	{	
-		global $wpu_actions, $phpbb_root_path, $phpEx;
-		require_once($phpbb_root_path . 'wp-united/wpu-actions.' . $phpEx);
-		return $wpu_actions->do_make_clickable($text, $server_url, $class);
-	}
-}
-function phpbb_make_clickable($text, $server_url = false, $class = 'postlink')
+function make_clickable($text, $server_url = false, $class = 'postlink')
 {
 	if ($server_url === false)
 	{

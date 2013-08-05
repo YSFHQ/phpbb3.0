@@ -280,6 +280,7 @@ if ($id)
 	}
 
 
+
  	require_once($phpbb_root_path . 'wp-united/wpu-actions.' . $phpEx);
 	$theme['theme_data'] = $GLOBALS['wpu_actions']->css_magic($theme['theme_data']);
 	echo $theme['theme_data'];

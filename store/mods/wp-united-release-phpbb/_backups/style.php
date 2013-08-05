@@ -279,6 +279,7 @@ if ($id)
 		}
 	}
 
+
 	echo $theme['theme_data'];
 
 	if (!empty($cache))

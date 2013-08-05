@@ -392,7 +392,7 @@ function colorPalette(dir, width, height)
 			for (b = 0; b < 5; b++)
 			{
 				color = String(numberList[r]) + String(numberList[g]) + String(numberList[b]);
-				document.write('<td bgcolor="#' + color + '" style="width: ' + width + 'px; height: ' + height + 'px; background-color: #' + color + ;">');
+				document.write('<td bgcolor="#' + color + '" style="width: ' + width + 'px; height: ' + height + 'px; background-color: #' + color + '">');
 				document.write('<a href="#" onclick="bbfontstyle(\'[color=#' + color + ']\', \'[/color]\'); return false;"><img src="images/spacer.gif" width="' + width + '" height="' + height + '" alt="#' + color + '" title="#' + color + '" /></a>');
 				document.writeln('</td>');
 			}

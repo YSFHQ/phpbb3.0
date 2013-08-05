@@ -648,13 +648,6 @@ if (!function_exists('make_clickable'))
 		return $wpu_actions->do_make_clickable($text, $server_url, $class);
 	}
 }
-/*function phpbb_make_clickable($text, $server_url = false, $class = 'postlink')
-	{	
-		global $wpu_actions, $phpbb_root_path, $phpEx;
-		require_once($phpbb_root_path . 'wp-united/wpu-actions.' . $phpEx);
-		return $wpu_actions->do_make_clickable($text, $server_url, $class);
-	}
-}*/
 function phpbb_make_clickable($text, $server_url = false, $class = 'postlink')
 {
 	if ($server_url === false)
