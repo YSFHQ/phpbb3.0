@@ -428,6 +428,10 @@ dd .signature {
 	margin-left: 3em;
 }
 
+.signature img {
+	max-width: 100%;
+}
+
 /* Post noticies */
 .notice {
 	font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
