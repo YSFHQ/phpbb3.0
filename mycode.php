@@ -9,16 +9,16 @@ $user->session_begin();
 $auth->acl($user->data);
 $user->setup();
 
-if ($user->data['user_id'] != ANONYMOUS) {
+header("Content-Type: text/plain");
+
+if ($encrypted = rawurldecode($_POST['code'])) {
 	$key = 'e6wa8CmuMTrwWvj3';
-	$string = $user->data['username'];
+	echo rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), base64_decode($encrypted), MCRYPT_MODE_CBC, md5(md5($key))), "\0");
+} else if ($user->data['user_id'] != ANONYMOUS) {
+        $key = 'e6wa8CmuMTrwWvj3';
+        $string = $user->data['username'];
 
-	$encrypted = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $string, MCRYPT_MODE_CBC, md5(md5($key))));
-	$decrypted = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), base64_decode($encrypted), MCRYPT_MODE_CBC, md5(md5($key))), "\0");
-
-	echo $encrypted;
-	//var_dump($encrypted);
-	//var_dump($decrypted);
+        echo base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $string, MCRYPT_MODE_CBC, md5(md5($key))));
 }
 
 ?>
