@@ -35,6 +35,15 @@
 <div>
 	<a id="bottom" name="bottom" accesskey="z"></a>
 	<!-- IF not S_IS_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
+<!-- PHP -->
+require_once($phpbb_root_path . 'iflychat/iflychat_api.php');
+if($user->data['is_registered']) {
+$isadmin = false;
+if($user->data['group_id']==5 || $user->data['group_id']==4 || $user->data['group_id']==40 || $user->data['group_id']==8) $isadmin = true;
+$current_user_info = array('name' => $user->data['username'], 'id' => $user->data['user_id'], 'is_admin' => $isadmin, 'avatar_url' => $user->data['user_avatar'], 'upl' => './memberlist.php?mode=viewprofile&u='.$user->data['user_id']);
+print iflychat_render_chat($current_user_info);
+}
+<!-- ENDPHP -->
 </div>
 
 <script>
