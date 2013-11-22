@@ -750,7 +750,7 @@ function get_thanks_topic_reput($topic_id)
 {
 	global $max_topic_thanks, $config, $phpbb_root_path, $template, $topic_thanks;
 	$template->assign_block_vars('topicrow.reput', array(
-		'TOPIC_REPUT'				=> (isset($topic_thanks[$topic_id])) ? round($topic_thanks[$topic_id] / ($max_topic_thanks / 100), $config['thanks_number_digits']) . '%' : '',
+		'TOPIC_REPUT'				=> (isset($topic_thanks[$topic_id]) && round($topic_thanks[$topic_id] / ($max_topic_thanks / 100), $config['thanks_number_digits'])>10) ? round($topic_thanks[$topic_id] / ($max_topic_thanks / 100), $config['thanks_number_digits']) . '%' : '',
 		'S_THANKS_TOPIC_REPUT_VIEW' => isset($config['thanks_topic_reput_view']) ? $config['thanks_topic_reput_view'] : false,
 		'S_THANKS_TOPIC_REPUT_VIEW_COLUMN' => isset($config['thanks_topic_reput_view_column']) ? $config['thanks_topic_reput_view_column'] : false,
 		'S_THANKS_REPUT_GRAPHIC' 	=> isset($config['thanks_reput_graphic']) ? $config['thanks_reput_graphic'] : false,
@@ -775,7 +775,7 @@ function get_thanks_topic_number()
 		{
 			$topic_thanks[$row['topic_id']] = $row['topic_thanks'];
 		}
-		$db->sql_freeresult($result);
+		$db->sql_freeresult($result); //print_r($topic_thanks);
 		return array($topic_thanks);
 	}
 }
