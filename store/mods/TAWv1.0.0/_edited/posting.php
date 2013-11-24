@@ -288,7 +288,6 @@ if (($post_data['forum_status'] == ITEM_LOCKED || (isset($post_data['topic_statu
 {
 	trigger_error(($post_data['forum_status'] == ITEM_LOCKED) ? 'FORUM_LOCKED' : 'TOPIC_LOCKED');
 }
-
 //! Topic Age Warning - imkingdavid
 if($mode == 'reply' || $mode == 'quote')
 {

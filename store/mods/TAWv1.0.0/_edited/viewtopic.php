@@ -1905,6 +1905,8 @@ else if (!$all_marked_read)
 	}
 }
 
+// let's set up quick_reply
+
 //! Topic Age Warning - imkingdavid
 if($s_quick_reply)
 {
@@ -1913,8 +1915,6 @@ if($s_quick_reply)
 	$taw = new taw($topic_data, 'viewtopic');
 }
 //! END Topic Age Warning - imkingdavid
-
-// let's set up quick_reply
 if ($s_can_vote || $s_quick_reply)
 {
 	add_form_key('posting');

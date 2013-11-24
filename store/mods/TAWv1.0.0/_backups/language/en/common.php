@@ -627,14 +627,6 @@ $lang = array_merge($lang, array(
 
 	'TOPIC'				=> 'Topic',
 	'TOPICS'			=> 'Topics',
-	//! Topic Age Warning - imkingdavid
-	'TOPIC_AGE_WARNING'	=> 'You are attempting to reply to a topic that is %s old. Instead, please begin a new topic, or search for another related topic that may be more suitable.',
-	'TOPIC_AGE_WARNING_LOCK'	=> 'This topic is %s old. The forum administrator has chosen for old topics to be locked when a reply is attempted. Please begin a new topic or use the search feature to find a similar but newer topic.',
-	'MONTHS'						=> 'Months', 
-	'WEEK'							=> 'Week', 
-	'WEEKS'							=> 'Weeks', 
-	'YEARS'							=> 'Years',
-	//! END Topic Age Warning - imkingdavid
 	'TOPICS_UNAPPROVED'	=> 'At least one topic in this forum has not been approved.',
 	'TOPIC_ICON'		=> 'Topic icon',
 	'TOPIC_LOCKED'		=> 'This topic is locked, you cannot edit posts or make further replies.',

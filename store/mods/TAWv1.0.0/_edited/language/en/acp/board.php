@@ -183,7 +183,7 @@ $lang = array_merge($lang, array(
 	'SMILIES_LIMIT_EXPLAIN'			=> 'Maximum number of smilies in a post. Set to 0 for unlimited smilies.',
 	'SMILIES_PER_PAGE'				=> 'Smilies per page',
 	'TOPICS_PER_PAGE'				=> 'Topics per page',
-	//! Topic Age Warning - imkingdavid
+//! Topic Age Warning - imkingdavid
 	'TOPIC_AGE_WARNING'				=> 'Topic Age Warning Settings',
 	'TAW_INTERVAL'					=> 'Topic Age Warning interval',
 	'TAW_INTERVAL_EXPLAIN'			=> 'Number of days, months or years after which a user will recieve the topic age warning. <strong>If set to 0, the MOD will be disabled.</strong>',

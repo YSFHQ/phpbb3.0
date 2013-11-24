@@ -1905,15 +1905,6 @@ else if (!$all_marked_read)
 	}
 }
 
-//! Topic Age Warning - imkingdavid
-if($s_quick_reply)
-{
-	include($phpbb_root_path . 'includes/functions_taw.' . $phpEx);
-	//calls taw::__construct() which in turn calls taw::go()
-	$taw = new taw($topic_data, 'viewtopic');
-}
-//! END Topic Age Warning - imkingdavid
-
 // let's set up quick_reply
 if ($s_can_vote || $s_quick_reply)
 {

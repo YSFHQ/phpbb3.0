@@ -289,15 +289,6 @@ if (($post_data['forum_status'] == ITEM_LOCKED || (isset($post_data['topic_statu
 	trigger_error(($post_data['forum_status'] == ITEM_LOCKED) ? 'FORUM_LOCKED' : 'TOPIC_LOCKED');
 }
 
-//! Topic Age Warning - imkingdavid
-if($mode == 'reply' || $mode == 'quote')
-{
-	include($phpbb_root_path . 'includes/functions_taw.' . $phpEx);
-	//calls taw::__construct() which in turn calls taw::go()
-	$taw = new taw($post_data);
-}
-//! END Topic Age Warning - imkingdavid
-
 // Can we edit this post ... if we're a moderator with rights then always yes
 // else it depends on editing times, lock status and if we're the correct user
 if ($mode == 'edit' && !$auth->acl_get('m_edit', $forum_id))
