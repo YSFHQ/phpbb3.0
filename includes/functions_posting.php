@@ -1682,6 +1682,25 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll, &$data, $u
 		$post_mode = ($data['topic_replies_real'] == 0) ? 'edit_topic' : (($data['topic_first_post_id'] == $data['post_id']) ? 'edit_first_post' : (($data['topic_last_post_id'] == $data['post_id']) ? 'edit_last_post' : 'edit'));
 	}
 
+	// Start : Mark edited posts as unread MOD	
+	if($post_mode == 'edit_last_post' || $post_mode == 'edit_topic')
+	{
+		$sql_update_posts = 'UPDATE ' . POSTS_TABLE . '
+				SET post_time = ' . $current_time . '
+				WHERE post_id = ' . $data['post_id'] . ' 
+					AND topic_id = ' . $data['topic_id'];
+		$db->sql_query($sql_update_posts);
+
+		$sql_update_topics = 'UPDATE ' . TOPICS_TABLE . ' 
+				SET topic_last_post_time = ' . $current_time . ' 
+				WHERE topic_id = ' . $data['topic_id'];
+		$db->sql_query($sql_update_topics);            
+	
+		update_post_information('forum', $data['forum_id']);
+		markread('post', $data['forum_id'], $data['topic_id'], $data['post_time']);
+	}
+	// End : Mark edited posts as unread MOD
+
 	// First of all make sure the subject and topic title are having the correct length.
 	// To achieve this without cutting off between special chars we convert to an array and then count the elements.
 	$subject = truncate_string($subject);
