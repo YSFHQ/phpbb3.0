@@ -4710,6 +4710,12 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 	//setup_sidebar_ucp();
 	
 	//-- fin mod: Silverbar MOD --------------------------------------------------
+
+// BEGIN First Class member
+    if ( !function_exists('group_memberships') ) include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
+    $template->assign_var('FIRST_CLASS', group_memberships(array(77), $user->data['user_id'], true));
+// END First Class member
+
 	// The following assigns all _common_ variables that may be used at any point in a template.
 	$template->assign_vars(array(
 // BEGIN Topic solved
