@@ -421,7 +421,7 @@ class messenger
 		// We could use keys here, but we won't do this for 3.0.x to retain backwards compatibility
 		$headers = array();
 
-		$headers[] = 'From: ' . $this->from;
+		$headers[] = 'From: "' . str_replace("&amp;", "&", $config['sitename']) .'" ' . $this->from;
 
 		if ($cc)
 		{
@@ -435,7 +435,7 @@ class messenger
 
 		$headers[] = 'Reply-To: ' . $this->replyto;
 		$headers[] = 'Return-Path: <' . $config['board_email'] . '>';
-		$headers[] = 'Sender: <' . $config['board_email'] . '>';
+		$headers[] = 'Sender: "' . str_replace("&amp;", "&", $config['sitename']) .'" <' . $config['board_email'] . '>';
 		$headers[] = 'MIME-Version: 1.0';
 		$headers[] = 'Message-ID: <' . $this->generate_message_id() . '>';
 		$headers[] = 'Date: ' . date('r', time());
