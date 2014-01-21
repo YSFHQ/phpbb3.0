@@ -859,7 +859,11 @@ switch ($mchat_mode)
 				if(isset($user->lang[strtoupper('static_message')]))
 				{
 					$config_mchat['static_message'] = $user->lang[strtoupper('static_message')];
-				}
+        }
+        else if(file_exists('static_message.html'))
+        {
+          $config_mchat['static_message'] = htmlspecialchars(file_get_contents('static_message.html'));
+        }
 			}			
 			// a list of users using the chat
 			if ($mchat_custom_page)
