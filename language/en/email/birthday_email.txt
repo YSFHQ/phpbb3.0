@@ -1,0 +1,7 @@
+Subject: Happy Birthday {USERNAME}! 
+
+Dear {USERNAME},
+
+We at YSFlight Headquarters would like to wish you a happy birthday today! We hope you have a wonderful day. Come check us out on the forums: http://forum.ysfhq.com/
+
+{EMAIL_SIG}
