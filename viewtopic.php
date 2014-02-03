@@ -807,7 +807,9 @@ if (!empty($topic_data['poll_start']))
 		$topic_data['forum_status'] != ITEM_LOCKED &&
 		(!sizeof($cur_voted_id) ||
 		($auth->acl_get('f_votechg', $forum_id) && $topic_data['poll_vote_change']))) ? true : false;
-	$s_display_results = (!$s_can_vote || ($s_can_vote && sizeof($cur_voted_id)) || $view == 'viewpoll') ? true : false;
+  if ($topic_id==5883) $s_display_results = (!$s_can_vote || ($s_can_vote && sizeof($cur_voted_id)) || $view == 'viewpoll')&&$user->data['user_id']==831 ? true : false;
+  else $s_display_results = (!$s_can_vote || ($s_can_vote && sizeof($cur_voted_id)) || $view == 'viewpoll') ? true : false;
+  
 
 	if ($update && $s_can_vote)
 	{
@@ -976,7 +978,7 @@ if (!empty($topic_data['poll_start']))
 		'S_IS_MULTI_CHOICE'	=> ($topic_data['poll_max_options'] > 1) ? true : false,
 		'S_POLL_ACTION'		=> $viewtopic_url,
 
-		'U_VIEW_RESULTS'	=> $viewtopic_url . '&amp;view=viewpoll')
+		'U_VIEW_RESULTS'	=> $topic_id==5883&&$user->data['user_id']!=831 ? '#' : $viewtopic_url . '&amp;view=viewpoll')
 	);
 
 	unset($poll_end, $poll_info, $voted_id);

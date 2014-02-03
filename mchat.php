@@ -860,11 +860,11 @@ switch ($mchat_mode)
 				{
 					$config_mchat['static_message'] = $user->lang[strtoupper('static_message')];
         }
-        else if(file_exists('static_message.html'))
-        {
-          $config_mchat['static_message'] = htmlspecialchars(file_get_contents('static_message.html'));
-        }
-			}			
+      }
+      if(file_exists('static_message.html'))
+      {
+        $config_mchat['static_message'] .= (strlen($config_mchat['static_message']) > 0 ? '<br />' : '').htmlspecialchars(file_get_contents('static_message.html'));
+      }			
 			// a list of users using the chat
 			if ($mchat_custom_page)
 			{
