@@ -111,7 +111,8 @@ return '<img src="' . $avatar_img . '" width="' . $avatar_width . '" height="' .
 
 		$rt_anti_topics = '0';
 		$onlyforum = 0;
-		$onlyforum = request_var('f', 0);
+    $onlyforum = request_var('f', 0);
+    $rt_anti_forums = ($onlyforum=='19' || $onlyforum=='20') ? '0' : '19,20';
 		$sql = 'SELECT * FROM ' . FORUMS_TABLE . "
 					ORDER BY left_id";
 		$result = $db->sql_query($sql);
@@ -149,7 +150,8 @@ return '<img src="' . $avatar_img . '" width="' . $avatar_width . '" height="' .
 			WHERE
 				(
 					' . $forum_sql . '
-					' . (($onlyforum) ? ' AND f.forum_id IN (' . $onlyforum . ')': '') . "
+          ' . (($onlyforum) ? ' AND f.forum_id IN (' . $onlyforum . ')': '') . '
+          ' . (($rt_anti_forums) ? ' AND f.forum_id NOT IN (' . $rt_anti_forums . ')': '') . "
 					" . (($rt_anti_topics) ? ' AND t.topic_id not IN (' . $rt_anti_topics . ')': '') . "
 				)
 				OR t.topic_type IN (" . POST_GLOBAL . ")
