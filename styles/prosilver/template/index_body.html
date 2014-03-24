@@ -14,12 +14,6 @@
 
 
 <!-- IF S_MCHAT_ENABLE and S_MCHAT_ON_INDEX and S_MCHAT_LOCATION --><!-- INCLUDE mchat_body.html --><!-- ENDIF -->
-<div id="tabs">
-	<ul>
-		<!-- PHP -->if ($_GET['forum']=='ysu') echo '<li>'; else echo '<li class="activetab">';<!-- ENDPHP --><a href="./index.php"><span>YSFlight HQ</span></a></li>
-		<!-- PHP -->if ($_GET['forum']=='ysu') echo '<li class="activetab">'; else echo '<li>';<!-- ENDPHP --><a href="./index.php?forum=ysu"><span>YSUpload Addon HQ</span></a></li>
-	</ul>
-</div>
 <!-- INCLUDE forumlist_body.html -->
 <!-- IF S_MCHAT_ENABLE and S_MCHAT_ON_INDEX and not S_MCHAT_LOCATION --><!-- INCLUDE mchat_body.html --><!-- ENDIF -->
 <!-- INCLUDE top_flags.html -->
