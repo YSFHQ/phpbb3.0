@@ -456,7 +456,7 @@ else
 $sql = 'SELECT t.topic_id
 	FROM ' . TOPICS_TABLE . " t
 	WHERE $sql_where
-		AND t.topic_type IN (" . POST_NORMAL . ', ' . POST_STICKY . ")
+		AND t.topic_type IN (" . POST_NORMAL . ($forum_data['forum_type']==FORUM_CAT ? '':', ' . POST_STICKY) . ")
 		$sql_approved
 		$sql_limit_time
 	ORDER BY t.topic_type " . ((!$store_reverse) ? 'DESC' : 'ASC') . ', ' . $sql_sort_order;
@@ -544,7 +544,6 @@ if (sizeof($shadow_topic_list))
 
 		// Shadow topics are never reported
 		$row['topic_reported'] = 0;
-
 		$rowset[$orig_topic_id] = $row;
 	}
 	$db->sql_freeresult($result);
