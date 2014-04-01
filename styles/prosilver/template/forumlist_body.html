@@ -12,7 +12,7 @@
 			<ul class="topiclist">
 				<li class="header">
 					<dl class="<!-- IF forumrow.S_THANKS_FORUM_REPUT_VIEW_COLUMN and not S_IS_BOT -->thanks<!-- ELSE -->icon<!-- ENDIF -->">
-            <dt<!-- IF not forumrow.S_IS_CAT --> style="font-size: 16px;"<!-- ENDIF -->><!-- IF forumrow.S_IS_CAT --><a href="{forumrow.U_VIEWFORUM}">{forumrow.FORUM_NAME}</a><!-- ELSE --><a href="#" class="collapseforums" style="line-height: 1;">+</a> Sub{L_FORUM}s<!-- ENDIF --></dt>
+            <dt<!-- IF not forumrow.S_IS_CAT --> style="font-size: 16px;"<!-- ENDIF -->><!-- IF forumrow.S_IS_CAT --><a href="{forumrow.U_VIEWFORUM}">{forumrow.FORUM_NAME}</a><!-- ELSE --><a href="#" class="collapseforums" style="line-height: 1;">&ndash;</a> Sub{L_FORUM}s<!-- ENDIF --></dt>
 						<dd class="topics">{L_TOPICS}</dd>
 						<dd class="posts">{L_POSTS}</dd>
 						<!-- IF forumrow.S_THANKS_FORUM_REPUT_VIEW_COLUMN and not S_IS_BOT -->	
@@ -53,7 +53,7 @@ $("dt a.collapseforums").click(function () {
 }
 </style>
       <!-- ENDIF -->
-      <ul class="topiclist forums"<!-- IF not forumrow.S_IS_CAT --> style="display: none;"<!-- ENDIF -->>
+      <ul class="topiclist forums"<!-- IF not forumrow.S_IS_CAT --> style="display: block;"<!-- ENDIF -->>
 	<!-- ENDIF -->
 
 	<!-- IF not forumrow.S_IS_CAT -->
