@@ -112,7 +112,7 @@ return '<img src="' . $avatar_img . '" width="' . $avatar_width . '" height="' .
 		$rt_anti_topics = '0';
 		$onlyforum = 0;
     $onlyforum = request_var('f', 0);
-    $rt_anti_forums = ($onlyforum=='20') ? '0' : '20';
+    $rt_anti_forums = ($onlyforum=='20') ? '0' : '0';
 		$sql = 'SELECT * FROM ' . FORUMS_TABLE . "
 					ORDER BY left_id";
 		$result = $db->sql_query($sql);
