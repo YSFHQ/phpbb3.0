@@ -3,3 +3,4 @@ config.php
 favicon.ico
 /static_message.html
 /orb
+/files/*

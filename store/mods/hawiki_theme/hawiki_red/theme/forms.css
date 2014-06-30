@@ -1,0 +1,387 @@
+/* Form Styles
+---------------------------------------- */
+
+/* General form styles
+----------------------------------------*/
+fieldset {
+	border-width: 0;
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		font-weight: 400;
+}
+
+input {
+	background-image: none; /* For Firefox Mobile */
+	cursor: pointer;
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		font-weight: 400;
+	outline: none;
+	padding: 0 3px;
+	vertical-align: middle;
+}
+
+select {
+	background-image: none; /* For Firefox Mobile */
+	border-style: solid;
+	border-width: 1px;
+	cursor: pointer;
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		font-weight: 400;
+	outline: none;
+	padding: 5px;
+	transition: border-color 0.3s ease-out;
+	vertical-align: middle;
+}
+
+option { padding-right: 1em; }
+
+textarea {
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+	width: 60%;
+	padding: 2px;
+	font-size: 1em;
+	line-height: 1.5em;
+	outline: none;
+	transition:
+		box-shadow 0.5s ease-out,
+		border-color 0.3s ease-out,
+		color 0.15s ease-out !important;
+}
+
+label {
+	cursor: default;
+	padding-right: 5px;
+}
+
+label input { vertical-align: middle; }
+label img { vertical-align: middle; }
+
+/* Definition list layout for forms
+---------------------------------------- */
+fieldset dl { padding: 0 0 9px; }
+
+fieldset dt {
+	display: inline-block;
+	float: left;
+	padding-right: 20px;
+	text-align: left;
+	width: 40%;
+}
+
+fieldset dd {
+	display: inline-block;
+	float: left;
+	vertical-align: top;
+	width: 60%;
+}
+
+/* Specific layout 1 */
+fieldset.fields1 dt {
+	display: block;
+	width: 150px;
+}
+
+fieldset.fields1 dd {
+	display: block;
+	float: none;
+	margin-left: 150px;
+	width: auto;
+}
+
+fieldset.fields1 dd:nth-of-type(n+2) { clear: both; }
+fieldset.fields1 div { margin-bottom: 3px; }
+#options-panel .fields1 { margin: 20px 0; }
+
+/* Set it back to 0px for the reCaptcha divs: PHPBB3-9587 */
+fieldset.fields1 #recaptcha_widget_div div { margin-bottom: 0; }
+
+/* Specific layout 2 */
+fieldset.fields2 dt {
+	display: block;
+	width: 300px;
+}
+
+fieldset.fields2 dd {
+	display: block;
+	float: none;
+	margin-left: 300px;
+	width: auto;
+}
+
+/* Form elements */
+dt label {
+	font-weight: 400;
+	text-align: left;
+}
+
+dd label { white-space: nowrap; }
+dd input, dd textarea { margin-right: 3px; }
+dd select { width: auto; }
+dd textarea { width: 85%; }
+
+/* Hover effects */
+#timezone { width: 95%; }
+* html #timezone { width: 50%; }
+
+/* Quick-login on index page */
+fieldset.quick-login {
+	display: table-cell;
+	min-width: 0;
+}
+
+fieldset.quick-login input { width: auto; }
+
+fieldset.quick-login input.inputbox {
+	display: table-cell;
+	width: 100%;
+	vertical-align: middle;
+	margin-bottom: 5px;
+}
+
+fieldset.quick-login label {
+	padding-right: 2px;
+	line-height: 1.5em;
+}
+
+fieldset.quick-login .button2 {
+	width: 100% !important;
+	margin-top: 5px;
+}
+
+fieldset.quick-login .ql-bg {
+	width: 100%;
+	display: inline-block;
+	line-height: 30px;
+	height: 30px;
+	text-align: center;
+	padding: 0;
+}
+
+/* Display options on viewtopic/viewforum pages  */
+fieldset.display-options {
+	text-align: center;
+	line-height: 30px;
+}
+
+fieldset.display-options label {
+	white-space: nowrap;
+	padding-right: 0;
+	padding-left: 20px;
+}
+
+fieldset.display-options select { margin-left: 5px; }
+fieldset.display-options #sd { margin-left: 0; }
+fieldset.display-options input { margin-left: 20px; }
+
+/* Display actions for ucp and mcp pages */
+fieldset.display-actions {
+	text-align: right;
+	line-height: 1.5em;
+	white-space: nowrap;
+	padding-right: 1em;
+}
+
+fieldset.display-actions label {
+	white-space: nowrap;
+	padding-right: 2px;
+}
+
+fieldset.sort-options { line-height: 1.5em; }
+
+/* MCP forum selection*/
+fieldset.forum-selection {
+	margin: 5px 0 3px 0;
+	float: right;
+}
+
+fieldset.forum-selection2 {
+	margin: 5px 0 3px 0;
+	float: right;
+}
+
+fieldset.forum-selection2 select { margin-right: 5px; }
+
+/* Jumpbox */
+fieldset.jumpbox {
+	text-align: right;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+fieldset.jumpbox select { margin-right: 20px; }
+
+fieldset.quickmod {
+	width: 50%;
+	float: right;
+	text-align: right;
+	height: 2.5em;
+	margin-bottom: 20px;
+}
+
+#quick-mod-select { margin-right: 20px; }
+
+/* Submit button fieldset */
+fieldset.submit-buttons {
+	text-align: center;
+	vertical-align: middle;
+}
+
+fieldset.submit-buttons input { vertical-align: middle; }
+
+/* Posting page styles
+----------------------------------------*/
+
+/* Buttons used in the editor */
+#format-buttons { margin: 15px 0 -1px; }
+
+#format-buttons select {
+	border-width: 1px !important;
+	padding: 5px 10px 4px;
+}
+
+#format-buttons input, #format-buttons select {
+	vertical-align: middle;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-width: 1px 0;
+}
+
+#format-buttons input:first-child, #format-buttons select:first-child { border-left-width: 1px; }
+#format-buttons input:last-child, #format-buttons select:last-child { border-right-width: 1px; }
+
+#format-buttons .fa-cfb {
+	display: inline-block;
+	font-family: FontAwesome;
+	font-style: normal;
+	font-weight: normal;
+	line-height: 1;
+	font-size: 1.166em;
+}
+
+/* Main message box */
+#message-box {
+	float: left;
+	width: 80%;
+}
+
+#message-box textarea {
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+	width: 450px;
+	height: 270px;
+	min-width: 100%;
+	max-width: 100%;
+	font-size: 1em;
+}
+
+#cp-main #message-box textarea { margin-bottom: 0; }
+#message { margin-bottom: 20px; }
+
+/* Emoticons panel */
+#smiley-box {
+	width: 18%;
+	float: right;
+}
+
+#smiley-box img { margin: 3px; }
+
+/* Input field styles
+---------------------------------------- */
+.inputbox {
+	border-style: solid;
+	border-width: 1px;
+	padding: 5px;
+	cursor: text;
+	transition:
+		border-color 0.3s ease-out,
+		color 0.15s ease-out;
+}
+
+input.inputbox	{ width: 85%; }
+input.medium	{ width: 50%; }
+input.narrow	{ width: 25%; }
+input.tiny		{ width: 125px; }
+
+textarea.inputbox { width: 85%; }
+.autowidth { width: auto !important; }
+
+/* Form button styles
+---------------------------------------- */
+input.button1, input.button2 { font-size: 12px; }
+
+a.button1, input.button1, input.button3, a.button2, input.button2 {
+	width: auto !important;
+	padding: 0 20px;
+	height: 30px;
+	line-height: 30px;
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+	transition:
+		border-color 0.3s ease-out,
+		background-color 0.3s ease-out;
+}
+
+a.button1, input.button1 {
+	font-weight: 700;
+	border: none;
+}
+
+input.button3 {
+	padding: 0;
+	margin: 0;
+	line-height: 5px;
+	height: 12px;
+	background-image: none;
+	font-variant: small-caps;
+}
+
+/* Alternative button */
+a.button2, input.button2 {
+	border-style: solid;
+	border-width: 1px;
+}
+
+input.button3 {
+	border-style: solid;
+	border-width: 1px;
+}
+
+/* <a> button in the style of the form buttons */
+a.button1, a.button1:link, a.button1:visited {
+	text-decoration: none;
+	padding: 0 20px;
+	line-height: 30px;
+	height: 30px;
+	display: inline-block;
+	vertical-align: text-bottom;
+}
+
+a.button2, a.button2:link, a.button2:visited {
+	text-decoration: none;
+	padding: 0 20px;
+	line-height: 30px;
+	height: 30px;
+	display: inline-block;
+	vertical-align: text-bottom;
+}
+
+.button1:active, .button2:active, .button3:active { line-height: 32px; }
+input.disabled { font-weight: 400; }
+
+/* Topic and forum Search */
+.search-box { float: left; }
+
+.search-box input {
+	height: 30px;
+	padding-left: 5px;
+	width: 150px;
+}
+
+.search-box .inputbox { margin-right: 20px; }
+.search-box label { padding-right: 0; }
+.search-box input.button2 {	padding-left: 20px; }
+
+.full 	{ width: 95%; }
+.medium { width: 50%; }
+.narrow { width: 25%; }
+.tiny 	{ width: 10%; }

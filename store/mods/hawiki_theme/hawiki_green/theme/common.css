@@ -1,0 +1,879 @@
+/* General Markup Styles
+---------------------------------------- */
+
+* {
+	/* Reset browsers default margin, padding and font sizes */
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box; 
+	box-sizing: border-box;
+}
+
+html {
+	/* Always show a scrollbar for short pages - stops the jump when the scrollbar appears. non-IE browsers */
+	height: 101%;
+}
+
+body {
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+	/* This sets the default font size to 10px */
+		font-size: 10px;
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	/* Forum name */
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 2.4em;
+		font-weight: 300;
+	letter-spacing: -1px;
+	margin-right: 200px;
+	margin-top: 20px;
+}
+
+h2 {
+	/* Forum header titles */
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 2.1em;
+		font-weight: 300;
+	letter-spacing: -1px;
+}
+
+h2.solo { margin-bottom: 20px; }
+
+h3 {
+	/* Sub-headers (also used as post headers, but defined later) */
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 1.8em;
+		font-weight: 300;
+	letter-spacing: -1px;
+	margin-bottom: 3px;
+	margin-top: 20px;
+	padding-bottom: 2px;
+}
+
+h4 {
+	/* Forum and topic list titles */
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 1.6em;
+		font-weight: 300;
+}
+
+h5 {
+	/* Custom footer headlines */
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 1.4em;
+		font-weight: 700;
+}
+
+p {
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 1.3em;
+		font-weight: 400;
+	line-height: 1.5;
+	margin-bottom: 20px;
+}
+
+img { border-width: 0; }
+i { cursor: inherit; }
+
+hr {
+	border: 0 none transparent;
+	border-top-style: solid;
+	border-top-width: 1px;
+	clear: both;
+	display: block;
+	height: 1px;
+	margin: 5px 0;
+}
+
+hr.dashed {
+	border-top: dashed;
+	border-top-width: 3px;
+	margin: 10px 0;
+}
+
+hr.divider { display: none; }
+p.right { text-align: right; }
+
+/* Main blocks
+---------------------------------------- */
+#wrap {
+	/* Back to top link */
+	float: left;
+	height: 0;
+	width: 0;
+}
+
+.wrap {
+	/* Control over page width */
+	margin: 0 auto;
+	padding: 0 20px;
+	width: 1200px;
+}
+
+.main-content {
+	/* Left site section */
+	float: left;
+	width: 870px;
+}
+
+.side-bar {
+	/* Control over sidebar */
+	float: left;
+	padding-left: 20px;
+	width: 290px;
+}
+
+.main-content:nth-last-child(2) {
+	/* Back to full width when sidebar is off */
+	float: none;
+	width: 100%;
+}
+
+/* Site head
+---------------------------------------- */
+.headerbar-bg { margin-bottom: 20px; }
+.headerbar { min-height: 92px; }
+
+.navbar { position: relative; }
+
+.navbar > ul {
+	font-size: 1.2em;
+	line-height: 40px;
+	list-style: none;
+}
+
+.navbar a:hover { text-decoration: none; }
+
+.navbar li {
+	float: left;
+	margin-right: 20px;
+}
+
+.navbar ul li.rightside {
+	float: right;
+	margin-left: 20px;
+	margin-right: 0;
+}
+
+.navbar .fa-lg {
+	font-size: 1em;
+	margin-right: 5px; 
+	vertical-align: 0;
+}
+
+.navbar-leg strong { margin: 5px; }
+
+/* Site logo */
+#logo {
+	/* Control over main logo */
+	display: inline-block;
+	float: left;
+	margin-top: 37px;
+	width: auto;
+}
+
+#logo img { display: block; }
+
+/* Search box */
+#search-box {
+	border-style: solid;
+	border-width: 1px;
+	display: block;
+	float: right;
+	margin-top: 27px;
+	overflow: hidden;
+	position: relative;
+	text-align: right;
+	white-space: nowrap;
+}
+
+#search-box #keywords {
+	border: none;
+	font-size: 1em;
+	height: 36px;
+	padding: 0 20px;
+	transition: color 0.3s ease-out;
+	width: 232px;
+}
+
+#search-box .button {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	border: none;
+	font-family: FontAwesome;
+		font-style: normal;
+		font-weight: normal;
+		font-size: 1.083em;
+	height: 36px !important;
+	line-height: 36px;
+	padding: 0;
+	transition: color 0.3s ease-out;
+	width: 36px !important;
+}
+
+/* Custom menu */
+#cmenu {
+	float: left;
+	font-size: 1.2em;
+	height: 92px;
+	line-height: 92px;
+	list-style: none;
+	margin-left: 40px;
+}
+
+#cmenu > li {
+	float: left;
+	line-height: 92px;
+	padding: 0 10px;
+	position: relative;
+}
+
+#cmenu > li > a {
+	display: inline-block;
+	transition: box-shadow 0.15s ease;
+}
+
+#cmenu > li > a:hover { text-decoration: none; }
+#cmenu > li:hover > ul { display: block; }
+
+#cmenu > li > ul {
+	border-style: solid;
+	border-width: 2px 0 0;
+	display: none;
+	font-size: 0.833em;
+	list-style: none;
+    position: absolute;
+    z-index: 999;
+}
+
+#cmenu > li > ul > li {
+	line-height: 40px;
+	padding: 0 20px;
+}
+
+#cmenu > li > ul > li > a {
+	display: inline-block;
+	min-width: 150px;
+	white-space: nowrap;
+	width: 100%;
+}
+
+#cmenu > li > ul > li > a:hover { text-decoration: none; }
+#cmenu > li > ul > li:first-child > a { border-width: 0; }
+
+#cmenu-top {
+	display: none;
+	right: 0;
+}
+
+#cmenu-top > li > ul {
+	position: relative;
+}
+
+/* Round cornered boxes and backgrounds
+---------------------------------------- */
+.bottombar { position: relative; }
+
+.bottombar ul {
+	font-size: 1.3em;
+	line-height: 4.5;
+	list-style: none;
+}
+
+.bottombar a:hover { text-decoration: none; }
+
+.bottombar li {
+	float: left;
+	margin-right: 30px;
+}
+
+.bottombar ul li.rightside {
+	float: right;
+	margin-left: 30px;
+	margin-right: 0;
+}
+
+.bottombar .fa-lg {
+	font-size: 1em;
+	margin-right: 5px; 
+	vertical-align: 0;
+}
+
+.cfooter {
+	line-height: 1.5;
+	min-height: 100px;
+	padding: 40px 0;
+}
+
+.cfooter h5 {
+	margin-bottom: 13px;
+	margin-top: 20px;
+}
+
+.cfooter h5:first-child { margin-top: 0; }
+
+.cfooter p {
+	font-size: 1.2em;
+	margin-bottom: 0;
+	text-align: justify;
+}
+
+.cfooter ul {
+	font-size: 1.2em;
+	list-style: none;
+}
+
+.cfooter ul li {
+	border-style: solid;
+	border-width: 0 0 1px;
+	margin-bottom: 8px;
+	padding-bottom: 9px;
+}
+
+.cfooter ul li:last-child {
+	border-width: 0;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.cfooter-1 {
+	float: left;
+	width: 100%;
+}
+
+.cfooter-1-2 {
+	float: left;
+	padding-right: 20px;
+	width: 25%;
+}
+
+.cfooter-1-2:last-child { padding-right: 0; }
+
+.cfooter-1-3 {
+	float: left;
+	padding-right: 20px;
+	width: 33.333333%;
+}
+
+.cfooter-1-3:last-child { padding-right: 0; }
+
+.cfooter-1-4 {
+	float: left;
+	padding-right: 20px;
+	width: 25%;
+}
+
+.cfooter-1-4:last-child { padding-right: 0; }
+
+.cfooter-social li {
+	border: none !important;
+	float: left;
+	margin-bottom: 3px !important;
+	margin-right: 3px;
+	padding: 0 !important;
+}
+
+.cfooter-social li i {
+	font-size: 15px;
+	height: 27px;
+	line-height: 27px;
+	margin-right: 0;
+	text-align: center;
+	transition: color 0.1s ease-out;
+	width: 27px;
+}
+
+.get-in-touch li i {
+	clear: both;
+	margin-right: 15px;
+	text-align: center;
+	width: 16px;
+}
+
+.forabg, .forumbg {
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	clear: both;
+	margin-bottom: 20px;
+}
+
+.panel {
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	font-size: 1em;
+	margin-bottom: 20px;
+	padding: 20px 20px 0;
+}
+
+.panel > *:first-child	{ margin-top: 0 !important; }
+.panel > *:last-child	{ margin-bottom: 20px; }
+
+.cublock {
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	font-size: 10px;
+	margin-bottom: 20px;
+}
+
+.cublock .headerspace { margin: 0; }
+
+.cublock-head {
+	line-height: 4.5;
+	padding: 0 20px;
+}
+
+.cublock-head h3 {
+	border: none;
+	font-size: 1.2em;
+	font-weight: 400;
+	letter-spacing: 0;
+	margin: 0;
+	padding: 0;
+}
+
+.cublock-content { padding: 20px; }
+
+.cublock-content *:last-child {
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.headline-bg {
+	border-style: solid;
+	border-width: 1px 0 1px;
+	margin-bottom: 20px;
+	margin-top: -20px;
+}
+
+.headline {
+	overflow: hidden;
+	position: relative;
+}
+
+.headline h1, .headline h2, .headline h2.solo, .headline h3, .headline h4, .headline h5 {
+	float: left;
+	font-family: "Open Sans", Arial, Helvetica, sans-serif;
+		font-size: 2.1em;
+		font-weight: 400;
+	letter-spacing: -1px;
+	line-height: 90px;
+}
+
+.headline h2.solo { margin-bottom: 0; }
+
+.headline ul {
+	float: right;
+	font-size: 1.2em;
+	height: 90px;
+	line-height: 90px;
+	list-style: none;
+	margin-bottom: 0;
+}
+
+.headline > p {
+	clear: both;
+	float: left;
+	font-size: 1.2em;
+	height: auto;
+	line-height: 1;
+	margin-bottom: 6px;
+}
+
+.headline ul li {
+	float: right;
+	margin-left: 20px;
+}
+
+.headline ul li .fa { line-height: 1; }
+.headline .topic-actions { float: left; }
+
+.post {
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	margin-bottom: 20px;
+	padding: 0 20px;
+}
+
+.bg1 a.top, .bg2 a.top, .bg3 a.top {
+	opacity: 0;
+	transition: opacity 0.3s ease-out;
+}
+
+.bg1 a.top i, .bg2 a.top i, .bg3 a.top i {
+	line-height: 60px;
+	transition: line-height 0.3s ease-out;
+}
+
+.bg1:hover a.top, .bg2:hover a.top, .bg3:hover a.top { opacity: 1; }
+.bg1:hover a.top i, .bg2:hover a.top i, .bg3:hover a.top i { line-height: 20px; }
+
+#preview {
+	overflow: hidden;
+	padding-bottom: 20px;
+}
+
+.rowbg { margin: 5px 5px 2px 5px; }
+
+/* Horizontal lists
+----------------------------------------*/
+ul.linklist {
+	display: block;
+	font-size: 1.2em;
+	margin: 0 0 20px;
+}
+
+ul.linklist li {
+	display: block;
+	float: left;
+	height: auto;
+	line-height: 3;
+	list-style: none;
+	margin-right: 10px;
+	width: auto;
+}
+
+ul.linklist li a { text-decoration: none; }
+
+ul.linklist li .space {
+	display: inline-block;
+	width: 20px;
+}
+
+ul.linklist li.rightside, p.rightside {
+	float: right;
+	margin-left: 10px;
+	margin-right: 0;
+	text-align: right;
+}
+
+ul.navlinks { font-weight: 400; }
+
+ul.leftside {
+	float: left;
+	margin-left: 0;
+	margin-right: 5px;
+	text-align: left;
+}
+
+ul.rightside {
+	float: right;
+	margin-left: 5px;
+	margin-right: -5px;
+	text-align: right;
+}
+
+/* Table styles - see tweaks.css
+----------------------------------------*/
+table.table1 {
+	border-style: solid;
+	border-width: 1px 1px 2px;
+}
+
+#ucp-main table.table1 { padding: 2px; }
+
+table.table1 thead th {
+	font-size: 1.2em;
+		font-weight: 400;
+	line-height: 4.5;
+	padding: 0 0 0 20px;
+}
+
+table.table1 thead th span { padding-left: 7px; }
+
+table.table1 tbody tr {
+	border-style: solid;
+	border-width: 1px;
+	transition: background-color 0.1s ease-out;
+}
+
+table.table1 td { font-size: 1.2em; }
+table.table1 tbody td { padding: 18px 20px; }
+
+table.table1 tbody th {
+	padding: 5px;
+	text-align: left;
+}
+
+/* Specific column styles */
+table.table1 .name			{ text-align: left; }
+table.table1 .posts			{ text-align: center !important; width: 7%; }
+table.table1 .joined		{ text-align: left; width: 15%; }
+table.table1 .active		{ text-align: left; width: 15%; }
+table.table1 .mark			{ text-align: center; width: 7%; }
+table.table1 .info			{ text-align: left; width: 30%; }
+table.table1 .info div		{ width: 100%; white-space: normal; }
+table.table1 .autocol		{ overflow: hidden; line-height: 1.5; white-space: nowrap; }
+table.table1 thead .autocol { padding-left: 1em; }
+
+table.table1 span.rank-img {
+	float: right;
+	width: auto;
+}
+
+table.info td { padding: 3px; }
+
+table.info tbody th {
+	font-weight: 400;
+	padding: 3px;
+	text-align: right;
+	vertical-align: top;
+}
+
+.forumbg table.table1 {
+	border: none;
+	margin: 0;
+}
+
+.forumbg-table > .inner { margin: 0 -1px; }
+
+/* Misc layout styles
+---------------------------------------- */
+/* column[1-2] styles are containers for two column layouts */
+.column1 {
+	clear: left;
+	float: left;
+	padding-right: 10px;
+	width: 50%;
+}
+
+.column2 {
+	clear: right;
+	float: right;
+	padding-left: 10px;
+	width: 50%;
+}
+
+.column1 *:first-child, .column2 *:first-child { margin-top: 0; }
+
+/* General classes for placing floating blocks */
+.left-box {
+	float: left;
+	line-height: 30px;
+	text-align: left;
+	width: auto;
+}
+
+.right-box {
+	float: right;
+	line-height: 30px;
+	text-align: right;
+	width: auto;
+}
+
+.left-box i { margin-right: 5px; }
+.right-box i { margin-left: 5px; }
+
+dl.details { 
+	font-size: 1.2em;
+	overflow: hidden;
+}
+
+dl.details dt {
+	clear: left;
+	display: block;
+	float: left;
+	text-align: right;
+	width: 30%;
+}
+
+dl.details dd {
+	float: left;
+	margin-bottom: 6px;
+	margin-left: 0;
+	padding-left: 5px;
+	width: 70%;
+}
+
+dl.details dt, dl.details dd { line-height: 1.5; }
+
+/* Pagination
+---------------------------------------- */
+.pagination {
+	float: right;
+	height: 30px;
+	line-height: 30px;
+	text-align: right;
+	width: auto;
+}
+
+.pagination .space {
+	display: inline-block;
+	width: 20px;
+}
+
+.pagination a {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.pagination a:hover { text-decoration: none; }
+.pagination span.page-sep { display: none; }
+li.pagination { margin-top: 0; }
+
+li.pagination strong, li.pagination a {
+	height: 30px;
+	line-height: 30px;
+}
+
+.pagination strong, .pagination b { font-weight: 400; }
+
+.pagination span strong {
+	display: inline-block;
+	font-weight: 400;
+	margin-left: 0;
+	padding: 0 10px;
+}
+
+.pagination span a, .pagination span a:link, .pagination span a:visited, .pagination span a:active {
+	display: inline-block;
+	font-weight: 400;
+	margin-left: 0;
+	margin-right: 0;
+	padding: 0 10px;
+	text-decoration: none;
+	transition: background-color 0.15s ease-out;
+}
+
+.pagination span a:hover { text-decoration: none; }
+.pagination img { vertical-align: middle; }
+
+/* Pagination in viewforum for multipage topics */
+.row .pagination {
+	display: block;
+	float: right;
+	font-size: 0.9em;
+	line-height: normal;
+	margin-top: 0;
+	padding: 0;
+	width: auto;
+}
+
+.row .pagination .fa-2x {
+	font-size: 1.5em;
+	line-height: 23px;
+}
+
+.row .pagination span { padding-left: 5px; }
+
+.row .pagination a {
+	line-height: normal;
+	margin: 0 1px 0 0 !important;
+	padding: 4px 6px !important;
+	transition: background-color 0.3s ease-out !important;
+}
+
+.row .pagination i {
+	display: block;
+	float: left;
+}
+
+/* Miscellaneous styles
+---------------------------------------- */
+#forum-permissions {
+	float: right;
+	margin-left: 5px;
+	margin-top: 10px;
+	padding-left: 5px;
+	text-align: right;
+	width: auto;
+}
+
+.copyright-bg { min-height: 50px; }
+
+.copyright {
+	font-size: 1.1em;
+	line-height: 1.5;
+	padding: 20px 0 40px;
+}
+
+.copyright a { font-weight: 700; }
+.copy-left { float: left; }
+.copy-right { float: right; }
+.small { font-size: 0.9em !important; }
+.titlespace { margin-bottom: 15px; }
+.headerspace { margin-top: 20px; }
+
+.error {
+	font-size: 1em;
+		font-weight: 700;
+}
+
+div.rules {
+	font-size: 1.2em;
+	margin: -20px 0 21px;
+	padding: 20px 0;
+}
+
+div.rules ul, div.rules ol { margin-left: 20px; }
+
+p.rules {
+	margin-top: 18px;
+	padding: 20px;
+}
+
+p.rules img {
+	padding-top: 5px;
+	vertical-align: middle;
+}
+
+p.rules a {
+	clear: both;
+	vertical-align: middle;
+}
+
+.forum-rules {
+	clear: both;
+	font-size: 1.3em;
+	line-height: 1.5;
+	margin: 0 0 20px;
+	overflow: hidden;
+	padding: 20px;
+}
+
+.forum-rules p.rules-title {
+	font-size: 1.615em;
+	font-weight: 400;
+	letter-spacing: -1px;
+	line-height: 1;
+	margin: 0 0 9px;
+}
+
+#top {
+	position: absolute;
+	top: -20px;
+}
+
+.clear {
+	clear: both;
+	display: block;
+	font-size: 1px;
+	line-height: 1px;
+}
+
+.new-post { font-size: 12px; }
+.side-bar > h1, .side-bar > h2, .side-bar > h2.solo, .side-bar > h3, .side-bar > h4, .side-bar > h5 { margin-top: 0; }
+
+/* For second .headline-bg */
+.spacer {
+	clear: both;
+	height: 21px;
+}
+
+.spacer2 {
+	clear: both;
+	height: 20px;
+}
+
+.spacer3 { margin-bottom: 15px !important; }
+.hidden { display: none; }
+
+.simple_close {
+	display: block;
+	margin-bottom: 20px;
+	text-align: right;
+	width: 100%;
+}

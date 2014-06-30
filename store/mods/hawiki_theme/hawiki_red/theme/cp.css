@@ -1,0 +1,306 @@
+/* Control Panel Styles
+---------------------------------------- */
+/* Main CP box
+----------------------------------------*/
+#cp-menu {
+	float:left;
+	width: 19%;
+	margin-bottom: 20px;
+	padding-right: 20px;
+}
+
+#cp-main {
+	float: left;
+	width: 81%;
+}
+
+#cp-main *:last-child { margin-bottom: 0; }
+#cp-main .content { padding: 0; }
+#cp-main .panel p { font-size: 1.3em; }
+
+#cp-main .panel ol {
+	margin-left: 2em;
+	font-size: 1.2em;
+}
+
+#cp-main .panel li.row { padding-left: 20px; }
+#cp-main .panel li.row dl.icon { background-position: 0 50%; }
+
+#cp-main .panel li.row dl.icon dl.icon dt {
+	padding-left: 0;
+	padding-right: 55px;
+}
+
+ul.cplist {
+	border-style: solid;
+	border-width: 0;
+	margin-bottom: 20px;
+}
+
+#cp-main .panel li.header dt {
+	padding-left: 20px;
+	padding-right: 35px;
+}
+
+#cp-main table.table1 { margin-bottom: 20px; }
+
+#cp-main table.table1 thead th {
+	font-weight: 400;
+	padding: 0 0 0 20px;
+	text-align: left;
+}
+
+#cp-main table.table1 thead th:last-child, #cp-main table.table1 tbody td:last-child {
+	padding-left: 0;
+	padding-right: 20px;
+}
+
+#cp-main table.table1 thead th:only-child, #cp-main table.table1 tbody td:only-child {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+#cp-main table.table1 tbody th {
+	font-style: italic;
+	background-color: transparent !important;
+	border-bottom: none;
+}
+
+#cp-main .pagination {
+	float: right;
+	width: auto;
+}
+
+#cp-main .postbody p { font-size: 1.2em; }
+
+#cp-main .postbody p.author {
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
+#cp-main .pm-message {
+	border-style: solid;
+	border-width: 1px;
+	margin: 10px 0;
+	width: auto;
+	float: none;
+}
+
+.pm-message h2 { padding-bottom: 5px; }
+
+#cp-main .postbody h3, #cp-main .box2 h3 {
+	margin-top: 0;
+	padding-top: 0;
+	border-bottom: 0;
+}
+
+#cp-main .buttons { margin-left: 0; }
+#cp-main ul.linklist { margin: 0; }
+#cp-main ul.linklist:first-child { margin-bottom: 20px !important; }
+#cp-main ul.linklist li { line-height: 1.5; }
+#cp-main table.table1 { border-width: 0; }
+
+/* MCP Specific tweaks */
+.mcp-main .postbody {
+	padding: 0;
+	width: 100%;
+}
+
+.tabs-container h2 {
+	float: left;
+	margin: 20px 0;
+}
+
+.tabs-container #minitabs { float: right; }
+
+.tabs-container:after {
+	display: block;
+	clear: both;
+	content: '';
+}
+
+/* CP tabbed menu
+----------------------------------------*/
+#tabs { width: 100%; }
+
+#tabs ul {
+	margin:0;
+	padding: 0;
+	list-style: none;
+	line-height: 55px;
+	height: 55px;
+}
+
+#tabs li {
+	display: inline;
+	margin: 0;
+	padding: 0;
+	font-size: 1em;
+	font-weight: 400;
+}
+
+#tabs a {
+	float: left;
+	text-decoration: none;
+	display: inline;
+	cursor: pointer;
+	padding: 0 20px;
+	transition: background-color 0.3s ease-out;
+}
+
+/* Mini tabbed menu used in MCP
+----------------------------------------*/
+#minitabs {
+	line-height: 55px;
+	height: 55px;
+	width: 100%;
+}
+
+#minitabs ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#minitabs a {
+	display: block;
+	float: right;
+	padding: 0 20px;
+	font-size: 1em;
+	font-weight: 400;
+	transition: background-color 0.3s ease-out;
+}
+
+#minitabs a:hover { text-decoration: none; }
+
+/* UCP navigation menu
+----------------------------------------*/
+/* Container for sub-navigation list */
+#navigation { width: 100%; }
+
+#navigation ul {
+	border-style: solid;
+	border-width: 0;
+	list-style: none;
+	margin-top: 20px;
+}
+
+#navigation ul:first-child { margin-top: 0; }
+
+/* Default list state */
+#navigation li {
+	padding: 0;
+	font-weight: 400;
+	display: inline;
+}
+
+/* Link styles for the sub-section links */
+#navigation a {
+	display: block;
+	padding: 10px;
+	text-decoration: none;
+	font-weight: 400;
+}
+
+#navigation a:hover {
+	text-decoration: none;
+	background-image: none;
+}
+
+/* Preferences pane layout
+----------------------------------------*/
+#cp-main h2 {
+	border-style: solid;
+	border-width: 0;
+	padding: 20px;
+	font-size: 2.1em;
+	font-weight: 300;
+	margin-bottom: 20px;
+}
+
+#cp-main .panel { border-width: 0; }
+#cp-main .panel > *:last-child { margin-bottom: 20px; }
+#cp-main .panel > *:first-child { margin-top: 0; }
+#cp-main .pm { padding-top: 20px; }
+#cp-main #topicreview .postbody { padding-right: 0; }
+
+#cp-main #topicreview .post { padding-top: 20px; }
+
+/* Friends list */
+.cp-mini {
+	border-style: solid;
+	border-width: 0;
+	padding: 10px;
+	margin: 20px 0 0;
+}
+
+dl.mini dt { font-weight: 700; }
+dl.mini dd { padding-top: 4px; }
+.friend-online { font-weight: 700; }
+.friend-offline { font-style: italic; }
+
+/* PM Styles
+----------------------------------------*/
+#pm-menu { line-height: 1.5em; }
+
+/* PM panel adjustments */
+.reply-all {
+	font-size: 11px;
+	padding-top: 5px;
+}
+
+/* Defined rules list for PM options */
+ol.def-rules { padding-left: 0; }
+
+ol.def-rules li {
+	line-height: 1.5em;
+	padding: 1px;
+}
+
+/* PM marking colours */
+.pmlist li.bg1 { padding: 0 3px; }
+.pmlist li.bg2 { padding: 0 3px; }
+
+.pmlist li.pm_marked_colour, .pm_marked_colour {
+	padding: 0;
+	border-style: solid;
+	border-width: 0 3px;
+}
+
+.pmlist li.pm_replied_colour, .pm_replied_colour {
+	padding: 0;
+	border-style: solid;
+	border-width: 0 3px;
+}
+
+.pmlist li.pm_friend_colour, .pm_friend_colour {
+	padding: 0;
+	border-style: solid;
+	border-width: 0 3px;
+}
+
+.pmlist li.pm_foe_colour, .pm_foe_colour {
+	padding: 0;
+	border-style: solid;
+	border-width: 0 3px;
+}
+
+.pm-legend {
+	border-left-width: 10px;
+	border-left-style: solid;
+	border-right-width: 0;
+	margin-bottom: 3px;
+	padding-left: 3px;
+}
+
+/* Avatar gallery */
+#gallery label {
+	position: relative;
+	float: left;
+	margin: 10px;
+	padding: 5px;
+	width: auto;
+	border-style: solid;
+	border-width: 1px;
+	text-align: center;
+}

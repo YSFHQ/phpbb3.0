@@ -1,0 +1,60 @@
+<div class="side-bar">
+	<!-- IF not S_USER_LOGGED_IN and not S_IS_BOT -->
+	<div class="cublock">
+		<form method="post" action="{S_LOGIN_ACTION}" class="headerspace">
+		<div class="cublock-head">
+			<h3>
+				<a href="{U_LOGIN_LOGOUT}">{L_LOGIN_LOGOUT}</a>
+				<!-- IF S_REGISTER_ENABLED -->
+				 / <a href="{U_REGISTER}">{L_REGISTER}</a>
+				<!-- ENDIF -->
+			</h3>
+		</div>
+
+		<div class="cublock-content">
+				<fieldset class="quick-login">
+					<label for="username">{L_USERNAME}:</label>&nbsp;<input type="text" name="username" id="username" size="10" class="inputbox" title="{L_USERNAME}" /><label for="password">{L_PASSWORD}:</label>&nbsp;<input type="password" name="password" id="password" size="10" class="inputbox" title="{L_PASSWORD}" /><!-- IF S_AUTOLOGIN_ENABLED --><label for="autologin" class="ql-bg">{L_LOG_ME_IN} <input type="checkbox" name="autologin" id="autologin" /></label><!-- ENDIF --><input type="submit" name="login" value="{L_LOGIN}" class="button2" />
+					{S_LOGIN_REDIRECT}
+					<div class="clear"></div>
+				</fieldset>
+		</div>
+		</form>
+	</div>
+	<!-- ENDIF -->
+
+	<div class="cublock">
+		<div class="cublock-head">
+			<h3>Hello {S_USERNAME}</h3>
+		</div>
+
+		<div class="cublock-content">
+			<p>
+				Welcome on Hawiki Theme demo.
+			</p>
+		</div>
+	</div>
+
+	<div class="cublock">
+		<div class="cublock-head">
+			<h3>Responsive</h3>
+		</div>
+
+		<div class="cublock-content">
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</p>
+		</div>
+	</div>
+
+	<div class="cublock">
+		<div class="cublock-head">
+			<h3>Retina Ready</h3>
+		</div>
+
+		<div class="cublock-content">
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			</p>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,92 @@
+
+	<!-- Footer Blocks Goes Below -->
+	<!-- INCLUDE custom_footer.html -->
+
+	<div class="bottombar-bg">
+		<div class="wrap">
+			<div class="bottombar">
+				<ul>
+					<li>
+						<a href="{U_FAQ}" title="{L_FAQ_EXPLAIN}"><i class="fa fa-question fa-lg"></i><span>{L_FAQ}</span></a>
+					</li>
+					<!-- IF not S_IS_BOT and S_DISPLAY_MEMBERLIST -->
+					<li>
+						<a href="{U_MEMBERLIST}" title="{L_MEMBERLIST_EXPLAIN}"><i class="fa fa-users fa-lg"></i><span>{L_MEMBERLIST}</span></a>
+					</li>
+					<!-- ENDIF -->
+					<!-- IF U_TEAM -->
+					<li>
+						<a href="{U_TEAM}"><i class="fa fa-briefcase fa-lg"></i><span>{L_THE_TEAM}</span></a>
+					</li>
+					<!-- ENDIF -->
+
+					<li class="rightside">
+						<a href="{U_DELETE_COOKIES}"><i class="fa fa-times fa-lg"></i><span>{L_DELETE_COOKIES}</span></a>
+					</li>
+					<!-- IF not S_IS_BOT -->
+						<!-- IF U_BOOKMARK_TOPIC -->
+						<li class="rightside">
+							<a href="{U_BOOKMARK_TOPIC}" title="{L_BOOKMARK_TOPIC}"><i class="fa fa-bookmark fa-lg"></i><span>{L_BOOKMARK_TOPIC}</span></a>
+						</li>
+						<!-- ENDIF -->
+						<!-- IF S_WATCH_FORUM_LINK -->
+						<li class="rightside">
+							<a href="{S_WATCH_FORUM_LINK}" title="{S_WATCH_FORUM_TITLE}">
+								<!-- IF S_WATCHING_FORUM --><i class="fa fa-eye-slash fa-lg"></i>
+								<!-- ELSE --><i class="fa fa-eye fa-lg"></i>
+								<!-- ENDIF --><span>{S_WATCH_FORUM_TITLE}</span>
+							</a>
+						</li>
+						<!-- ENDIF -->
+						<!-- IF U_WATCH_TOPIC -->
+						<li class="rightside">
+							<a href="{U_WATCH_TOPIC}" title="{L_WATCH_TOPIC}">
+								<!-- IF S_WATCHING_TOPIC --><i class="fa fa-eye-slash fa-lg"></i>
+								<!-- ELSE --><i class="fa fa-eye fa-lg"></i>
+								<!-- ENDIF --><span>{L_WATCH_TOPIC}</span>
+							</a>
+						</li>
+						<!-- ENDIF -->
+						<!-- IF U_BUMP_TOPIC -->
+						<li class="rightside">
+							<a href="{U_BUMP_TOPIC}" title="{L_BUMP_TOPIC}"><i class="fa fa-caret-square-o-up fa-lg"></i><span>{L_BUMP_TOPIC}</span></a>
+						</li>
+						<!-- ENDIF -->
+					<!-- ENDIF -->
+				</ul>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="copyright-bg">
+		<div class="wrap">
+			<div class="copyright">
+				<div class="copy-left">
+					{CREDIT_LINE}
+					<br />Style created by Gramziu Studio
+					<!-- IF TRANSLATION_INFO -->
+						<br />{TRANSLATION_INFO}
+					<!-- ENDIF -->
+					<!-- IF DEBUG_OUTPUT -->
+						<br />{DEBUG_OUTPUT}
+					<!-- ENDIF -->
+					<!-- IF U_ACP -->
+						<br /><strong><a href="{U_ACP}">{L_ACP}</a></strong>
+					<!-- ENDIF -->
+				</div>
+
+				<div class="copy-right">
+					{S_TIMEZONE}
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="hidden">
+		<a id="bottom" name="bottom" accesskey="z"></a>
+		<!-- IF not S_IS_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
+	</div>
+</body>
+</html>

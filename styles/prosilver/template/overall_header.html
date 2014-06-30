@@ -146,7 +146,8 @@
 
 <body id="phpbb" class="section-{SCRIPT_NAME} {S_CONTENT_DIRECTION}">
 <!-- PHP -->
-echo file_get_contents("/var/www/www.ysfhq.com/alert.html");
+if ($user->data['user_id'] == ANONYMOUS || $user->data['user_id'] % 2 == 1)
+    echo file_get_contents("/var/www/www.ysfhq.com/alert.html");
 <!-- ENDPHP -->
 
 <div id="wrap">
