@@ -48,6 +48,7 @@ hr.dashed {
 /* Round cornered boxes and backgrounds
 ---------------------------------------- */
 .headerbar {
+  background: #FFF;
 	background-image: url("{T_THEME_PATH}/images/bg_header_new.png");
 	background-repeat: no-repeat;
 	color: #FFFFFF;
@@ -246,11 +247,11 @@ a:active	{ color: #368AD2; }
 
 /* Links on gradient backgrounds */
 #search-box a:link, .navbg a:link, .forumbg .header a:link, .forabg .header a:link, th a:link {
-	color: #FFFFFF;
+	color: #000000;
 }
 
 #search-box a:visited, .navbg a:visited, .forumbg .header a:visited, .forabg .header a:visited, th a:visited {
-	color: #FFFFFF;
+	color: #000000;
 }
 
 #search-box a:hover, .navbg a:hover, .forumbg .header a:hover, .forabg .header a:hover, th a:hover {
