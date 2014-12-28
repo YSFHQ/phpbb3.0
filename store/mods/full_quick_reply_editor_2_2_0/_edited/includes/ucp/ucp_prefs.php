@@ -51,6 +51,8 @@ class ucp_prefs
 					'notifypm'		=> request_var('notifypm', (bool) $user->data['user_notify_pm']),
 					'popuppm'		=> request_var('popuppm', (bool) $user->optionget('popuppm')),
 					'allowpm'		=> request_var('allowpm', (bool) $user->data['user_allow_pm']),
+					'allowthankspm'	=> request_var('allowthankspm', (bool) (isset($user->data['user_allow_thanks_pm']) ? $user->data['user_allow_thanks_pm'] : false)),
+					'allowthanksemail'	=> request_var('allowthanksemail', (bool) (isset($user->data['user_allow_thanks_email']) ? $user->data['user_allow_thanks_email'] : false)),
 				);
 
 				if ($data['notifymethod'] == NOTIFY_IM && (!$config['jab_enable'] || !$user->data['user_jabber'] || !@extension_loaded('xml')))
@@ -100,6 +102,13 @@ class ucp_prefs
 							'user_timezone'			=> $data['tz'],
 							'user_style'			=> $data['style'],
 						);
+						if (isset($user->data['user_allow_thanks_pm']) && isset($user->data['user_allow_thanks_email']))
+						{
+							$sql_ary = array_merge($sql_ary, array(
+								'user_allow_thanks_pm'	=> $data['allowthankspm'],
+								'user_allow_thanks_email'=> $data['allowthanksemail'],
+							));		
+						}
 
 						$sql = 'UPDATE ' . USERS_TABLE . '
 							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
@@ -134,6 +143,35 @@ class ucp_prefs
 				}
 				$dateformat_options .= '>' . $user->lang['CUSTOM_DATEFORMAT'] . '</option>';
 
+				// check if there are any user-selectable languages
+				$sql = 'SELECT COUNT(lang_id) as languages_count
+								FROM ' . LANG_TABLE;
+				$result = $db->sql_query($sql);
+				if ($db->sql_fetchfield('languages_count') > 1)
+				{
+					$s_more_languages = true;
+				}
+				else
+				{
+					$s_more_languages = false;
+				}
+				$db->sql_freeresult($result);
+
+				// check if there are any user-selectable styles
+				$sql = 'SELECT COUNT(style_id) as styles_count
+								FROM ' . STYLES_TABLE . '
+								WHERE style_active = 1';
+				$result = $db->sql_query($sql);
+				if ($db->sql_fetchfield('styles_count') > 1)
+				{
+					$s_more_styles = true;
+				}
+				else
+				{
+					$s_more_styles = false;
+				}
+				$db->sql_freeresult($result);
+
 				$template->assign_vars(array(
 					'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
 
@@ -143,6 +181,9 @@ class ucp_prefs
 					'S_VIEW_EMAIL'		=> $data['viewemail'],
 					'S_MASS_EMAIL'		=> $data['massemail'],
 					'S_ALLOW_PM'		=> $data['allowpm'],
+					'S_ALLOW_THANKS_PM'	=> $data['allowthankspm'],
+					'S_ALLOW_THANKS_EMAIL'=> $data['allowthanksemail'],
+					'S_THANKS_NOTICE_ON'=> isset($config['thanks_notice_on']) ? $config['thanks_notice_on'] : false,
 					'S_HIDE_ONLINE'		=> $data['hideonline'],
 					'S_NOTIFY_PM'		=> $data['notifypm'],
 					'S_POPUP_PM'		=> $data['popuppm'],
@@ -154,6 +195,9 @@ class ucp_prefs
 					'S_CUSTOM_DATEFORMAT'	=> $s_custom,
 					'DEFAULT_DATEFORMAT'	=> $config['default_dateformat'],
 					'A_DEFAULT_DATEFORMAT'	=> addslashes($config['default_dateformat']),
+
+					'S_MORE_LANGUAGES'	=> $s_more_languages,
+					'S_MORE_STYLES'			=> $s_more_styles,
 
 					'S_LANG_OPTIONS'		=> language_select($data['lang']),
 					'S_STYLE_OPTIONS'		=> ($config['override_user_style']) ? '' : style_select($data['style']),
@@ -167,7 +211,6 @@ class ucp_prefs
 			case 'view':
 
 				add_form_key('ucp_prefs_view');
-				$user->add_lang('mods/full_quick_reply_editor');
 
 				$data = array(
 					'topic_sk'		=> request_var('topic_sk', (!empty($user->data['user_topic_sortby_type'])) ? $user->data['user_topic_sortby_type'] : 't'),
@@ -183,7 +226,6 @@ class ucp_prefs
 					'smilies'		=> request_var('smilies', (bool) $user->optionget('viewsmilies')),
 					'sigs'			=> request_var('sigs', (bool) $user->optionget('viewsigs')),
 					'avatars'		=> request_var('avatars', (bool) $user->optionget('viewavatars')),
-					'quickreply'	=> request_var('quickreply', (bool) $user->optionget('viewquickreply')),
 					'wordcensor'	=> request_var('wordcensor', (bool) $user->optionget('viewcensors')),
 				);
 
@@ -208,7 +250,6 @@ class ucp_prefs
 						$user->optionset('viewsmilies', $data['smilies']);
 						$user->optionset('viewsigs', $data['sigs']);
 						$user->optionset('viewavatars', $data['avatars']);
-						$user->optionset('viewquickreply', $data['quickreply']);
 
 						if ($auth->acl_get('u_chgcensors'))
 						{
@@ -290,11 +331,9 @@ class ucp_prefs
 					'S_SMILIES'			=> $data['smilies'],
 					'S_SIGS'			=> $data['sigs'],
 					'S_AVATARS'			=> $data['avatars'],
-					'S_QUICK_REPLY'		=> $data['quickreply'],
 					'S_DISABLE_CENSORS'	=> $data['wordcensor'],
 
 
-					'S_QUICK_REPLY_GLOBAL'	=> $config['allow_quick_reply'],
 					'S_CHANGE_CENSORS'		=> ($auth->acl_get('u_chgcensors') && $config['allow_nocensors']) ? true : false,
 
 					'S_TOPIC_SORT_DAYS'		=> $s_limit_topic_days,
@@ -314,6 +353,7 @@ class ucp_prefs
 					'smilies'	=> request_var('smilies', $user->optionget('smilies')),
 					'sig'		=> request_var('sig', $user->optionget('attachsig')),
 					'notify'	=> request_var('notify', (bool) $user->data['user_notify']),
+
 				);
 				add_form_key('ucp_prefs_post');
 
@@ -328,6 +368,7 @@ class ucp_prefs
 						$sql_ary = array(
 							'user_options'	=> $user->data['user_options'],
 							'user_notify'	=> $data['notify'],
+
 						);
 
 						$sql = 'UPDATE ' . USERS_TABLE . '
@@ -346,8 +387,12 @@ class ucp_prefs
 					trigger_error($message);
 				}
 
+
+
 				$template->assign_vars(array(
 					'S_BBCODE'	=> $data['bbcode'],
+
+
 					'S_SMILIES'	=> $data['smilies'],
 					'S_SIG'		=> $data['sig'],
 					'S_NOTIFY'	=> $data['notify'])

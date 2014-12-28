@@ -27,9 +27,9 @@
 		<table cellspacing="0" cellpadding="2" border="0" width="99%">
 		<!-- INCLUDE posting_buttons.html -->
 		<tr>
-			<td colspan="2"><textarea class="post" id="signature" name="signature" rows="10" cols="76" style="width: 90%;" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();">{SIGNATURE}</textarea></td>
+			<td colspan="2"><textarea class="post" name="signature" rows="10" cols="76" style="width: 90%;" onselect="storeCaret(this);" onclick="storeCaret(this);" onkeyup="storeCaret(this);" onfocus="initInsertions();">{SIGNATURE}</textarea></td>
 		</tr>
-		<!-- IF S_BBCODE_ALLOWED and (not S_ABBC3_COLOR or S_ABBC3_COLOR_MODE eq 'phpbb') -->
+		<!-- IF S_BBCODE_ALLOWED -->
 		<tr>
 			<td colspan="2">
 				<table cellspacing="0" cellpadding="0" border="0" width="100%">
@@ -98,7 +98,7 @@
 		<th colspan="2" valign="middle">{L_SIGNATURE_PREVIEW}</th>
 	</tr>
 	<tr> 
-		<td class="row1" colspan="2"><div id="sig" class="postbody" style="padding: 6px;">{SIGNATURE_PREVIEW}</div></td>
+		<td class="row1" colspan="2"><div class="postbody" style="padding: 6px;">{SIGNATURE_PREVIEW}</div></td>
 	</tr>
 <!-- ENDIF -->
 

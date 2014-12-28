@@ -25,7 +25,7 @@ if (!defined('IN_PHPBB'))
 */
 
 // phpBB Version
-define('PHPBB_VERSION', '3.0.11');
+define('PHPBB_VERSION', '3.0.12');
 
 // QA-related
 // define('PHPBB_QA', 1);
@@ -157,6 +157,7 @@ define('PHYSICAL_LINK', 2);
 define('CONFIRM_REG', 1);
 define('CONFIRM_LOGIN', 2);
 define('CONFIRM_POST', 3);
+define('CONFIRM_REPORT', 4);
 
 // Categories - Attachments
 define('ATTACHMENT_CATEGORY_NONE', 0);
@@ -287,13 +288,7 @@ define('WORDS_TABLE',				$table_prefix . 'words');
 define('ZEBRA_TABLE',				$table_prefix . 'zebra');
 
 // Additional tables
-// BEGIN Warning Reasons Mod
-define('WARNING_REASONS_TABLE',				$table_prefix . 'warning_reasons');
-// END Warning Reasons Mod
-define('THANKS_TABLE', $table_prefix . 'thanks');
-// MOD : MSSTI ABBC3 Clicks Counter - Start
-define('CLICKS_TABLE',				$table_prefix . 'clicks');
-// MOD : MSSTI ABBC3 Clicks Counter - End
+
 // BEGIN mChat Mod
 define('MCHAT_TABLE',				$table_prefix . 'mchat');
 define('MCHAT_CONFIG_TABLE',		$table_prefix . 'mchat_config');
@@ -302,5 +297,4 @@ define('MCHAT_SESSIONS_TABLE',			$table_prefix . 'mchat_sessions');
 
 
 
-define('WPM_TABLE',					$table_prefix . 'wpm');
 ?>

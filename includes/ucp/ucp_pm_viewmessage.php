@@ -186,9 +186,6 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 	}
 
 	$url = append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm');
-//Begin: National_Flag 
-	include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
-//End: National_Flag
 
 	// Number of "to" recipients
 	$num_recipients = (int) preg_match_all('/:?(u|g)_([0-9]+):?/', $message_row['to_address'], $match);
@@ -203,15 +200,10 @@ function view_message($id, $mode, $folder_id, $msg_id, $folder, $message_row)
 
 		'RANK_TITLE'		=> $user_info['rank_title'],
 		'RANK_IMG'			=> $user_info['rank_image'],
-		'EXTRA_RANK_TITLE'		=> $user_info['extra_rank_title'],
-		'EXTRA_RANK_IMG'			=> $user_info['extra_rank_img'],
 		'AUTHOR_AVATAR'		=> (isset($user_info['avatar'])) ? $user_info['avatar'] : '',
 		'AUTHOR_JOINED'		=> $user->format_date($user_info['user_regdate']),
 		'AUTHOR_POSTS'		=> (int) $user_info['user_posts'],
 		'AUTHOR_FROM'		=> (!empty($user_info['user_from'])) ? $user_info['user_from'] : '',
-//Begin: National_Flag
-		'USER_FLAG'		=> get_user_flag($user_info['user_flag']),
-//End: National_Flag
 
 		'ONLINE_IMG'		=> (!$config['load_onlinetrack']) ? '' : ((isset($user_info['online']) && $user_info['online']) ? $user->img('icon_user_online', $user->lang['ONLINE']) : $user->img('icon_user_offline', $user->lang['OFFLINE'])),
 		'S_ONLINE'			=> (!$config['load_onlinetrack']) ? false : ((isset($user_info['online']) && $user_info['online']) ? true : false),
@@ -346,24 +338,6 @@ function get_user_information($user_id, $user_row)
 	$user_row['avatar'] = ($user->optionget('viewavatars')) ? get_user_avatar($user_row['user_avatar'], $user_row['user_avatar_type'], $user_row['user_avatar_width'], $user_row['user_avatar_height']) : '';
 
 	get_user_rank($user_row['user_rank'], $user_row['user_posts'], $user_row['rank_title'], $user_row['rank_image'], $user_row['rank_image_src']);
-	$user_row['extra_rank_title'] = $user_row['extra_rank_img'] = $user_row['extra_rank_img_src'] = '';
-
-	if (!empty($user_row['user_rank']))
-	{
-		if (defined('SHOW_SPECIAL_AS_EXTRA') && SHOW_SPECIAL_AS_EXTRA)
-		{
-			$user_row['extra_rank_title'] = $user_row['rank_title'];
-			$user_row['extra_rank_img'] = $user_row['rank_image'];
-			$user_row['extra_rank_img_src'] = $user_row['rank_img_src'];
-			$user_row['rank_title'] = $user_row['rank_image'] = $user_row['rank_image_src'] = '';
-
-			get_user_additional_rank($user_row['user_rank'], $user_row['user_posts'], $user_row['rank_title'], $user_row['rank_image'], $user_row['rank_image_src']);
-		}
-		else
-		{
-			get_user_additional_rank($user_row['user_rank'], $user_row['user_posts'], $user_row['extra_rank_title'], $user_row['extra_rank_img'], $user_row['extra_rank_img_src']);
-		}
-	}
 
 	if ((!empty($user_row['user_allow_viewemail']) && $auth->acl_get('u_sendemail')) || $auth->acl_get('a_email'))
 	{

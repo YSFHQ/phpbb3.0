@@ -20,19 +20,59 @@
 		<span class="corners-bottom"><span></span></span></div>
 	</div>
 
-	<div class="copyright">{CREDIT_LINE}
+	<div class="copyright">
+		<strong><a href="http://ysfhq.com/terms-of-service-and-privacy-policy/">YSFHQ Terms of Service</a></strong>
+		<br />{CREDIT_LINE}
 		<!-- IF TRANSLATION_INFO --><br />{TRANSLATION_INFO}<!-- ENDIF -->
-		<!-- IF WP_CREDIT --><br />{WP_CREDIT}<!-- ENDIF -->
 		<!-- IF DEBUG_OUTPUT --><br />{DEBUG_OUTPUT}<!-- ENDIF -->
 		<!-- IF U_ACP --><br /><strong><a href="{U_ACP}">{L_ACP}</a></strong><!-- ENDIF -->
 	</div>
+<!-- IF not FIRST_CLASS -->
+<!-- ysfhq-forum-hlarge -->
+<ins class="adsbygoogle"
+     style="display:block;width:970px;height:90px;margin:0 auto"
+     data-ad-client="ca-pub-1211687588041162"
+     data-ad-slot="8109982843"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<!-- ENDIF -->
 </div>
 
 </div>
 
 <div>
 	<a id="bottom" name="bottom" accesskey="z"></a>
+<script>$("body").scrollTop(153);</script>
+  <script src="/instantclick.min.js" data-no-instant></script>
+  <script data-no-instant>//InstantClick.init('mousedown');</script>
+<link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/basic/jquery.qtip.min.css" />
+<script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.0/basic/jquery.qtip.min.js"></script>
+<script>
+$(document).ready(function()
+ {
+     $('a[href^="ysflight://"]').each(function() {
+         $(this).qtip({
+             content: {
+                 text: '<a href="http://www.ysupload.com/download.php?id=359" target="_blank" style="font-weight:bold;text-decoration:underline">Click here</a> to get the YS Protocol Launcher so you can launch <u>ysflight://</u> links.'
+             },
+             hide: {
+                delay: 1000
+            }
+         });
+     });
+ });
+</script>
 	<!-- IF not S_IS_BOT -->{RUN_CRON_TASK}<!-- ENDIF -->
+<!-- PHP -->
+require_once($phpbb_root_path . 'iflychat/iflychat_api.php');
+if($user->data['is_registered']) {
+$isadmin = false;
+if($user->data['group_id']==5 || $user->data['group_id']==4 || $user->data['group_id']==40 || $user->data['group_id']==8) $isadmin = true;
+$current_user_info = array('name' => $user->data['username'], 'id' => $user->data['user_id'], 'is_admin' => $isadmin, 'avatar_url' => $user->data['user_avatar'], 'upl' => './memberlist.php?mode=viewprofile&u='.$user->data['user_id']);
+print iflychat_render_chat($current_user_info);
+}
+<!-- ENDPHP -->
 </div>
 
 <script>
@@ -45,5 +85,6 @@
   ga('send', 'pageview');
 
 </script>
+<!-- IF not FIRST_CLASS --><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><!-- ENDIF -->
 </body>
 </html>

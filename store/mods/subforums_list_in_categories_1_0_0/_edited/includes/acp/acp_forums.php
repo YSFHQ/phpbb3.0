@@ -149,6 +149,13 @@ class acp_forums
 						'forum_password'		=> request_var('forum_password', '', true),
 						'forum_password_confirm'=> request_var('forum_password_confirm', '', true),
 						'forum_password_unset'	=> request_var('forum_password_unset', false),
+// BEGIN Topic solved
+						'forum_allow_solve'		=> request_var('forum_allow_solve', 1),
+						'forum_allow_unsolve'	=> request_var('forum_allow_unsolve', 1),
+						'forum_solve_text'	=> request_var('forum_solve_text', ''),
+						'forum_solve_color'	=> trim(request_var('forum_solve_color', '')),
+						'forum_lock_solved'	=> request_var('forum_lock_solved', 0),
+// END Topic solved
 					);
 
 					// On add, add empty forum_options... else do not consider it (not updating it)
@@ -162,15 +169,6 @@ class acp_forums
 					{
 						$forum_data['display_on_index'] = request_var('link_display_on_index', false);
 					}
-// Begin: Subforums list in categories
-// add
-					// Use cat_display_subforum_list and display_on_index settings if forum type is category
-					if ($forum_data['forum_type'] == FORUM_CAT)
-					{
-						$forum_data['display_subforum_list'] = request_var('cat_display_subforum_list', false);
-						$forum_data['display_on_index'] = request_var('cat_display_on_index', true);
-					}
-// End: Subforums list in categories
 
 					// Linked forums and categories are not able to be locked...
 					if ($forum_data['forum_type'] == FORUM_LINK || $forum_data['forum_type'] == FORUM_CAT)
@@ -196,6 +194,7 @@ class acp_forums
 
 					if (!sizeof($errors))
 					{
+
 						$forum_perm_from = request_var('forum_perm_from', 0);
 						$cache->destroy('sql', FORUMS_TABLE);
 
@@ -406,6 +405,13 @@ class acp_forums
 						$forum_data['left_id'] = $row['left_id'];
 						$forum_data['right_id'] = $row['right_id'];
 					}
+// BEGIN Topic solved
+					$forum_data['forum_allow_solve'] = $row['forum_allow_solve'];
+					$forum_data['forum_allow_unsolve'] = $row['forum_allow_unsolve'];
+					$forum_data['forum_solve_text'] = $row['forum_solve_text'];
+					$forum_data['forum_solve_color'] = $row['forum_solve_color'];
+					$forum_data['forum_lock_solved'] = $row['forum_lock_solved'];
+// END Topic solved
 
 					// Make sure no direct child forums are able to be selected as parents.
 					$exclude_forums = array();
@@ -453,6 +459,13 @@ class acp_forums
 							'forum_options'			=> 0,
 							'forum_password'		=> '',
 							'forum_password_confirm'=> '',
+// BEGIN Topic solved
+							'forum_allow_solve'		=> 1,
+							'forum_allow_unsolve'	=> 1,
+							'forum_solve_text'	=> '',
+							'forum_solve_color'	=> '',
+							'forum_lock_solved'	=> 0,
+// END Topic solved
 						);
 					}
 				}
@@ -588,6 +601,17 @@ class acp_forums
 
 				$template->assign_vars(array(
 					'S_EDIT_FORUM'		=> true,
+// BEGIN Topic solved
+					'S_FORUM_ALLOW_SOLVE' => $forum_data['forum_allow_solve'],
+					'S_FORUM_LOCK_SOLVED' => $forum_data['forum_lock_solved'],
+					'S_FORUM_ALLOW_UNSOLVE' => $forum_data['forum_allow_unsolve'],
+					'FORUM_SOLVE_TEXT' => $forum_data['forum_solve_text'],
+					'FORUM_SOLVE_COLOR' => $forum_data['forum_solve_color'],
+					'FORUM_SOLVE_IMG' => ($forum_data['forum_solve_text']) ? '' : $user->img('icon_topic_solved_head', 'TOPIC_SOLVED'),
+					'TOPIC_SOLVED_YES' => TOPIC_SOLVED_YES,
+					'TOPIC_SOLVED_MOD' => TOPIC_SOLVED_MOD,
+					'U_SOLVE_SWATCH' => append_sid("{$phpbb_admin_path}swatch.$phpEx", 'form=forumedit&amp;name=forum_solve_color'),
+// END Topic solved
 					'S_ERROR'			=> (sizeof($errors)) ? true : false,
 					'S_PARENT_ID'		=> $this->parent_id,
 					'S_FORUM_PARENT_ID'	=> $forum_data['parent_id'],

@@ -11,11 +11,20 @@
 /**
 * @ignore
 */
+//VB
+if (!defined('PHPBB_API_EMBEDDED'))
+{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+}
+else
+{
+include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+}
+//\VB
 
 // Start session
 $user->session_begin();
@@ -447,7 +456,7 @@ else
 $sql = 'SELECT t.topic_id
 	FROM ' . TOPICS_TABLE . " t
 	WHERE $sql_where
-		AND t.topic_type IN (" . POST_NORMAL . ', ' . POST_STICKY . ")
+		AND t.topic_type IN (" . POST_NORMAL . ($forum_data['forum_type']==FORUM_CAT ? '':', ' . POST_STICKY) . ")
 		$sql_approved
 		$sql_limit_time
 	ORDER BY t.topic_type " . ((!$store_reverse) ? 'DESC' : 'ASC') . ', ' . $sql_sort_order;
@@ -535,7 +544,6 @@ if (sizeof($shadow_topic_list))
 
 		// Shadow topics are never reported
 		$row['topic_reported'] = 0;
-
 		$rowset[$orig_topic_id] = $row;
 	}
 	$db->sql_freeresult($result);
@@ -661,11 +669,6 @@ if (sizeof($topic_list))
 
 		// Send vars to template
 		$template->assign_block_vars('topicrow', array(
-// BEGIN Topic solved
-			'SOLVED_TOPIC'		=> ($row['topic_solved'] && $row['topic_type'] != POST_GLOBAL) ? (($forum_data['forum_solve_text']) ? $forum_data['forum_solve_text'] : $user->img('icon_topic_solved_list', 'TOPIC_SOLVED')) : '',
-			'U_SOLVED_TOPIC'	=> ($row['topic_solved'] && $row['topic_type'] != POST_GLOBAL) ? $view_topic_url . '&amp;p=' . $row['topic_solved'] . '#p' . $row['topic_solved'] : '',
-			'SOLVED_STYLE' => ($forum_data['forum_solve_color']) ? ' style="color: #' . $forum_data['forum_solve_color'] . '"' : '',
-// END Topic solved
 			'FORUM_ID'					=> $topic_forum_id,
 			'TOPIC_ID'					=> $topic_id,
 			'TOPIC_AUTHOR'				=> get_username_string('username', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),

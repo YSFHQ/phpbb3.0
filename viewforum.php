@@ -11,20 +11,11 @@
 /**
 * @ignore
 */
-//VB
-if (!defined('PHPBB_API_EMBEDDED'))
-{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-}
-else
-{
-include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-}
-//\VB
 
 // Start session
 $user->session_begin();
@@ -569,15 +560,6 @@ $topic_list = ($store_reverse) ? array_merge($announcement_list, array_reverse($
 $topic_tracking_info = $tracking_topics = array();
 
 
-if (!function_exists('get_max_topic_thanks'))
-{
-	include($phpbb_root_path . 'includes/functions_thanks.' . $phpEx);
-}
-get_max_topic_thanks();
-if ($topic_list)
-{
-	get_thanks_topic_number();
-}
 // Okay, lets dump out the page ...
 if (sizeof($topic_list))
 {
@@ -669,11 +651,6 @@ if (sizeof($topic_list))
 
 		// Send vars to template
 		$template->assign_block_vars('topicrow', array(
-// BEGIN Topic solved
-			'SOLVED_TOPIC'		=> ($row['topic_solved'] && $row['topic_type'] != POST_GLOBAL) ? (($forum_data['forum_solve_text']) ? $forum_data['forum_solve_text'] : $user->img('icon_topic_solved_list', 'TOPIC_SOLVED')) : '',
-			'U_SOLVED_TOPIC'	=> ($row['topic_solved'] && $row['topic_type'] != POST_GLOBAL) ? $view_topic_url . '&amp;p=' . $row['topic_solved'] . '#p' . $row['topic_solved'] : '',
-			'SOLVED_STYLE' => ($forum_data['forum_solve_color']) ? ' style="color: #' . $forum_data['forum_solve_color'] . '"' : '',
-// END Topic solved
 			'FORUM_ID'					=> $topic_forum_id,
 			'TOPIC_ID'					=> $topic_id,
 			'TOPIC_AUTHOR'				=> get_username_string('username', $row['topic_poster'], $row['topic_first_poster_name'], $row['topic_first_poster_colour']),
@@ -730,7 +707,6 @@ if (sizeof($topic_list))
 		);
 
 
-		get_thanks_topic_reput($topic_id);
 		$s_type_switch = ($row['topic_type'] == POST_ANNOUNCE || $row['topic_type'] == POST_GLOBAL) ? 1 : 0;
 
 		if ($unread_topic)

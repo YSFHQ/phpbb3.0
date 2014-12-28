@@ -48,18 +48,8 @@
 				<!-- IF topicrow.S_TOPIC_REPORTED -->
 					<a href="{topicrow.U_MCP_REPORT}">{REPORTED_IMG}</a>&nbsp;
 				<!-- ENDIF -->
-					<!-- BEGIN reput -->
-					<!-- IF topicrow.reput.S_THANKS_TOPIC_REPUT_VIEW and topicrow.reput.TOPIC_REPUT and not S_IS_BOT -->
-					<span style="display: block;">
-						<!-- IF topicrow.reput.S_THANKS_REPUT_GRAPHIC -->
-						<span style="float: left; width: {topicrow.reput.THANKS_REPUT_GRAPHIC_WIDTH}; height: {topicrow.reput.THANKS_REPUT_HEIGHT}; background: URL({topicrow.reput.THANKS_REPUT_IMAGE_BACK}); background-repeat: repeat-x;"><span style="display: block; height: {topicrow.reput.THANKS_REPUT_HEIGHT}; width: {topicrow.reput.TOPIC_REPUT}; background: URL({topicrow.reput.THANKS_REPUT_IMAGE}); background-repeat: repeat-x;"></span></span>&nbsp;
-						<!-- ENDIF -->
-					{L_REPUT}:{topicrow.reput.TOPIC_REPUT}
-					</span>
-					<!-- ENDIF -->
-					<!-- END reput -->
 				<!-- IF topicrow.PAGINATION -->
-					<p class="gensmall" style="clear:left"> [ {GOTO_PAGE_IMG}{L_GOTO_PAGE}: {topicrow.PAGINATION} ] </p>
+					<p class="gensmall"> [ {GOTO_PAGE_IMG}{L_GOTO_PAGE}: {topicrow.PAGINATION} ] </p>
 				<!-- ENDIF -->
 			</td>
 			<td class="row2" width="130" align="center"><p class="topicauthor">{topicrow.TOPIC_AUTHOR_FULL}</p></td>
@@ -203,25 +193,14 @@
 				<td class="row1">
 					<!-- IF topicrow.S_UNREAD_TOPIC --><a href="{topicrow.U_NEWEST_POST}">{NEWEST_POST_IMG}</a><!-- ENDIF -->
 					{topicrow.ATTACH_ICON_IMG} <!-- IF topicrow.S_HAS_POLL or topicrow.S_TOPIC_MOVED --><b>{topicrow.TOPIC_TYPE}</b> <!-- ENDIF --><a title="{L_POSTED}: {topicrow.FIRST_POST_TIME}" href="{topicrow.U_VIEW_TOPIC}" class="topictitle">{topicrow.TOPIC_TITLE}</a>
-					<!-- IF topicrow.SOLVED_TOPIC -->&nbsp;&nbsp;<a href="{topicrow.U_SOLVED_TOPIC}" class="topictitle"{topicrow.SOLVED_STYLE}>{topicrow.SOLVED_TOPIC}</a><!-- ENDIF -->
 					<!-- IF topicrow.S_TOPIC_UNAPPROVED or topicrow.S_POSTS_UNAPPROVED -->
 						<a href="{topicrow.U_MCP_QUEUE}">{topicrow.UNAPPROVED_IMG}</a>&nbsp;
 					<!-- ENDIF -->
 					<!-- IF topicrow.S_TOPIC_REPORTED -->
 						<a href="{topicrow.U_MCP_REPORT}">{REPORTED_IMG}</a>&nbsp;
 					<!-- ENDIF -->
-					<!-- BEGIN reput -->
-					<!-- IF topicrow.reput.S_THANKS_TOPIC_REPUT_VIEW and topicrow.reput.TOPIC_REPUT and not S_IS_BOT -->
-					<span style="display: block;">
-						<!-- IF topicrow.reput.S_THANKS_REPUT_GRAPHIC -->
-						<span style="display: block; float: left; width: {topicrow.reput.THANKS_REPUT_GRAPHIC_WIDTH}; height: {topicrow.reput.THANKS_REPUT_HEIGHT}; background: URL({topicrow.reput.THANKS_REPUT_IMAGE_BACK}); background-repeat: repeat-x;"><span style="display: block;  height: {topicrow.reput.THANKS_REPUT_HEIGHT}; width: {topicrow.reput.TOPIC_REPUT}; background: URL({topicrow.reput.THANKS_REPUT_IMAGE}); background-repeat: repeat-x;"></span></span>&nbsp;
-						<!-- ENDIF -->
-					{L_REPUT}:{topicrow.reput.TOPIC_REPUT}
-					</span>	
-					<!-- ENDIF -->
-					<!-- END reput -->
 					<!-- IF topicrow.PAGINATION -->
-						<p class="gensmall" style="clear:left"> [ {GOTO_PAGE_IMG}{L_GOTO_PAGE}: {topicrow.PAGINATION} ] </p>
+						<p class="gensmall"> [ {GOTO_PAGE_IMG}{L_GOTO_PAGE}: {topicrow.PAGINATION} ] </p>
 					<!-- ENDIF -->
 				</td>
 				<td class="row2" width="130" align="center"><p class="topicauthor">{topicrow.TOPIC_AUTHOR_FULL}</p></td>

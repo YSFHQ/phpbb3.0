@@ -86,9 +86,16 @@ class fulltext_mysql extends search_backend
 			$engine = $info['Type'];
 		}
 
-		if ($engine != 'MyISAM')
+		$fulltext_supported =
+			$engine === 'MyISAM' ||
+			// FULLTEXT is supported on InnoDB since MySQL 5.6.4 according to
+			// http://dev.mysql.com/doc/refman/5.6/en/innodb-storage-engine.html
+			$engine === 'InnoDB' &&
+			phpbb_version_compare($db->sql_server_info(true), '5.6.4', '>=');
+
+		if (!$fulltext_supported)
 		{
-			return $user->lang['FULLTEXT_MYSQL_NOT_MYISAM'];
+			return $user->lang['FULLTEXT_MYSQL_NOT_SUPPORTED'];
 		}
 
 		$sql = 'SHOW VARIABLES
@@ -345,10 +352,6 @@ class fulltext_mysql extends search_backend
 	function keyword_search($type, $fields, $terms, $sort_by_sql, $sort_key, $sort_dir, $sort_days, $ex_fid_ary, $m_approve_fid_ary, $topic_id, $author_ary, $author_name, &$id_ary, $start, $per_page)
 	{
 		global $config, $db;
-// BEGIN Topic solved
-		global $search_solv;
-		$search_solv = (isset($search_solv)) ? $search_solv : 0;
-// END Topic solved
 
 		// No keywords? No posts.
 		if (!$this->search_query)
@@ -462,9 +465,6 @@ class fulltext_mysql extends search_backend
 		$sql_where_options = $sql_sort_join;
 		$sql_where_options .= ($topic_id) ? ' AND p.topic_id = ' . $topic_id : '';
 		$sql_where_options .= ($join_topic) ? ' AND t.topic_id = p.topic_id' : '';
-// BEGIN Topic solved
-		$sql_where_options .= ($search_solv) ? ' AND t.topic_solved > 0' : '';
-// END Topic solved
 		$sql_where_options .= (sizeof($ex_fid_ary)) ? ' AND ' . $db->sql_in_set('p.forum_id', $ex_fid_ary, true) : '';
 		$sql_where_options .= $m_approve_fid_sql;
 		$sql_where_options .= $sql_author;
@@ -536,10 +536,6 @@ class fulltext_mysql extends search_backend
 	function author_search($type, $firstpost_only, $sort_by_sql, $sort_key, $sort_dir, $sort_days, $ex_fid_ary, $m_approve_fid_ary, $topic_id, $author_ary, $author_name, &$id_ary, $start, $per_page)
 	{
 		global $config, $db;
-// BEGIN Topic solved
-		global $search_solv;
-		$search_solv = (isset($search_solv)) ? $search_solv : 0;
-// END Topic solved
 
 		// No author? No posts.
 		if (!sizeof($author_ary))
@@ -595,17 +591,11 @@ class fulltext_mysql extends search_backend
 			case 'u':
 				$sql_sort_table	= USERS_TABLE . ' u, ';
 				$sql_sort_join	= ($type == 'posts') ? ' AND u.user_id = p.poster_id ' : ' AND u.user_id = t.topic_poster ';
-// BEGIN Topic solved
-				$sql_sort_join .= ($search_solv) ? ' AND t.topic_solved > 0 ' : '';
-// END Topic solved
 			break;
 
 			case 't':
 				$sql_sort_table	= ($type == 'posts' && !$firstpost_only) ? TOPICS_TABLE . ' t, ' : '';
 				$sql_sort_join	= ($type == 'posts' && !$firstpost_only) ? ' AND t.topic_id = p.topic_id ' : '';
-// BEGIN Topic solved
-				$sql_sort_join .= ($search_solv) ? ' AND t.topic_solved > 0 ' : '';
-// END Topic solved
 			break;
 
 			case 'f':
@@ -764,7 +754,7 @@ class fulltext_mysql extends search_backend
 		{
 			if ($db->sql_layer == 'mysqli' || version_compare($db->sql_server_info(true), '4.1.3', '>='))
 			{
-				//$alter[] = 'MODIFY post_subject varchar(100) COLLATE utf8_unicode_ci DEFAULT \'\' NOT NULL';
+				$alter[] = 'MODIFY post_subject varchar(255) COLLATE utf8_unicode_ci DEFAULT \'\' NOT NULL';
 			}
 			else
 			{

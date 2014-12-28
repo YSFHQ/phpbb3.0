@@ -15,7 +15,7 @@
 <!-- ENDIF -->
 
 <div id="pageheader">
-	<h2><a class="titles" href="{U_VIEW_TOPIC}">{TOPIC_TITLE}</a></h2>
+	<h2><a class="titles" href="{U_VIEW_TOPIC}">{TOPIC_TITLE}</a>{TOPIC_SOLVED_TITLE}</h2>
 
 <!-- IF MODERATORS -->
 	<p class="moderators"><!-- IF S_SINGLE_MODERATOR -->{L_MODERATOR}<!-- ELSE -->{L_MODERATORS}<!-- ENDIF -->: {MODERATORS}</p>
@@ -175,6 +175,16 @@
 					<td>{postrow.RANK_IMG}</td>
 				</tr>
 			<!-- ENDIF -->
+			<!-- IF postrow.EXTRA_RANK_TITLE -->
+				<tr>
+					<td class="postdetails">{postrow.EXTRA_RANK_TITLE}</td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF postrow.EXTRA_RANK_IMG -->
+				<tr>
+					<td>{postrow.EXTRA_RANK_IMG}</td>
+				</tr>
+			<!-- ENDIF -->
 			<!-- IF postrow.POSTER_AVATAR -->
 				<tr>
 					<td>{postrow.POSTER_AVATAR}</td>
@@ -191,11 +201,15 @@
 					<!-- IF postrow.POSTER_JOINED --><br /><b>{L_JOINED}:</b> {postrow.POSTER_JOINED}<!-- ENDIF -->
 					<!-- IF postrow.POSTER_POSTS != '' --><br /><b>{L_POSTS}:</b> {postrow.POSTER_POSTS}<!-- ENDIF -->
 					<!-- IF postrow.POSTER_FROM --><br /><b>{L_LOCATION}:</b> {postrow.POSTER_FROM}<!-- ENDIF -->
+					<!-- IF not postrow.S_POST_ANONYMOUS and postrow.THANKS_COUNTERS_VIEW --><br /><b>{L_GIVEN}:</b><!-- IF postrow.POSTER_GIVE_COUNT < 1 --> {postrow.POSTER_GIVE_COUNT} {L_THANK}<!-- ELSEIF postrow.POSTER_GIVE_COUNT > 1 --> <a href="{postrow.POSTER_GIVE_COUNT_LINK}">{postrow.POSTER_GIVE_COUNT}</a> {L_THANKS}<!-- ELSE --> <a href="{postrow.POSTER_GIVE_COUNT_LINK}">{postrow.POSTER_GIVE_COUNT}</a> {L_THANK}<!-- ENDIF --><br /><b>{L_RECEIVED}:</b><!-- IF postrow.POSTER_RECEIVE_COUNT < 1 --> {postrow.POSTER_RECEIVE_COUNT} {L_THANK}<!-- ELSEIF postrow.POSTER_RECEIVE_COUNT > 1 --> <a href="{postrow.POSTER_RECEIVE_COUNT_LINK}">{postrow.POSTER_RECEIVE_COUNT}</a> {L_THANKS}<!-- ELSE --> <a href="{postrow.POSTER_RECEIVE_COUNT_LINK}">{postrow.POSTER_RECEIVE_COUNT}</a> {L_THANK}<!-- ENDIF --><!-- ENDIF -->
 <!-- IF postrow.POSTER_FLAG --><br /><b>{L_FLAG}:</b> {postrow.POSTER_FLAG}<!-- ENDIF -->
 
 					<!-- IF postrow.S_PROFILE_FIELD1 -->
 						<!-- Use a construct like this to include admin defined profile fields. Replace FIELD1 with the name of your field. -->
 						<br /><b>{postrow.PROFILE_FIELD1_NAME}:</b> {postrow.PROFILE_FIELD1_VALUE}
+					<!-- ENDIF -->
+					<!-- IF postrow.U_BLOG_LINK -->
+						<br /><b>{L_BLOG}:</b> <a href="{postrow.U_BLOG_LINK}" title="{L_VISIT_BLOG}" >{L_VISIT_BLOG}</a>
 					<!-- ENDIF -->
 					<!-- IF postrow.U_BLOG_LINK -->
 						<br /><b>{L_BLOG}:</b> <a href="{postrow.U_BLOG_LINK}" title="{L_VISIT_BLOG}" >{L_VISIT_BLOG}</a>
@@ -245,7 +259,7 @@
 						<span class="gensmall error"><br /><br />{L_DOWNLOAD_NOTICE}</span>
 					<!-- ENDIF -->
 					<!-- IF postrow.SIGNATURE -->
-						<div id="sig{postrow.POST_ID}" class="postbody"><br />_________________<br />{postrow.SIGNATURE}</div>
+						<div class="postbody"><br />_________________<br />{postrow.SIGNATURE}</div>
 					<!-- ENDIF -->
 
 					<!-- IF postrow.EDITED_MESSAGE or postrow.EDIT_REASON -->
@@ -276,9 +290,34 @@
 							<td class="gensmall" align="{S_CONTENT_FLOW_END}">
 							<!-- IF not S_IS_BOT -->
 								<!-- IF postrow.U_REPORT --><a href="{postrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF --> 
+								<!-- IF postrow.U_SET_SOLVED --><a href="{postrow.U_SET_SOLVED}"><!-- IF postrow.S_TOPIC_SOLVED -->{SOLVED_UNSET_IMG}<!-- ELSE -->{SOLVED_SET_IMG}<!-- ENDIF --></a><!-- ENDIF -->
 								<!-- IF postrow.U_INFO --><a href="{postrow.U_INFO}">{INFO_IMG}</a> <!-- ENDIF --> 
 								<!-- IF postrow.U_WARN --><a href="{postrow.U_WARN}">{WARN_IMG}</a> <!-- ENDIF --> 
 								<!-- IF postrow.U_DELETE --><a href="{postrow.U_DELETE}">{DELETE_IMG}</a> <!-- ENDIF -->
+								<!-- IF  not postrow.S_FIRST_POST_ONLY or postrow.S_ONLY_TOPICSTART -->
+									<!-- IF not postrow.S_GLOBAL_POST_THANKS and not postrow.S_POST_ANONYMOUS and postrow.S_FORUM_THANKS and S_USER_LOGGED_IN and not postrow.S_IS_OWN_POST and (not postrow.S_ALREADY_THANKED or postrow.S_REMOVE_THANKS) --><a href="{postrow.THANKS_LINK}" title="{postrow.THANK_ALT}{postrow.POST_AUTHOR}">{postrow.THANK_IMG}</a>	<!-- ENDIF -->
+								<!-- ENDIF -->	
+								<!-- IF postrow.THANKS and postrow.THANKS_POSTLIST_VIEW and not postrow.S_POST_ANONYMOUS -->
+									<table width="100%" cellspacing="0">
+										<tr valign="middle">
+											<td class="gensmall" align="{S_CONTENT_FLOW_BEGIN}">
+											<hr />
+											<!-- IF postrow.S_MOD_THANKS --><a href="{postrow.U_CLEAR_LIST_THANKS_POST}">{postrow.DELETE_IMG}</a>&nbsp;<!-- ENDIF -->{postrow.THANK_TEXT}{postrow.POST_AUTHOR_FULL}{postrow.THANK_TEXT_2} {postrow.THANKS}</td>
+										</tr>
+									</table>
+								<!-- ENDIF -->
+								<!-- IF postrow.S_THANKS_POST_REPUT_VIEW and postrow.POST_REPUT and not postrow.S_POST_ANONYMOUS and not S_IS_BOT -->
+									<table class="content" align="left">
+										<tr class="postbody" align="left">
+											<td>
+											<!-- IF postrow.S_THANKS_REPUT_GRAPHIC -->
+											<div style="float: left; width: {postrow.THANKS_REPUT_GRAPHIC_WIDTH}; height: {postrow.THANKS_REPUT_HEIGHT}; background: URL({postrow.THANKS_REPUT_IMAGE_BACK}); background-repeat: repeat-x;"><div style="height: {postrow.THANKS_REPUT_HEIGHT}; width: {postrow.POST_REPUT}; background: URL({postrow.THANKS_REPUT_IMAGE}); background-repeat: repeat-x;"></div></div>&nbsp;
+											<!-- ENDIF -->
+											<strong>{L_REPUT}:</strong>&nbsp;{postrow.POST_REPUT}
+											</td>
+										</tr>
+									</table>
+								<!-- ENDIF -->
 							<!-- ENDIF -->
 							</td>
 						</tr>

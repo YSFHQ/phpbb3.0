@@ -15,7 +15,7 @@
 <!-- ENDIF -->
 
 <div id="pageheader">
-	<h2><a class="titles" href="{U_VIEW_TOPIC}">{TOPIC_TITLE}</a>{TOPIC_SOLVED_TITLE}</h2>
+	<h2><a class="titles" href="{U_VIEW_TOPIC}">{TOPIC_TITLE}</a></h2>
 
 <!-- IF MODERATORS -->
 	<p class="moderators"><!-- IF S_SINGLE_MODERATOR -->{L_MODERATOR}<!-- ELSE -->{L_MODERATORS}<!-- ENDIF -->: {MODERATORS}</p>
@@ -200,9 +200,6 @@
 					<!-- IF postrow.U_BLOG_LINK -->
 						<br /><b>{L_BLOG}:</b> <a href="{postrow.U_BLOG_LINK}" title="{L_VISIT_BLOG}" >{L_VISIT_BLOG}</a>
 					<!-- ENDIF -->
-					<!-- IF postrow.U_BLOG_LINK -->
-						<br /><b>{L_BLOG}:</b> <a href="{postrow.U_BLOG_LINK}" title="{L_VISIT_BLOG}" >{L_VISIT_BLOG}</a>
-					<!-- ENDIF -->
 
 					<!-- BEGIN custom_fields -->
 						<br /><b>{postrow.custom_fields.PROFILE_FIELD_NAME}:</b> {postrow.custom_fields.PROFILE_FIELD_VALUE}
@@ -225,9 +222,6 @@
 					<!-- ENDIF -->
 
 						<div class="postbody">{postrow.MESSAGE}</div>
-					<!-- IF postrow.U_QUOTE and postrow.DECODED_MESSAGE -->
-						<div id="message_{postrow.POST_ID}" style="display: none;">{postrow.DECODED_MESSAGE}</div>
-					<!-- ENDIF -->
 
 					<!-- IF postrow.S_HAS_ATTACHMENTS -->
 						<br clear="all" /><br />
@@ -248,7 +242,7 @@
 						<span class="gensmall error"><br /><br />{L_DOWNLOAD_NOTICE}</span>
 					<!-- ENDIF -->
 					<!-- IF postrow.SIGNATURE -->
-						<div id="sig{postrow.POST_ID}" class="postbody"><br />_________________<br />{postrow.SIGNATURE}</div>
+						<div class="postbody"><br />_________________<br />{postrow.SIGNATURE}</div>
 					<!-- ENDIF -->
 
 					<!-- IF postrow.EDITED_MESSAGE or postrow.EDIT_REASON -->
@@ -278,8 +272,7 @@
 						<tr valign="middle">
 							<td class="gensmall" align="{S_CONTENT_FLOW_END}">
 							<!-- IF not S_IS_BOT -->
-								<!-- IF postrow.U_REPORT --><a href="{postrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF --> 
-								<!-- IF postrow.U_SET_SOLVED --><a href="{postrow.U_SET_SOLVED}"><!-- IF postrow.S_TOPIC_SOLVED -->{SOLVED_UNSET_IMG}<!-- ELSE -->{SOLVED_SET_IMG}<!-- ENDIF --></a><!-- ENDIF -->
+								<!-- IF postrow.U_REPORT --><a href="{postrow.U_REPORT}">{REPORT_IMG}</a> <!-- ENDIF -->
 								<!-- IF postrow.U_INFO --><a href="{postrow.U_INFO}">{INFO_IMG}</a> <!-- ENDIF --> 
 								<!-- IF postrow.U_WARN --><a href="{postrow.U_WARN}">{WARN_IMG}</a> <!-- ENDIF --> 
 								<!-- IF postrow.U_DELETE --><a href="{postrow.U_DELETE}">{DELETE_IMG}</a> <!-- ENDIF -->
@@ -296,7 +289,7 @@
 		<!-- IF postrow.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
 
 			<td class="profile"><strong><a href="#wrapheader">{L_BACK_TO_TOP}</a></strong></td>
-			<td><div class="gensmall" style="float: {S_CONTENT_FLOW_BEGIN};">&nbsp;<!-- IF postrow.U_POST_AUTHOR --><a href="{postrow.U_POST_AUTHOR}">{PROFILE_IMG}</a> <!-- ENDIF --> <!-- IF postrow.U_PM --><a href="{postrow.U_PM}">{PM_IMG}</a> <!-- ENDIF --> <!-- IF postrow.U_EMAIL --><a href="{postrow.U_EMAIL}">{EMAIL_IMG}</a> <!-- ENDIF -->&nbsp;</div> <div class="gensmall" style="float: {S_CONTENT_FLOW_END};"><!-- IF not S_IS_BOT --><!-- IF postrow.U_EDIT --><a href="{postrow.U_EDIT}">{EDIT_IMG}</a> <!-- ENDIF --> <!-- IF postrow.DECODED_MESSAGE and S_QUICK_REPLY --><a href="#" onclick="addquote({postrow.POST_ID},'{postrow.POSTER_QUOTE}', '{LA_WROTE}'); return false;">{QUOTE_IMG}</a> <!-- ELSEIF postrow.U_QUOTE --><a href="{postrow.U_QUOTE}">{QUOTE_IMG}</a> <!-- ENDIF --> <!-- ENDIF -->&nbsp;</div></td>
+			<td><div class="gensmall" style="float: {S_CONTENT_FLOW_BEGIN};">&nbsp;<!-- IF postrow.U_POST_AUTHOR --><a href="{postrow.U_POST_AUTHOR}">{PROFILE_IMG}</a> <!-- ENDIF --> <!-- IF postrow.U_PM --><a href="{postrow.U_PM}">{PM_IMG}</a> <!-- ENDIF --> <!-- IF postrow.U_EMAIL --><a href="{postrow.U_EMAIL}">{EMAIL_IMG}</a> <!-- ENDIF -->&nbsp;</div> <div class="gensmall" style="float: {S_CONTENT_FLOW_END};"><!-- IF not S_IS_BOT --><!-- IF postrow.U_EDIT --><a href="{postrow.U_EDIT}">{EDIT_IMG}</a> <!-- ENDIF --> <!-- IF postrow.U_QUOTE --><a href="{postrow.U_QUOTE}">{QUOTE_IMG}</a> <!-- ENDIF --> <!-- ENDIF -->&nbsp;</div></td>
 	<!-- ENDIF -->
 		</tr>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- IF WP_DTD -->{WP_DTD}<!-- ELSE --><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><!-- ENDIF -->
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}" xml:lang="{S_USER_LANG}">
 <head>
 
@@ -12,6 +12,7 @@
 <meta name="description" content="" />
 {META}
 <title>{SITENAME} &bull; <!-- IF S_IN_MCP -->{L_MCP} &bull; <!-- ELSEIF S_IN_UCP -->{L_UCP} &bull; <!-- ENDIF -->{PAGE_TITLE}</title>
+<!-- IF PHPBB_BASE --><base href="{PHPBB_BASE}" /><!-- ENDIF -->
 
 <!-- IF S_ENABLE_FEEDS -->
 	<!-- IF S_ENABLE_FEEDS_OVERALL --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {SITENAME}" href="{U_FEED}" /><!-- ENDIF -->
@@ -30,6 +31,9 @@
 	Modified by:
 -->
 
+
+
+<!-- IF WP_HEADERINFO_EARLY -->{WP_HEADERINFO_EARLY}<!-- ENDIF -->
 <script type="text/javascript">
 // <![CDATA[
 	var jump_page = '{LA_JUMP_PAGE}:';
@@ -40,36 +44,6 @@
 	var style_cookie_settings = '{A_COOKIE_SETTINGS}';
 	var onload_functions = new Array();
 	var onunload_functions = new Array();
-//-- mod: Silverbar MOD --------------------------------------------------
-//-- add
-		var side_state = 'shown';
-
-	/**
-	* Hiding/Showing the sidebar, reused/adapted from the ACP
-	*/
-	function switch_sidebar()
-	{
-		var sidebar = document.getElementById('side-bar');
-		var mainboard = document.getElementById('main-board');
-
-		switch (side_state)
-		{
-			// hide it
-			case 'shown':
-				mainboard.style.width = '100%';
-				side_state = 'hidden';
-				sidebar.style.display = 'none';
-			break;
-
-			// show it
-			case 'hidden':
-				mainboard.style.width = '74%';
-				side_state = 'shown';
-				sidebar.style.display = 'block';
-			break;
-		}
-	}
-//-- fin mod: Silverbar MOD --------------------------------------------------
 
 	<!-- IF S_USER_PM_POPUP and S_NEW_PM -->
 		var url = '{UA_POPUP_PM}';
@@ -132,12 +106,17 @@
 <script type="text/javascript" src="{ROOT_PATH}mchat/jquery_cookie_mini.js"></script>
 <!-- ENDIF -->
 
-<!-- MOD : MSSTI ABBC3 (v{S_ABBC3_VERSION}) - Start //-->
-<!-- INCLUDE ./../../abbcode/abbcode_header.html -->
-<!-- MOD : MSSTI ABBC3 (v{S_ABBC3_VERSION}) - End //-->
+
+
+
+<!-- IF WP_HEADERINFO_LATE -->{WP_HEADERINFO_LATE}<!-- ENDIF -->
 </head>
 
 <body id="phpbb" class="section-{SCRIPT_NAME} {S_CONTENT_DIRECTION}">
+<!-- PHP -->
+if ($user->data['user_id'] == ANONYMOUS || $user->data['user_id'] % 2 == 1)
+    echo file_get_contents("/var/www/www.ysfhq.com/alert.html");
+<!-- ENDPHP -->
 
 <div id="wrap">
 	<a id="top" name="top" accesskey="t"></a>
@@ -198,13 +177,11 @@
 
 			<ul class="linklist rightside">
 
-<li class="icon-logout"><a href="#" onclick="switch_sidebar(); return false" title="{L_SHOW_HIDE}">{L_SHOW_HIDE}</a></li>
 				<li class="icon-faq"><a href="{U_FAQ}" title="{L_FAQ_EXPLAIN}">{L_FAQ}</a></li>
+<!-- IF S_BLOG --><li class="icon-members"><a href="{U_BLOG}" title="{L_BLOG}">{L_BLOG}</a></li><!-- ENDIF -->
 				<!-- IF S_MCHAT_ENABLE and U_MCHAT --><li class="icon-bump"><a href="{U_MCHAT}#mChat" title="{L_MCHAT_TITLE}">{L_MCHAT_TITLE}</a></li><!-- ENDIF -->
 				<!-- IF not S_IS_BOT -->
 					<!-- IF S_DISPLAY_MEMBERLIST --><li class="icon-members"><a href="{U_MEMBERLIST}" title="{L_MEMBERLIST_EXPLAIN}">{L_MEMBERLIST}</a></li><!-- ENDIF -->
-					<!-- IF S_DISPLAY_TOPLIST --><li class="icon-thanks_toplist"><a href="{U_REPUT_TOPLIST}" title="{L_REPUT_TOPLIST}">{L_REPUT_TOPLIST}</a></li><!-- ENDIF -->
-				<!-- IF S_DISPLAY_THANKSLIST --><li class="icon-thanks"><a href="{U_THANKSLIST}" title="{L_THANKS_USER}">{L_GRATITUDES}</a></li><!-- ENDIF -->
 					<!-- IF not S_USER_LOGGED_IN and S_REGISTER_ENABLED and not (S_SHOW_COPPA or S_REGISTRATION) --><li class="icon-register"><a href="{U_REGISTER}">{L_REGISTER}</a></li><!-- ENDIF -->
 					<li class="icon-logout"><a href="{U_LOGIN_LOGOUT}" title="{L_LOGIN_LOGOUT}" accesskey="x">{L_LOGIN_LOGOUT}</a></li>
 				<!-- ENDIF -->
@@ -224,4 +201,3 @@
 			<span class="corners-bottom"><span></span></span></div>
 		</div>
 		<!-- ENDIF -->
-<!-- INCLUDE sidebar_left_begin.html -->

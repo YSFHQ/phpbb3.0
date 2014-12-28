@@ -236,9 +236,6 @@ $lang = array_merge($lang, array(
 	'acl_a_reasons'		=> array('lang' => 'Can manage report/denial reasons', 'cat' => 'misc'),
 	'acl_a_backup'		=> array('lang' => 'Can backup/restore database', 'cat' => 'misc'),
 	'acl_a_search'		=> array('lang' => 'Can manage search backends and settings', 'cat' => 'misc'),
-//Begin: National_Flag 
-	'acl_a_flags'		=> array('lang' => 'Can manage country flags', 'cat' => 'misc'),
-//End: National_Flag
 ));
 
 ?>

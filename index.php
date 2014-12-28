@@ -14,20 +14,11 @@
 /**
 * @ignore
 */
-//VB
-if (!defined('PHPBB_API_EMBEDDED'))
-{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-}
-else
-{
-include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-}
-//\VB
 
 // Start session management
 $user->session_begin();
@@ -90,7 +81,6 @@ $legend = implode(', ', $legend);
 
 // Generate birthday list if required ...
 $birthday_list = '';
-$bd_list_ary = $bd_list_log_ary = array();
 if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel'))
 {
 	$now = phpbb_gmgetdate(time() + $user->timezone + $user->dst);
@@ -102,7 +92,7 @@ if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('
 		$leap_year_birthdays = " OR u.user_birthday LIKE '" . $db->sql_escape(sprintf('%2d-%2d-', 29, 2)) . "%'";
 	}
 
-	$sql = 'SELECT u.user_id, u.username, u.user_colour, u.user_birthday, u.user_email, u.user_lang,u.user_notify_type, u.user_jabber 
+	$sql = 'SELECT u.user_id, u.username, u.user_colour, u.user_birthday
 		FROM ' . USERS_TABLE . ' u
 		LEFT JOIN ' . BANLIST_TABLE . " b ON (u.user_id = b.ban_userid)
 		WHERE (b.ban_id IS NULL
@@ -119,77 +109,11 @@ if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('
 		{
 			$birthday_list .= ' (' . max(0, $now['year'] - $age) . ')';
 		}
-		if (trim($row['user_email']) && $config['birthday_emails'])
-		{
-			$bd_list_ary[] = array(
-				'method'	=> $row['user_notify_type'],
-				'email'		=> $row['user_email'],
-				'jabber'	=> $row['user_jabber'],
-				'name'		=> $row['username'],
-				'lang'		=> $row['user_lang']
-			);
-		}
 	}
 	$db->sql_freeresult($result);
-
-	$check_time_bdemail = (int) gmdate('mdY',time() + (3600 * ($config['board_timezone'] + $config['board_dst'])));
-
-	if ( sizeof($bd_list_ary) && ($user->data['user_timezone'] == $config['board_timezone'] && $user->data['user_dst'] == $config['board_dst']) && ($config['birthday_run'] != $check_time_bdemail) && $config['birthday_emails'] )
-	{
-		set_config('birthday_run', $check_time_bdemail);
-		
-		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
-		$messenger = new messenger();
-
-		foreach ($bd_list_ary as $pos => $addr)
-		{
-			$messenger->template('birthday_email', $addr['lang']);
-			
-			$messenger->to($addr['email'], $addr['name']);
-			$messenger->im($addr['jabber'], $addr['name']);
-			// if you want to receive copies of the birthday emails, just uncomment below line 
-			//$messenger->cc('your@email.com', 'your_name');
-			
-			$messenger->assign_vars(array(
-				'USERNAME'		=> htmlspecialchars_decode($addr['name'])
-			));
-			$messenger->send($addr['method']);
-			
-			$bd_list_log_ary[] = $addr['name']; 
-		}
-		add_log('admin', 'LOG_BIRTHDAY_EMAIL_SENT', implode(', ', $bd_list_log_ary));				
-		unset($bd_list_ary);
-		unset($bd_list_log_ary);
-		
-		$messenger->save_queue();
-		unset($messenger);
-	}
 }
 
 
-//Begin: National_Flag
-if (!empty($config['allow_flags']))
-{
-	if (!function_exists('top_flags'))
-	{
-		include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
-	}
-	top_flags();
-}
-//End: National_Flag
-
-// Generate thankslist if required ...
-if (!function_exists('get_thanks'))
-{
-	include($phpbb_root_path . 'includes/functions_thanks.' . $phpEx);	
-}
-$thanks_list = '';
-$ex_fid_ary = array_keys($auth->acl_getf('!f_read', true));
-$ex_fid_ary = (sizeof($ex_fid_ary)) ? $ex_fid_ary : 0;
-if (isset($config['thanks_top_number']) ? $config['thanks_top_number'] : false)
-{
-	$thanks_list = get_toplist_index($ex_fid_ary);
-}
 // Assign index specific vars
 $template->assign_vars(array(
 	'TOTAL_POSTS'	=> sprintf($user->lang[$l_total_post_s], $total_posts),
@@ -199,9 +123,6 @@ $template->assign_vars(array(
 
 	'LEGEND'		=> $legend,
 	'BIRTHDAY_LIST'	=> $birthday_list,
-	'THANKS_LIST'	=> $thanks_list,
-	'S_THANKS_LIST'	=> isset($config['thanks_top_number']) ? $config['thanks_top_number'] : false,
-	'L_TOP_THANKS_LIST'	=> isset($config['thanks_top_number']) ? sprintf($user->lang['REPUT_TOPLIST'], $config['thanks_top_number']) : false,
 
 	'FORUM_IMG'				=> $user->img('forum_read', 'NO_UNREAD_POSTS'),
 	'FORUM_UNREAD_IMG'			=> $user->img('forum_unread', 'UNREAD_POSTS'),
@@ -216,37 +137,6 @@ $template->assign_vars(array(
 );
 
 
-// BEGIN mChat Mod
-$mchat_installed = (!empty($config['mchat_version']) && !empty($config['mchat_enable'])) ? true : false;
-if ($mchat_installed && $auth->acl_get('u_mchat_view'))
-{
-	if(!defined('MCHAT_INCLUDE') && $config['mchat_on_index'] && !empty($user->data['user_mchat_index']))
-	{
-		define('MCHAT_INCLUDE', true);
-		$mchat_include_index = true;
-		include($phpbb_root_path . 'mchat.' . $phpEx);
-	}	
-
-	if (!empty($config['mchat_stats_index']) && !empty($user->data['user_mchat_stats_index']))
-	{
-		if (!function_exists('mchat_users'))
-		{
-			include($phpbb_root_path . 'includes/functions_mchat.' . $phpEx);
-		}
-		// Add lang file
-		$user->add_lang('mods/mchat_lang');
-		// stats display
-		$mchat_session_time = !empty($config_mchat['timeout']) ? $config_mchat['timeout'] : 3600;// you can change this number to a greater number for longer chat sessions
-		$mchat_stats = mchat_users($mchat_session_time);
-		$template->assign_vars(array(
-			'MCHAT_INDEX_STATS'	=> true,
-			'MCHAT_INDEX_USERS_COUNT'	=> $mchat_stats['mchat_users_count'],
-			'MCHAT_INDEX_USERS_LIST'	=> $mchat_stats['online_userlist'],
-			'L_MCHAT_ONLINE_EXPLAIN'	=> $mchat_stats['refresh_message'],	
-		));
-	}
-}	
-// END mChat Mod
 // Output page
 page_header($user->lang['INDEX']);
 

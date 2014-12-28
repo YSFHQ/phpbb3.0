@@ -210,9 +210,6 @@ define('CAPTCHA_MIN_CHARS', 4);
 define('CAPTCHA_MAX_CHARS', 7);
 
 // Additional constants
-// Special and normal rank images
-define('SHOW_SPECIAL_AS_EXTRA', false); //Set to true if you want topics and profiles to show the special ranks, e.g. Administrator, as the 'extra' rank
-define('SHOW_ONLY_NORMAL_RANKS_ON_MEMBERLIST', false); //Set to true if you want the memberslist to show only normal ranks and not special ranks
 // BEGIN Topic solved
 define('TOPIC_SOLVED_YES', 1); // Topic starter and moderators
 define('TOPIC_SOLVED_MOD', 2); // Only moderators
@@ -291,13 +288,7 @@ define('WORDS_TABLE',				$table_prefix . 'words');
 define('ZEBRA_TABLE',				$table_prefix . 'zebra');
 
 // Additional tables
-// BEGIN Warning Reasons Mod
-define('WARNING_REASONS_TABLE',				$table_prefix . 'warning_reasons');
-// END Warning Reasons Mod
-define('THANKS_TABLE', $table_prefix . 'thanks');
-// MOD : MSSTI ABBC3 Clicks Counter - Start
-define('CLICKS_TABLE',				$table_prefix . 'clicks');
-// MOD : MSSTI ABBC3 Clicks Counter - End
+
 // BEGIN mChat Mod
 define('MCHAT_TABLE',				$table_prefix . 'mchat');
 define('MCHAT_CONFIG_TABLE',		$table_prefix . 'mchat_config');
@@ -306,5 +297,4 @@ define('MCHAT_SESSIONS_TABLE',			$table_prefix . 'mchat_sessions');
 
 
 
-define('WPM_TABLE',					$table_prefix . 'wpm');
 ?>

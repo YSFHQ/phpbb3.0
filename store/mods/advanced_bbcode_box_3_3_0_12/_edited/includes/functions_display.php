@@ -236,15 +236,6 @@ function display_forums($root_data = '', $display_moderators = true, $return_mod
 			$forum_rows[$parent_id]['orig_forum_last_post_time'] = $row['forum_last_post_time'];
 		}
 
-// Begin: Subforums list in categories
-// add
-		else if ($row['forum_type'] == FORUM_CAT)
-		{
-			$subforums[$parent_id][$forum_id]['display'] = ($row['display_on_index']) ? true : false;
-			$subforums[$parent_id][$forum_id]['name'] = $row['forum_name'];
-			$subforums[$parent_id][$forum_id]['orig_forum_last_post_time'] = $row['forum_last_post_time'];
-		}
-// End: Subforums list in categories
 		else if ($row['forum_type'] != FORUM_CAT)
 		{
 			$subforums[$parent_id][$forum_id]['display'] = ($row['display_on_index']) ? true : false;
@@ -288,6 +279,12 @@ function display_forums($root_data = '', $display_moderators = true, $return_mod
 	if ($mark_read == 'forums')
 	{
 		$redirect = build_url(array('mark', 'hash'));
+    //VB
+		if (defined('PHPBB_API_EMBEDDED'))
+		{
+			$redirect = _phpbbforum_replace_urls($redirect);
+		}
+		//VB
 		$token = request_var('hash', '');
 		if (check_link_hash($token, 'global'))
 		{
@@ -317,6 +314,21 @@ function display_forums($root_data = '', $display_moderators = true, $return_mod
 		get_moderators($forum_moderators, $forum_ids_moderator);
 	}
 
+
+	if (!function_exists('get_max_forum_thanks'))
+	{
+		include($phpbb_root_path . 'includes/functions_thanks_forum.' . $phpEx);
+	}
+	get_max_forum_thanks();
+	$forum_thanks_rating = array();
+	foreach ($forum_rows as $row)
+	{
+		$forum_thanks_rating[] = $row['forum_id'];
+	}
+	global $cache;
+	$cache->put('_forum_thanks_rating', $forum_thanks_rating);
+	get_thanks_forum_number();
+	$cache->destroy('_forum_thanks_rating');
 	// Used to tell whatever we have to create a dummy category or not.
 	$last_catless = true;
 	foreach ($forum_rows as $row)
@@ -326,6 +338,8 @@ function display_forums($root_data = '', $display_moderators = true, $return_mod
 		{
 			$template->assign_block_vars('forumrow', array(
 				'S_IS_CAT'				=> true,
+				'S_THANKS_FORUM_REPUT_VIEW_COLUMN' => isset($config['thanks_forum_reput_view']) ? $config['thanks_forum_reput_view_column'] : false,
+				'THANKS_REPUT_GRAPHIC_WIDTH'=> isset($config['thanks_reput_level']) ? (isset($config['thanks_reput_height']) ? sprintf('%dpx', $config['thanks_reput_level']*$config['thanks_reput_height']) : false) : false,
 				'FORUM_ID'				=> $row['forum_id'],
 				'FORUM_NAME'			=> $row['forum_name'],
 				'FORUM_DESC'			=> generate_text_for_display($row['forum_desc'], $row['forum_desc_uid'], $row['forum_desc_bitfield'], $row['forum_desc_options']),
@@ -473,6 +487,8 @@ function display_forums($root_data = '', $display_moderators = true, $return_mod
 		$template->assign_block_vars('forumrow', array(
 			'S_IS_CAT'			=> false,
 			'S_NO_CAT'			=> $catless && !$last_catless,
+			'S_THANKS_FORUM_REPUT_VIEW_COLUMN' => isset($config['thanks_forum_reput_view']) ? $config['thanks_forum_reput_view_column'] : false,
+			'THANKS_REPUT_GRAPHIC_WIDTH'=> isset($config['thanks_reput_level'])? (isset($config['thanks_reput_height']) ? sprintf('%dpx', $config['thanks_reput_level']*$config['thanks_reput_height']) : false) : false,
 			'S_IS_LINK'			=> ($row['forum_type'] == FORUM_LINK) ? true : false,
 			'S_UNREAD_FORUM'	=> $forum_unread,
 			'S_AUTH_READ'		=> $auth->acl_get('f_read', $row['forum_id']),
@@ -508,6 +524,11 @@ function display_forums($root_data = '', $display_moderators = true, $return_mod
 			'U_LAST_POST'		=> $last_post_url)
 		);
 
+
+		if (isset($config['thanks_forum_reput_view']))
+		{
+			get_thanks_forum_reput($row['forum_id']);
+		}
 		// Assign subforums loop for style authors
 		foreach ($subforums_list as $subforum)
 		{
@@ -895,67 +916,24 @@ function topic_status(&$topic_row, $replies, $unread_topic, &$folder_img, &$fold
 * Assign/Build custom bbcodes for display in screens supporting using of bbcodes
 * The custom bbcodes buttons will be placed within the template block 'custom_codes'
 */
-function display_custom_bbcodes($abbc3 = true)
+function display_custom_bbcodes()
 {
 	global $db, $template, $user;
 
 	// Start counting from 22 for the bbcode ids (every bbcode takes two ids - opening/closing)
 	$num_predefined_bbcodes = 22;
-// MOD : MSSTI ABBC3 - Start
-	global $config, $mode, $abbcode;
 
-	$abbc3 = ($abbc3 && @$config['ABBC3_UCP_MODE'] && isset($user->data['user_abbcode_mod'])) ? $user->data['user_abbcode_mod'] : $abbc3;
 
-	$display = ($mode == 'signature' || $mode == 'sig') ? 'display_on_sig' : ($mode == 'compose' ? 'display_on_pm' : 'display_on_posting');
-
-	if ($abbc3 && @$config['ABBC3_MOD'])
-	{
-		// We need to check if ABBC3 is properly initialized
-		if (!class_exists('abbcode'))
-		{
-			global $phpbb_root_path, $phpEx;
-
-			include($phpbb_root_path . 'includes/abbcode.' . $phpEx);
-		}
-
-		$abbcode->abbcode_init();
-		$abbcode->abbcode_display($mode);
-
-		$sql_where = " $display = 1 AND (abbcode = 0 AND bbcode_image = '')";
-	}
-	else
-	{
-		$sql_where = " $display = 1 AND abbcode = 0";
-
-		$template->assign_vars(array('S_ABBC3_DISABLED' => true));
-	}
-// MOD : MSSTI ABBC3 - End
-
-	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_helpline, bbcode_group
+	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_helpline
 		FROM ' . BBCODES_TABLE . '
-		WHERE ' . $sql_where . '
+		WHERE display_on_posting = 1
 		ORDER BY bbcode_tag';
 	$result = $db->sql_query($sql);
 
 	$i = 0;
 	while ($row = $db->sql_fetchrow($result))
 	{
-// MOD : MSSTI ABBC3 - Start
-		if ($abbc3 && @$config['ABBC3_MOD'])
-		{
-			// Check phpbb permissions status
-			// Check ABBC3 groups permission
-			// try to make it as quicky as it can be 
-			$auth_tag = preg_replace('#\=(.*)?#', '', strtoupper(trim($row['bbcode_tag'])));
-			if (isset($row['bbcode_group']) && $row['bbcode_group'])
-			{
-				if (!$abbcode->abbcode_permissions($auth_tag, $row['bbcode_group']))
-				{
-					continue;
-				}
-			}
-		}
-// MOD : MSSTI ABBC3 - End
+
 		// If the helpline is defined within the language file, we will use the localised version, else just use the database entry...
 		if (isset($user->lang[strtoupper($row['bbcode_helpline'])]))
 		{
@@ -1342,6 +1320,25 @@ function get_user_rank($user_rank, $user_posts, &$rank_title, &$rank_img, &$rank
 	}
 }
 
+
+/**
+* Get user's additional (normal) rank title and image if they have a special rank
+*
+* @param int $user_rank the current stored users rank id
+* @param int $user_posts the users number of posts
+* @param string &$rank_title the additional rank title will be stored here after execution, if the user has an additional rank
+* @param string &$rank_img the additional rank image as full img tag is stored here after execution, if the user has an additional rank
+* @param string &$rank_img_src the additional rank image source is stored here after execution, if the user has an additional rank
+*
+*/
+function get_user_additional_rank($user_rank, $user_posts, &$rank_title, &$rank_img, &$rank_img_src)
+{
+	if (!empty($user_rank))
+	{
+		//Always pass 0 to save duplicating get_user_rank and getting the special rank back
+		get_user_rank(0, $user_posts, $rank_title, $rank_img, $rank_img_src);
+	}
+}
 /**
 * Get user avatar
 *

@@ -3,12 +3,11 @@
 	Style name:			prosilver (the default phpBB 3.0.x style)
 	Based on style:		
 	Original author:	Tom Beddard ( http://www.subblue.com/ )
-	Modified by:		phpBB Group ( http://www.phpbb.com/ )
+	Modified by:		phpBB Group ( https://www.phpbb.com/ )
     --------------------------------------------------------------
 */
 
 @import url("common.css");
-@import url("sidebar.css");
 @import url("links.css");
 @import url("content.css");
 @import url("buttons.css");
@@ -16,5 +15,4 @@
 @import url("forms.css");
 @import url("tweaks.css");
 @import url("colours.css");
-@import url("thanks.css");
 @import url("mchat.css");

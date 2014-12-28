@@ -236,15 +236,6 @@ function display_forums($root_data = '', $display_moderators = true, $return_mod
 			$forum_rows[$parent_id]['orig_forum_last_post_time'] = $row['forum_last_post_time'];
 		}
 
-// Begin: Subforums list in categories
-// add
-		else if ($row['forum_type'] == FORUM_CAT)
-		{
-			$subforums[$parent_id][$forum_id]['display'] = ($row['display_on_index']) ? true : false;
-			$subforums[$parent_id][$forum_id]['name'] = $row['forum_name'];
-			$subforums[$parent_id][$forum_id]['orig_forum_last_post_time'] = $row['forum_last_post_time'];
-		}
-// End: Subforums list in categories
 		else if ($row['forum_type'] != FORUM_CAT)
 		{
 			$subforums[$parent_id][$forum_id]['display'] = ($row['display_on_index']) ? true : false;
@@ -897,67 +888,24 @@ function topic_status(&$topic_row, $replies, $unread_topic, &$folder_img, &$fold
 * Assign/Build custom bbcodes for display in screens supporting using of bbcodes
 * The custom bbcodes buttons will be placed within the template block 'custom_codes'
 */
-function display_custom_bbcodes($abbc3 = true)
+function display_custom_bbcodes()
 {
 	global $db, $template, $user;
 
 	// Start counting from 22 for the bbcode ids (every bbcode takes two ids - opening/closing)
 	$num_predefined_bbcodes = 22;
-// MOD : MSSTI ABBC3 - Start
-	global $config, $mode, $abbcode;
 
-	$abbc3 = ($abbc3 && @$config['ABBC3_UCP_MODE'] && isset($user->data['user_abbcode_mod'])) ? $user->data['user_abbcode_mod'] : $abbc3;
 
-	$display = ($mode == 'signature' || $mode == 'sig') ? 'display_on_sig' : ($mode == 'compose' ? 'display_on_pm' : 'display_on_posting');
-
-	if ($abbc3 && @$config['ABBC3_MOD'])
-	{
-		// We need to check if ABBC3 is properly initialized
-		if (!class_exists('abbcode'))
-		{
-			global $phpbb_root_path, $phpEx;
-
-			include($phpbb_root_path . 'includes/abbcode.' . $phpEx);
-		}
-
-		$abbcode->abbcode_init();
-		$abbcode->abbcode_display($mode);
-
-		$sql_where = " $display = 1 AND (abbcode = 0 AND bbcode_image = '')";
-	}
-	else
-	{
-		$sql_where = " $display = 1 AND abbcode = 0";
-
-		$template->assign_vars(array('S_ABBC3_DISABLED' => true));
-	}
-// MOD : MSSTI ABBC3 - End
-
-	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_helpline, bbcode_group
+	$sql = 'SELECT bbcode_id, bbcode_tag, bbcode_helpline
 		FROM ' . BBCODES_TABLE . '
-		WHERE ' . $sql_where . '
+		WHERE display_on_posting = 1
 		ORDER BY bbcode_tag';
 	$result = $db->sql_query($sql);
 
 	$i = 0;
 	while ($row = $db->sql_fetchrow($result))
 	{
-// MOD : MSSTI ABBC3 - Start
-		if ($abbc3 && @$config['ABBC3_MOD'])
-		{
-			// Check phpbb permissions status
-			// Check ABBC3 groups permission
-			// try to make it as quicky as it can be 
-			$auth_tag = preg_replace('#\=(.*)?#', '', strtoupper(trim($row['bbcode_tag'])));
-			if (isset($row['bbcode_group']) && $row['bbcode_group'])
-			{
-				if (!$abbcode->abbcode_permissions($auth_tag, $row['bbcode_group']))
-				{
-					continue;
-				}
-			}
-		}
-// MOD : MSSTI ABBC3 - End
+
 		// If the helpline is defined within the language file, we will use the localised version, else just use the database entry...
 		if (isset($user->lang[strtoupper($row['bbcode_helpline'])]))
 		{
@@ -1343,6 +1291,7 @@ function get_user_rank($user_rank, $user_posts, &$rank_title, &$rank_img, &$rank
 		}
 	}
 }
+
 
 /**
 * Get user avatar

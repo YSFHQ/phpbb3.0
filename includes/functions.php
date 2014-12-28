@@ -2623,13 +2623,6 @@ function redirect($url, $return = false, $disable_cd_check = false)
 	{
 		return $url;
 	}
-  //VB
-	if (defined('PHPBB_API_EMBEDDED'))
-	{
-		phpbbforum_redirect($url);
-	}
-
-	//\VB
 
 	// Redirect via an HTML form for PITA webservers
 	if (@preg_match('#Microsoft|WebSTAR|Xitami#', getenv('SERVER_SOFTWARE')))
@@ -2775,23 +2768,7 @@ function meta_refresh($time, $url, $disable_cd_check = false)
 	global $template;
 
 	$url = redirect($url, true, $disable_cd_check);
-  //VB
-	if (defined('PHPBB_API_EMBEDDED'))
-	{
-		global $_phpbb_embed_mode;
-		if ($_phpbb_embed_mode['redirect'])
-		{
-		  redirect($url);
-		}  
-	}
-	//\VB
 	$url = str_replace('&', '&amp;', $url);
-	//VB
-	if (defined('PHPBB_API_EMBEDDED'))
-	{
-		$url = phpbbforum_redirect($url, $time);
-	}
-	//\VB
 
 	// For XHTML compatibility we change back & to &amp;
 	$template->assign_vars(array(
@@ -3031,13 +3008,6 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 	$use_page = ($u_action) ? $phpbb_root_path . $u_action : $phpbb_root_path . str_replace('&', '&amp;', $user->page['page']);
 	$u_action = reapply_sid($use_page);
 	$u_action .= ((strpos($u_action, '?') === false) ? '?' : '&amp;') . 'confirm_key=' . $confirm_key;
-  //VB
-	if (defined('PHPBB_API_EMBEDDED'))
-	{
-		$u_action = _phpbbforum_replace_urls($u_action, true);
-	}
-
-	//\VB
 
 	$template->assign_vars(array(
 		'MESSAGE_TITLE'		=> (!isset($user->lang[$title])) ? $user->lang['CONFIRM'] : $user->lang[$title],
@@ -3071,16 +3041,7 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 
 	if (!class_exists('phpbb_captcha_factory'))
 	{
-		//VB
-		if (defined('PHPBB_API_EMBEDDED')) 
-		{
-		include_once($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
-		}
-		else
-	{
 		include($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
-	}
-		//\VB
 	}
 
 	$err = '';
@@ -3166,15 +3127,6 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		if ($result['status'] == LOGIN_SUCCESS)
 		{
 			$redirect = request_var('redirect', "{$phpbb_root_path}index.$phpEx");
-      //VB
-			if (defined('PHPBB_API_EMBEDDED'))
-			{
-				if ($redirect == "index.$phpEx")
-				{
-					$redirect = "{$phpbb_root_path}index.$phpEx";
-				}  
-			}
-			//\VB
 			$message = ($l_success) ? $l_success : $user->lang['LOGIN_REDIRECT'];
 			$l_redirect = ($admin) ? $user->lang['PROCEED_TO_ACP'] : (($redirect === "{$phpbb_root_path}index.$phpEx" || $redirect === "index.$phpEx") ? $user->lang['RETURN_INDEX'] : $user->lang['RETURN_PAGE']);
 
@@ -3186,13 +3138,6 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 			{
 				return;
 			}
-      //VB
-			if (defined('PHPBB_API_EMBEDDED'))
-			{
-				_phpbb_api_hook('login', array('username' => $username, 'password' => $password, 'redirect' => $redirect));
-			}
-
-			//\VB
 
 			/*
 			* Welcome PM on First Login (WPM)
@@ -4595,30 +4540,12 @@ function page_header($page_title = '', $display_online_list = true, $item_id = 0
 	// Generate logged in/logged out status
 	if ($user->data['user_id'] != ANONYMOUS)
 	{
-		//VB
-		if (function_exists('phpbbforum_get_drupal_login_url'))
-		{
-			$u_login_logout = phpbbforum_get_drupal_login_url('logout');
-		}  
-		else
-	{
 		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=logout', true, $user->session_id);
-		}
-		//\VB
 		$l_login_logout = sprintf($user->lang['LOGOUT_USER'], $user->data['username']);
 	}
 	else
 	{
-		//VB
-		if (function_exists('phpbbforum_get_drupal_login_url'))
-		{
-			$u_login_logout = phpbbforum_get_drupal_login_url('user/login');
-	}
-	else
-	{
 		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login');
-		}
-		//\VB
 		$l_login_logout = $user->lang['LOGIN'];
 	}
 
@@ -4720,7 +4647,6 @@ function page_header($page_title = '', $display_online_list = true, $item_id = 0
 
 	// Send a proper content-language to the output
 	$user_lang = $user->lang['USER_LANG'];
-	$user->add_lang('mods/thanks_mod');
 	if (strpos($user_lang, '-x-') !== false)
 	{
 		$user_lang = substr($user_lang, 0, strpos($user_lang, '-x-'));
@@ -4761,12 +4687,7 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 }
 //END mChat Mod
 
-// MOD : MSSTI ABBC3 - Start
-	if (defined('IN_ABBC3'))
-	{
-		$user->add_lang('mods/abbcode');
-	}
-// MOD : MSSTI ABBC3 - End
+
 
     //-- mod: Silverbar MOD --------------------------------------------------
 	//-- add
@@ -4827,8 +4748,6 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 		'U_POPUP_PM'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=popup'),
 		'UA_POPUP_PM'			=> addslashes(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=popup')),
 		'U_MEMBERLIST'			=> append_sid("{$phpbb_root_path}memberlist.$phpEx"),
-		'U_THANKSLIST'			=> append_sid("{$phpbb_root_path}thankslist.$phpEx"),
-		'U_REPUT_TOPLIST'		=> append_sid("{$phpbb_root_path}toplist.$phpEx"),
 		'U_VIEWONLINE'			=> ($auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel')) ? append_sid("{$phpbb_root_path}viewonline.$phpEx") : '',
 		'U_LOGIN_LOGOUT'		=> $u_login_logout,
 		'U_INDEX'				=> append_sid("{$phpbb_root_path}index.$phpEx"),
@@ -4837,11 +4756,6 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 		'U_PROFILE'				=> append_sid("{$phpbb_root_path}ucp.$phpEx"),
 		'U_MODCP'				=> append_sid("{$phpbb_root_path}mcp.$phpEx", false, true, $user->session_id),
 		'U_FAQ'					=> append_sid("{$phpbb_root_path}faq.$phpEx"),
-// BEGIN mChat Mod
-		'U_MCHAT'				=> $auth->acl_get('u_mchat_view') && $mchat_custom_page ? append_sid("{$phpbb_root_path}mchat.$phpEx") : '',
-		'S_MCHAT_ON_INDEX'		=> (!empty($config['mchat_on_index']) && !empty($user->data['user_mchat_index'])) ? true : false,
-		'S_MCHAT_ENABLE'		=> (!empty($config['mchat_enable']) && $auth->acl_get('u_mchat_view')) ? true : false,
-// END mChat Mod
 		'U_SEARCH_SELF'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=egosearch'),
 		'U_SEARCH_NEW'			=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=newposts'),
 		'U_SEARCH_UNANSWERED'	=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unanswered'),
@@ -4872,8 +4786,6 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 		'S_DISPLAY_SEARCH'		=> (!$config['load_search']) ? 0 : (isset($auth) ? ($auth->acl_get('u_search') && $auth->acl_getf_global('f_search')) : 1),
 		'S_DISPLAY_PM'			=> ($config['allow_privmsg'] && !empty($user->data['is_registered']) && ($auth->acl_get('u_readpm') || $auth->acl_get('u_sendpm'))) ? true : false,
 		'S_DISPLAY_MEMBERLIST'	=> (isset($auth)) ? $auth->acl_get('u_viewprofile') : 0,
-		'S_DISPLAY_THANKSLIST'	=> (isset($auth)) ? $auth->acl_get('u_viewthanks') : 0,
-		'S_DISPLAY_TOPLIST'		=> (isset($auth)) ? $auth->acl_get('u_viewtoplist') : 0,
 		'S_NEW_PM'				=> ($s_privmsg_new) ? 1 : 0,
 		'S_REGISTER_ENABLED'	=> ($config['require_activation'] != USER_ACTIVATION_DISABLE) ? true : false,
 		'S_FORUM_ID'			=> $forum_id,
@@ -4925,17 +4837,8 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 
 		'A_COOKIE_SETTINGS'		=> addslashes('; path=' . $config['cookie_path'] . ((!$config['cookie_domain'] || $config['cookie_domain'] == 'localhost' || $config['cookie_domain'] == '127.0.0.1') ? '' : '; domain=' . $config['cookie_domain']) . ((!$config['cookie_secure']) ? '' : '; secure')),
 	));
-  //VB
-	if (!defined('PHPBB_API_EMBEDDED'))
-	{
 
 
-	//-- mod: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//
-	//-- add
-	$user->add_lang('mods/Silverbar_MOD');
-	$redirectside = $user->page['page_dir'] ? '' : '&amp;redirect=' . urlencode(str_replace('&amp;', '&', build_url(array('_f_'))));
-	$template->assign_var('S_LOGIN_SIDE', append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login' .  $redirectside));
-	//-- end: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//
 	// application/xhtml+xml not used because of IE
 	header('Content-type: text/html; charset=UTF-8');
 
@@ -4948,13 +4851,6 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 		// Let reverse proxies know we detected a bot.
 		header('X-PHPBB-IS-BOT: yes');
 	}
-	}
-	else
-	{
-		global $_phpbb_result;
-		$_phpbb_result['page_title'] = $page_title;
-	}
-	//\VB
 
 	return;
 }
@@ -5064,13 +4960,6 @@ function page_footer($run_cron = true)
 			$template->assign_var('RUN_CRON_TASK', '<img src="' . append_sid($phpbb_root_path . 'cron.' . $phpEx, 'cron_type=' . $cron_type) . '" width="1" height="1" alt="cron" />');
 		}
 	}
-  //VB
-	if (defined('PHPBB_API_EMBEDDED'))
-	{
-		ob_start();
-	}  
-
-	//\VB
 
 	$template->display('body');
 
@@ -5091,17 +4980,12 @@ function garbage_collection()
 	{
 		$cache->unload();
 	}
-	//VB
-	if (!defined('PHPBB_API_EMBEDDED'))
-	{
 
 	// Close our DB connection.
 	if (!empty($db))
 	{
 		$db->sql_close();
 	}
-	}
-	//\VB
 }
 
 /**

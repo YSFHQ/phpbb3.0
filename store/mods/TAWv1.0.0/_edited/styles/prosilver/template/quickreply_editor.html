@@ -1,3 +1,4 @@
+<!-- IF not S_DISABLE_QR -->
 <form id="postform" method="post" action="{U_QR_ACTION}">
 	<div class="panel" id="postingbox">
 		<div class="inner"><span class="corners-top"><span></span></span>
@@ -5,6 +6,7 @@
 		<h2>{L_QUICKREPLY}</h2>
 		
 		<fieldset class="fields2">
+		<!-- IF S_TOPIC_AGE_WARNING --><p class="error">{TOPIC_AGE_WARNING}</p><!-- ENDIF -->
 			<!-- IF S_SHOW_TOPIC_ICONS -->
 				<dl>
 					<dt><label for="icon">{L_ICON}:</label></dt>
@@ -32,7 +34,7 @@
 				<!-- INCLUDE {CAPTCHA_TEMPLATE} -->
 			<!-- ENDIF -->
 			
-			<!-- INCLUDE posting_buttons.html -->
+			<!-- includee posting_buttons.html -->
 			
 			<!-- IF S_SMILIES_ALLOWED and .smiley -->
 				<div id="smiley-box">
@@ -54,7 +56,7 @@
 		
 		<span class="corners-bottom"><span></span></span></div>
 	</div>
-	
+
 	<div class="panel bg2">
 		<div class="inner"><span class="corners-top"><span></span></span>
 		
@@ -69,4 +71,3 @@
 		<span class="corners-bottom"><span></span></span></div>
 	</div>
 </form>
-<!-- ENDIF -->

@@ -242,29 +242,6 @@ class mcp_warn
 		}
 
 		$user_id = $user_row['user_id'];
-// BEGIN Warning Reasons Mod
-		$user->add_lang('mods/warning_reasons');
-		$warning_reason_id = request_var('warning_reason_id', 0);
-		$error = array();
-		
-		// must have a selection
-		if ($warning_reason_id == 0 && $action == 'add_warning')
-		{
-			$error[] = 'SELECT_REASON';
-		}
-		
-		if (!function_exists('warning_reasons'))
-		{
-			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
-		}
-		$warning_reason = warning_reasons($warning_reason_id, $user_id);
-		
-		$warning = (strtolower($warning_reason['reason_title']) == 'other') ? $warning : sprintf($user->lang['WARNING_TEMPLATE'], $warning_reason['reason_description'], $warning);
-		if (!$warning)
-		{
-			$error[] = 'EMPTY_REPORT';
-		}
-// END Warning Reasons Mod
 
 		if (strpos($this->u_action, "&amp;f=$forum_id&amp;p=$post_id") === false)
 		{
@@ -291,10 +268,7 @@ class mcp_warn
 			$notify = false;
 		}
 
-// BEGIN Warning Reasons Mod
-		// added && !sizeof($error) below
-		if ($warning && $action == 'add_warning' && !sizeof($error))
-// END Warning Reasons Mod
+		if ($warning && $action == 'add_warning')
 		{
 			if (check_form_key('mcp_warn'))
 			{
@@ -311,19 +285,6 @@ class mcp_warn
 		}
 
 		// OK, they didn't submit a warning so lets build the page for them to do so
-// BEGIN Warning Reasons Mod		
-		
-		// Replace "error" strings with their real, localised form
-		$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
-		
-		
-		// generate the warning reasons
-		if (!function_exists('display_warning_reasons'))
-		{
-			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
-		}
-		display_warning_reasons($warning_reason_id);
-// END Warning Reasons Mod
 
 		// We want to make the message available here as a reminder
 		// Parse the message and subject
@@ -361,10 +322,6 @@ class mcp_warn
 
 		$template->assign_vars(array(
 			'U_POST_ACTION'		=> $this->u_action,
-// BEGIN  Warning Reasons Mod
-			'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
-			'AJAX_WARNING_INFO'	=> append_sid("{$phpbb_root_path}ajax_warning_reasons.$phpEx", 'warning_id=WARNING_ID'),			
-// END   Warning Reasons Mod
 
 			'POST'				=> $message,
 			'USERNAME'			=> $user_row['username'],
@@ -417,29 +374,6 @@ class mcp_warn
 		}
 
 		$user_id = $user_row['user_id'];
-// BEGIN Warning Reasons Mod
-		$user->add_lang('mods/warning_reasons');
-		$warning_reason_id = request_var('warning_reason_id', 0);
-		$error = array();
-		
-		// must have a selection
-		if ($warning_reason_id == 0 && $action == 'add_warning')
-		{
-			$error[] = 'SELECT_REASON';
-		}
-		
-		if (!function_exists('warning_reasons'))
-		{
-			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
-		}
-		$warning_reason = warning_reasons($warning_reason_id, $user_id);
-		
-		$warning = (strtolower($warning_reason['reason_title']) == 'other') ? $warning : sprintf($user->lang['WARNING_TEMPLATE'], $warning_reason['reason_description'], $warning);
-		if (!$warning)
-		{
-			$error[] = 'EMPTY_REPORT';
-		}
-// END Warning Reasons Mod
 
 		if (strpos($this->u_action, "&amp;u=$user_id") === false)
 		{
@@ -466,10 +400,7 @@ class mcp_warn
 			$notify = false;
 		}
 
-// BEGIN Warning Reasons Mod
-		// added && !sizeof($error) below
-		if ($warning && $action == 'add_warning' && !sizeof($error))
-// END Warning Reasons Mod
+		if ($warning && $action == 'add_warning')
 		{
 			if (check_form_key('mcp_warn'))
 			{
@@ -504,23 +435,8 @@ class mcp_warn
 		$avatar_img = get_user_avatar($user_row['user_avatar'], $user_row['user_avatar_type'], $user_row['user_avatar_width'], $user_row['user_avatar_height']);
 
 		// OK, they didn't submit a warning so lets build the page for them to do so
-// BEGIN Warning Reasons Mod		
-		
-		// Replace "error" strings with their real, localised form
-		$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
-		// generate the warning reasons
-		if (!function_exists('display_warning_reasons'))
-		{
-			include($phpbb_root_path . 'includes/functions_warning_reasons.' . $phpEx);
-		}
-		display_warning_reasons($warning_reason_id);
-// END Warning Reasons Mod
 		$template->assign_vars(array(
 			'U_POST_ACTION'		=> $this->u_action,
-// BEGIN  Warning Reasons Mod
-			'ERROR'				=> (sizeof($error)) ? implode('<br />', $error) : '',
-			'AJAX_WARNING_INFO'	=> append_sid("{$phpbb_root_path}ajax_warning_reasons.$phpEx", 'warning_id=WARNING_ID'),
-// END   Warning Reasons Mod
 
 			'RANK_TITLE'		=> $rank_title,
 			'JOINED'			=> $user->format_date($user_row['user_regdate']),

@@ -183,19 +183,6 @@ $lang = array_merge($lang, array(
 	'SMILIES_LIMIT_EXPLAIN'			=> 'Maximum number of smilies in a post. Set to 0 for unlimited smilies.',
 	'SMILIES_PER_PAGE'				=> 'Smilies per page',
 	'TOPICS_PER_PAGE'				=> 'Topics per page',
-//! Topic Age Warning - imkingdavid
-	'TOPIC_AGE_WARNING'				=> 'Topic Age Warning Settings',
-	'TAW_INTERVAL'					=> 'Topic Age Warning interval',
-	'TAW_INTERVAL_EXPLAIN'			=> 'Number of days, months or years after which a user will recieve the topic age warning. <strong>If set to 0, the MOD will be disabled.</strong>',
-	'TAW_LOCK'						=> 'Lock old topic',
-	'TAW_LOCK_EXPLAIN'				=> 'If \'Yes\', topics to which a user attempts to reply after the set interval will be automatically locked.',
-	'TAW_AUTHOR_EXEMPT'				=> 'Exempt author from Topic Age Warning',
-	'TAW_AUTHOR_EXEMPT_EXPLAIN'		=> 'If \'Yes\', the author of the topic will be able to reply to their own topics, even after the set interval is passed.',
-	'TAW_LAST_POST'					=> 'Use Last Reply time',
-	'TAW_LAST_POST_EXPLAIN'			=> 'If \'Yes\', the old topics will be determined using the time of the last reply to the topic. If \'No\', old topics will be determined using the time of the topic\'s creation.',
-	'TAW_QUICKREPLY'				=> 'Allow quick reply (where enabled) in old topics',
-	'TAW_QUICKREPLY_EXPLAIN'		=> 'If \'Yes\', quick reply will still be usable in old topics (where enabled). If \'No\', quick reply will not show up in old topics, even if enabled in that forum.',
-	//! END Topic Age Warning - imkingdavid
 ));
 
 // Signature Settings

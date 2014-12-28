@@ -35,13 +35,6 @@ class mcp_reports
 	{
 		global $auth, $db, $user, $template, $cache;
 		global $config, $phpbb_root_path, $phpEx, $action;
-    //VB
-		if (defined('PHPBB_API_EMBEDDED'))
-		{
-			$action =_phpbbforum_get_cp_action_request($action);
-		}
-
-		//\VB
 
 		include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 

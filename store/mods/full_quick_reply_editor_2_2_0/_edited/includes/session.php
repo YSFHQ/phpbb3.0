@@ -267,7 +267,8 @@ class session
 
 		// Why no forwarded_for et al? Well, too easily spoofed. With the results of my recent requests
 		// it's pretty clear that in the majority of cases you'll at least be left with a proxy/cache ip.
-		$this->ip = (!empty($_SERVER['REMOTE_ADDR'])) ? (string) $_SERVER['REMOTE_ADDR'] : '';
+		//$this->ip = (!empty($_SERVER['REMOTE_ADDR'])) ? (string) $_SERVER['REMOTE_ADDR'] : ''; //without Cloudflare
+		$this->ip = (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) ? (string) $_SERVER['HTTP_CF_CONNECTING_IP'] : ((!empty($_SERVER['REMOTE_ADDR'])) ? (string) $_SERVER['REMOTE_ADDR'] : ''); //with Cloudflare support
 		$this->ip = preg_replace('# {2,}#', ' ', str_replace(',', ' ', $this->ip));
 
 		// split the list of IPs
@@ -325,7 +326,7 @@ class session
 		// if no session id is set, redirect to index.php
 		if (defined('NEED_SID') && (!isset($_GET['sid']) || $this->session_id !== $_GET['sid']))
 		{
-			send_status_line(401, 'Not authorized');
+			send_status_line(401, 'Unauthorized');
 			redirect(append_sid("{$phpbb_root_path}index.$phpEx"));
 		}
 
@@ -1513,7 +1514,7 @@ class user extends session
 	var $img_array = array();
 
 	// Able to add new options (up to id 31)
-	var $keyoptions = array('viewimg' => 0, 'viewflash' => 1, 'viewsmilies' => 2, 'viewsigs' => 3, 'viewavatars' => 4, 'viewcensors' => 5, 'attachsig' => 6, 'bbcode' => 8, 'smilies' => 9, 'popuppm' => 10, 'viewquickreply' => 11, 'sig_bbcode' => 15, 'sig_smilies' => 16, 'sig_links' => 17);
+	var $keyoptions = array('viewimg' => 0, 'viewflash' => 1, 'viewsmilies' => 2, 'viewsigs' => 3, 'viewavatars' => 4, 'viewcensors' => 5, 'attachsig' => 6, 'bbcode' => 8, 'smilies' => 9, 'popuppm' => 10, 'sig_bbcode' => 15, 'sig_smilies' => 16, 'sig_links' => 17);
 
 	/**
 	* Constructor to set the lang path
@@ -1626,6 +1627,12 @@ class user extends session
 		{
 			// Set up style
 			$style = ($style) ? $style : ((!$config['override_user_style']) ? $this->data['user_style'] : $config['default_style']);
+      //VB
+			if (defined('PHPBB_API_EMBEDDED'))
+			{
+				$style = phpbb_get_embed_style($style);
+			}
+			//\VB
 		}
 
 		$sql = 'SELECT s.style_id, t.template_storedb, t.template_path, t.template_id, t.bbcode_bitfield, t.template_inherits_id, t.template_inherit_path, c.theme_path, c.theme_name, c.theme_storedb, c.theme_id, i.imageset_path, i.imageset_id, i.imageset_name
@@ -1661,7 +1668,7 @@ class user extends session
 
 		if (!$this->theme)
 		{
-			trigger_error('Could not get style data', E_USER_ERROR);
+			trigger_error('NO_STYLE_DATA', E_USER_ERROR);
 		}
 
 		// Now parse the cfg file and cache it
@@ -1857,9 +1864,15 @@ class user extends session
 			{
 				send_status_line(503, 'Service Unavailable');
 			}
+                        //VB
+                        if (!defined('PHPBB_API_EMBEDDED'))
+
+                        {
 
 			$message = (!empty($config['board_disable_msg'])) ? $config['board_disable_msg'] : 'BOARD_DISABLE';
 			trigger_error($message);
+                        }
+                        //\VB
 		}
 
 		// Is load exceeded?
@@ -1876,7 +1889,12 @@ class user extends session
 					{
 						send_status_line(503, 'Service Unavailable');
 					}
+                                        //VB
+                                        if (!defined('PHPBB_API_EMBEDDED'))
+                                        {
 					trigger_error('BOARD_UNAVAILABLE');
+                                        }
+                                        //\VB
 				}
 			}
 		}
@@ -2156,7 +2174,8 @@ class user extends session
 				'is_short'		=> strpos($format, '|'),
 				'format_short'	=> substr($format, 0, strpos($format, '|')) . '||' . substr(strrchr($format, '|'), 1),
 				'format_long'	=> str_replace('|', '', $format),
-				'lang'			=> $this->lang['datetime'],
+				// Filter out values that are not strings (e.g. arrays) for strtr().
+				'lang'			=> array_filter($this->lang['datetime'], 'is_string'),
 			);
 
 			// Short representation of month in format? Some languages use different terms for the long and short format of May
@@ -2262,7 +2281,17 @@ class user extends session
 	function img($img, $alt = '', $width = false, $suffix = '', $type = 'full_tag')
 	{
 		static $imgs;
+		//VB
+		if (!defined('PHPBB_API_EMBEDDED')) 
+		{
 		global $phpbb_root_path;
+		}
+		else
+		{
+		global $phpbb_config;
+		$phpbb_root_path = $phpbb_config['forum_url'] . '/';
+		}
+		//\VB
 
 		$img_data = &$imgs[$img];
 
@@ -2407,8 +2436,17 @@ class user extends session
 		if (!function_exists('remove_newly_registered'))
 		{
 			global $phpbb_root_path, $phpEx;
+			//VB
+			if (!defined('PHPBB_API_EMBEDDED'))
+			{
 
 			include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+		}
+			else
+			{
+			include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+			}  
+			//\VB
 		}
 		if ($group = remove_newly_registered($this->data['user_id'], $this->data))
 		{

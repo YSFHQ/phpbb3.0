@@ -114,16 +114,18 @@ if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('
 }
 
 
-//Begin: National_Flag
-if (!empty($config['allow_flags']))
+// Generate thankslist if required ...
+if (!function_exists('get_thanks'))
 {
-	if (!function_exists('top_flags'))
-	{
-		include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
-	}
-	top_flags();
+	include($phpbb_root_path . 'includes/functions_thanks.' . $phpEx);	
 }
-//End: National_Flag
+$thanks_list = '';
+$ex_fid_ary = array_keys($auth->acl_getf('!f_read', true));
+$ex_fid_ary = (sizeof($ex_fid_ary)) ? $ex_fid_ary : 0;
+if (isset($config['thanks_top_number']) ? $config['thanks_top_number'] : false)
+{
+	$thanks_list = get_toplist_index($ex_fid_ary);
+}
 // Assign index specific vars
 $template->assign_vars(array(
 	'TOTAL_POSTS'	=> sprintf($user->lang[$l_total_post_s], $total_posts),
@@ -133,6 +135,9 @@ $template->assign_vars(array(
 
 	'LEGEND'		=> $legend,
 	'BIRTHDAY_LIST'	=> $birthday_list,
+	'THANKS_LIST'	=> $thanks_list,
+	'S_THANKS_LIST'	=> isset($config['thanks_top_number']) ? $config['thanks_top_number'] : false,
+	'L_TOP_THANKS_LIST'	=> isset($config['thanks_top_number']) ? sprintf($user->lang['REPUT_TOPLIST'], $config['thanks_top_number']) : false,
 
 	'FORUM_IMG'				=> $user->img('forum_read', 'NO_UNREAD_POSTS'),
 	'FORUM_UNREAD_IMG'			=> $user->img('forum_unread', 'UNREAD_POSTS'),
@@ -147,37 +152,6 @@ $template->assign_vars(array(
 );
 
 
-// BEGIN mChat Mod
-$mchat_installed = (!empty($config['mchat_version']) && !empty($config['mchat_enable'])) ? true : false;
-if ($mchat_installed && $auth->acl_get('u_mchat_view'))
-{
-	if(!defined('MCHAT_INCLUDE') && $config['mchat_on_index'] && !empty($user->data['user_mchat_index']))
-	{
-		define('MCHAT_INCLUDE', true);
-		$mchat_include_index = true;
-		include($phpbb_root_path . 'mchat.' . $phpEx);
-	}	
-
-	if (!empty($config['mchat_stats_index']) && !empty($user->data['user_mchat_stats_index']))
-	{
-		if (!function_exists('mchat_users'))
-		{
-			include($phpbb_root_path . 'includes/functions_mchat.' . $phpEx);
-		}
-		// Add lang file
-		$user->add_lang('mods/mchat_lang');
-		// stats display
-		$mchat_session_time = !empty($config_mchat['timeout']) ? $config_mchat['timeout'] : 3600;// you can change this number to a greater number for longer chat sessions
-		$mchat_stats = mchat_users($mchat_session_time);
-		$template->assign_vars(array(
-			'MCHAT_INDEX_STATS'	=> true,
-			'MCHAT_INDEX_USERS_COUNT'	=> $mchat_stats['mchat_users_count'],
-			'MCHAT_INDEX_USERS_LIST'	=> $mchat_stats['online_userlist'],
-			'L_MCHAT_ONLINE_EXPLAIN'	=> $mchat_stats['refresh_message'],	
-		));
-	}
-}	
-// END mChat Mod
 // Output page
 page_header($user->lang['INDEX']);
 

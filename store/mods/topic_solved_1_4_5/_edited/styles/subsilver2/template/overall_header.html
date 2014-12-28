@@ -13,6 +13,7 @@
 {META}
 <title>{SITENAME} &bull; <!-- IF S_IN_MCP -->{L_MCP} &bull; <!-- ELSEIF S_IN_UCP -->{L_UCP} &bull; <!-- ENDIF -->{PAGE_TITLE}</title>
 <!-- IF PHPBB_BASE --><base href="{PHPBB_BASE}" /><!-- ENDIF -->
+<!-- IF PHPBB_BASE --><base href="{PHPBB_BASE}" /><!-- ENDIF -->
 
 <!-- IF S_ENABLE_FEEDS -->
 	<!-- IF S_ENABLE_FEEDS_OVERALL --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {SITENAME}" href="{U_FEED}" /><!-- ENDIF -->
@@ -23,6 +24,9 @@
 	<!-- IF S_ENABLE_FEEDS_FORUM and S_FORUM_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_FORUM} - {FORUM_NAME}" href="{U_FEED}?f={S_FORUM_ID}" /><!-- ENDIF -->
 	<!-- IF S_ENABLE_FEEDS_TOPIC and S_TOPIC_ID --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {L_TOPIC} - {TOPIC_TITLE}" href="{U_FEED}?f={S_FORUM_ID}&amp;t={S_TOPIC_ID}" /><!-- ENDIF -->
 <!-- ENDIF -->
+
+
+<!-- IF WP_HEADERINFO_EARLY -->{WP_HEADERINFO_EARLY}<!-- ENDIF -->
 
 
 <!-- IF WP_HEADERINFO_EARLY -->{WP_HEADERINFO_EARLY}<!-- ENDIF -->
@@ -185,9 +189,10 @@ function marklist(id, name, state)
 <script type="text/javascript" src="{ROOT_PATH}mchat/jquery_cookie_mini.js"></script>
 <!-- ENDIF -->
 
-<!-- MOD : MSSTI ABBC3 (v{S_ABBC3_VERSION}) - Start //-->
-<!-- INCLUDE ./../../abbcode/abbcode_header.html -->
-<!-- MOD : MSSTI ABBC3 (v{S_ABBC3_VERSION}) - End //-->
+
+
+
+<!-- IF WP_HEADERINFO_LATE -->{WP_HEADERINFO_LATE}<!-- ENDIF -->
 </head>
 <body class="{S_CONTENT_DIRECTION}">
 
@@ -220,6 +225,7 @@ function marklist(id, name, state)
 			</td>
 			<td class="genmed" align="{S_CONTENT_FLOW_END}">
 <!-- IF S_BLOG --><a href="{U_BLOG}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="{L_BLOG}" />{L_BLOG} </a>&nbsp;<!-- ENDIF -->
+<!-- IF S_BLOG --><a href="{U_BLOG}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="{L_BLOG}" />{L_BLOG} </a>&nbsp;<!-- ENDIF -->
 				<a href="{U_FAQ}"><img src="{T_THEME_PATH}/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> {L_FAQ}</a>
 				<!-- IF S_MCHAT_ENABLE and U_MCHAT -->&nbsp; &nbsp;<a href="{U_MCHAT}#mChat"><img src="{T_THEME_PATH}/images/icon_mini_groups.gif" width="12" height="13" alt="{L_MCHAT_TITLE}" /> {L_MCHAT_TITLE}</a><!-- ENDIF -->
 				<!-- IF S_DISPLAY_SEARCH -->&nbsp; &nbsp;<a href="{U_SEARCH}"><img src="{T_THEME_PATH}/images/icon_mini_search.gif" width="12" height="13" alt="*" /> {L_SEARCH}</a><!-- ENDIF -->
@@ -248,10 +254,10 @@ function marklist(id, name, state)
 <div id="wrapcentre">
 
 	<!-- IF S_DISPLAY_SEARCH -->
-	<p class="searchbar" style="line-height:1.3">
-		<span style="float: {S_CONTENT_FLOW_BEGIN};"><a href="{U_SEARCH_UNSOLVED_TOPICS}">{L_SEARCH_UNSOLVED}</a><br /><a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a> | <a href="{U_SEARCH_ACTIVE_TOPICS}">{L_SEARCH_ACTIVE_TOPICS}</a></span>
+	<p class="searchbar">
+		<span style="float: {S_CONTENT_FLOW_BEGIN};"><a href="{U_SEARCH_UNANSWERED}">{L_SEARCH_UNANSWERED}</a> | <a href="{U_SEARCH_ACTIVE_TOPICS}">{L_SEARCH_ACTIVE_TOPICS}</a></span>
 		<!-- IF S_USER_LOGGED_IN or S_LOAD_UNREADS -->
-		<span style="float: {S_CONTENT_FLOW_END};"><a href="{U_SEARCH_YOUR_UNSOLVED_TOPICS}">{L_SEARCH_YOUR_UNSOLVED}</a><br /><!-- IF S_LOAD_UNREADS --><a href="{U_SEARCH_UNREAD}">{L_SEARCH_UNREAD}</a><!-- IF S_USER_LOGGED_IN --> | <!-- ENDIF --><!-- ENDIF --><!-- IF S_USER_LOGGED_IN --><a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a> | <a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a><!-- ENDIF --></span>
+		<span style="float: {S_CONTENT_FLOW_END};"><!-- IF S_LOAD_UNREADS --><a href="{U_SEARCH_UNREAD}">{L_SEARCH_UNREAD}</a><!-- IF S_USER_LOGGED_IN --> | <!-- ENDIF --><!-- ENDIF --><!-- IF S_USER_LOGGED_IN --><a href="{U_SEARCH_NEW}">{L_SEARCH_NEW}</a> | <a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a><!-- ENDIF --></span>
 		<!-- ENDIF -->
 	</p>
 	<!-- ENDIF -->

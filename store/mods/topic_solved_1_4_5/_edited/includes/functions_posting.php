@@ -288,13 +288,15 @@ function posting_gen_topic_icons($mode, $icon_id)
 
 	if (sizeof($icons))
 	{
+		$root_path = (defined('PHPBB_USE_BOARD_URL_PATH') && PHPBB_USE_BOARD_URL_PATH) ? generate_board_url() . '/' : $phpbb_root_path;
+
 		foreach ($icons as $id => $data)
 		{
 			if ($data['display'])
 			{
 				$template->assign_block_vars('topic_icon', array(
 					'ICON_ID'		=> $id,
-					'ICON_IMG'		=> $phpbb_root_path . $config['icons_path'] . '/' . $data['img'],
+					'ICON_IMG'		=> $root_path . $config['icons_path'] . '/' . $data['img'],
 					'ICON_WIDTH'	=> $data['width'],
 					'ICON_HEIGHT'	=> $data['height'],
 
@@ -421,16 +423,6 @@ function upload_attachment($form_name, $forum_id, $local = false, $local_storage
 
 	$cat_id = (isset($extensions[$file->get('extension')]['display_cat'])) ? $extensions[$file->get('extension')]['display_cat'] : ATTACHMENT_CATEGORY_NONE;
 
-	// Make sure the image category only holds valid images...
-	if ($cat_id == ATTACHMENT_CATEGORY_IMAGE && !$file->is_image())
-	{
-		$file->remove();
-
-		// If this error occurs a user tried to exploit an IE Bug by renaming extensions
-		// Since the image category is displaying content inline we need to catch this.
-		trigger_error($user->lang['ATTACHED_IMAGE_NOT_IMAGE']);
-	}
-
 	// Do we have to create a thumbnail?
 	$filedata['thumbnail'] = ($cat_id == ATTACHMENT_CATEGORY_IMAGE && $config['img_create_thumbnail']) ? 1 : 0;
 
@@ -469,6 +461,16 @@ function upload_attachment($form_name, $forum_id, $local = false, $local_storage
 		$filedata['post_attach'] = false;
 
 		return $filedata;
+	}
+
+	// Make sure the image category only holds valid images...
+	if ($cat_id == ATTACHMENT_CATEGORY_IMAGE && !$file->is_image())
+	{
+		$file->remove();
+
+		// If this error occurs a user tried to exploit an IE Bug by renaming extensions
+		// Since the image category is displaying content inline we need to catch this.
+		trigger_error($user->lang['ATTACHED_IMAGE_NOT_IMAGE']);
 	}
 
 	$filedata['filesize'] = $file->get('filesize');
@@ -980,16 +982,6 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 {
 	global $user, $auth, $db, $template, $bbcode, $cache;
 	global $config, $phpbb_root_path, $phpEx;
-	// BEGIN Topic solved
-	// Is this topic solved?
-	$sql = 'SELECT t.topic_solved, f.forum_solve_text, f.forum_solve_color, f.forum_allow_solve
-		FROM ' . TOPICS_TABLE . ' t, ' . FORUMS_TABLE . ' f
-		WHERE t.topic_id = ' . $topic_id . '
-		AND f.forum_id = ' . $forum_id;
-	$result = $db->sql_query($sql);
-	$solved_row = $db->sql_fetchrow($result);
-	$db->sql_freeresult($result);
-	// END Topic solved
 
 	// Go ahead and pull all data for this topic
 	$sql = 'SELECT p.post_id
@@ -1141,9 +1133,7 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 			'S_IGNORE_POST'		=> ($row['foe']) ? true : false,
 			'L_IGNORE_POST'		=> ($row['foe']) ? sprintf($user->lang['POST_BY_FOE'], get_username_string('full', $poster_id, $row['username'], $row['user_colour'], $row['post_username']), "<a href=\"{$u_show_post}\" onclick=\"dE('{$post_anchor}', 1); return false;\">", '</a>') : '',
 
-			// BEGIN Topic solved
-			'POST_SUBJECT'		=> ($solved_row['topic_solved'] == $row['post_id']) ? $post_subject . '&nbsp;&nbsp;' . (($solved_row['forum_solve_text']) ? (($solved_row['forum_solve_color']) ? '<span style="color: #' . $solved_row['forum_solve_color'] . '">' : '') . $solved_row['forum_solve_text'] . (($solved_row['forum_solve_color']) ? '</span>' : '') : $user->img('icon_topic_solved_post', 'TOPIC_SOLVED')) : $post_subject,
-			// END Topic solved
+			'POST_SUBJECT'		=> $post_subject,
 			'MINI_POST_IMG'		=> $user->img('icon_post_target', $user->lang['POST']),
 			'POST_DATE'			=> $user->format_date($row['post_time']),
 			'MESSAGE'			=> $message,
@@ -1179,7 +1169,7 @@ function topic_review($topic_id, $forum_id, $mode = 'topic_review', $cur_post_id
 /**
 * User Notification
 */
-function user_notification($mode, $subject, $topic_title, $forum_name, $forum_id, $topic_id, $post_id)
+function user_notification($mode, $subject, $topic_title, $forum_name, $forum_id, $topic_id, $post_id, $author_name = '')
 {
 	global $db, $user, $config, $phpbb_root_path, $phpEx, $auth;
 
@@ -1350,6 +1340,7 @@ function user_notification($mode, $subject, $topic_title, $forum_name, $forum_id
 					'USERNAME'		=> htmlspecialchars_decode($addr['name']),
 					'TOPIC_TITLE'	=> htmlspecialchars_decode($topic_title),
 					'FORUM_NAME'	=> htmlspecialchars_decode($forum_name),
+					'AUTHOR_NAME'	=> htmlspecialchars_decode($author_name),
 
 					'U_FORUM'				=> generate_board_url() . "/viewforum.$phpEx?f=$forum_id",
 					'U_TOPIC'				=> generate_board_url() . "/viewtopic.$phpEx?f=$forum_id&t=$topic_id",
@@ -1679,6 +1670,25 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll, &$data, $u
 		$post_mode = ($data['topic_replies_real'] == 0) ? 'edit_topic' : (($data['topic_first_post_id'] == $data['post_id']) ? 'edit_first_post' : (($data['topic_last_post_id'] == $data['post_id']) ? 'edit_last_post' : 'edit'));
 	}
 
+	// Start : Mark edited posts as unread MOD	
+	if($post_mode == 'edit_last_post' || $post_mode == 'edit_topic')
+	{
+		$sql_update_posts = 'UPDATE ' . POSTS_TABLE . '
+				SET post_time = ' . $current_time . '
+				WHERE post_id = ' . $data['post_id'] . ' 
+					AND topic_id = ' . $data['topic_id'];
+		$db->sql_query($sql_update_posts);
+
+		$sql_update_topics = 'UPDATE ' . TOPICS_TABLE . ' 
+				SET topic_last_post_time = ' . $current_time . ' 
+				WHERE topic_id = ' . $data['topic_id'];
+		$db->sql_query($sql_update_topics);            
+	
+		update_post_information('forum', $data['forum_id']);
+		markread('post', $data['forum_id'], $data['topic_id'], $data['post_time']);
+	}
+	// End : Mark edited posts as unread MOD
+
 	// First of all make sure the subject and topic title are having the correct length.
 	// To achieve this without cutting off between special chars we convert to an array and then count the elements.
 	$subject = truncate_string($subject);
@@ -1707,8 +1717,9 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll, &$data, $u
 	// The variable name should be $post_approved, because it indicates if the post is approved or not
 	$post_approval = 1;
 
-	// Check the permissions for post approval. Moderators are not affected.
-	if (!$auth->acl_get('f_noapprove', $data['forum_id']) && !$auth->acl_get('m_approve', $data['forum_id']))
+	// Check the permissions for post approval.
+	// Moderators must go through post approval like ordinary users.
+	if (!$auth->acl_get('f_noapprove', $data['forum_id']))
 	{
 		// Post not approved, but in queue
 		$post_approval = 0;
@@ -2028,6 +2039,35 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll, &$data, $u
 		unset($sql_data[POSTS_TABLE]['sql']);
 	}
 
+
+// BEGIN mChat Mod
+// only trigger if mode is post 
+	if ($post_mode == 'post' && $post_approval && !empty($config['mchat_enable']) && !empty($config['mchat_new_posts']))		  
+	{
+		$user->add_lang('mods/mchat_lang');
+		
+		$mchat_new_data = $user->lang['MCHAT_NEW_TOPIC'];
+
+		// Data...
+		$message = utf8_normalize_nfc($mchat_new_data . ': [url=' . generate_board_url() . '/viewtopic.' . $phpEx . '?p=' . $data['post_id'] . '#p' . $data['post_id'] . ']' . $subject . '[/url]', true);
+		// Add function part code from http://wiki.phpbb.com/Parsing_text
+		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+		generate_text_for_storage($message, $uid, $bitfield, $options, true, false, false);
+		$sql_ary = array(
+			'forum_id'			=> ($topic_type == POST_GLOBAL) ? 0 : $data['forum_id'],
+			'post_id'			=> $data['post_id'],
+            'user_id'			=> $user->data['user_id'],
+            'user_ip'			=> $user->data['session_ip'],
+            'message'			=> $message,
+            'bbcode_bitfield'	=> $bitfield,
+            'bbcode_uid' 		=> $uid,
+            'bbcode_options' 	=> $options,
+            'message_time' 		=> time()
+          );
+          $sql = 'INSERT INTO ' . MCHAT_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+          $db->sql_query($sql);
+	}
+// BEGIN mChat Mod
 	$make_global = false;
 
 	// Are we globalising or unglobalising?
@@ -2612,7 +2652,11 @@ function submit_post($mode, $subject, $username, $topic_type, &$poll, &$data, $u
 	// Send Notifications
 	if (($mode == 'reply' || $mode == 'quote' || $mode == 'post') && $post_approval)
 	{
-		user_notification($mode, $subject, $data['topic_title'], $data['forum_name'], $data['forum_id'], $data['topic_id'], $data['post_id']);
+		// If a username was supplied or the poster is a guest, we will use the supplied username.
+		// Doing it this way we can use "...post by guest-username..." in notifications when
+		// "guest-username" is supplied or ommit the username if it is not.
+		$username = ($username !== '' || !$user->data['is_registered']) ? $username : $user->data['username'];
+		user_notification($mode, $subject, $data['topic_title'], $data['forum_name'], $data['forum_id'], $data['topic_id'], $data['post_id'], $username);
 	}
 
 	$params = $add_anchor = '';

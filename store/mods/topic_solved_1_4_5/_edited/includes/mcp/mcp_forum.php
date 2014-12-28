@@ -23,6 +23,13 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 {
 	global $template, $db, $user, $auth, $cache, $module;
 	global $phpEx, $phpbb_root_path, $config;
+	//VB
+	if (defined('PHPBB_API_EMBEDDED'))
+	{
+		$action =_phpbbforum_get_cp_action_request($action);
+	}
+
+	//\VB
 
 	$user->add_lang(array('viewtopic', 'viewforum'));
 
@@ -220,11 +227,6 @@ function mcp_forum_view($id, $mode, $action, $forum_info)
 		$u_mcp_queue = ($topic_unapproved || $posts_unapproved) ? $url . '&amp;i=queue&amp;mode=' . (($topic_unapproved) ? 'approve_details' : 'unapproved_posts') . '&amp;t=' . $row['topic_id'] : '';
 
 		$topic_row = array(
-			// BEGIN Topic solved
-			'SOLVED_TOPIC'		=> ($row['topic_solved'] && $row['topic_type'] != POST_GLOBAL) ? (($forum_info['forum_solve_text']) ? $forum_info['forum_solve_text'] : $user->img('icon_topic_solved_list', 'TOPIC_SOLVED')) : '',
-			'U_SOLVED_TOPIC'	=> ($row['topic_solved']) ? append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'p=' . $row['topic_solved'] . '#p' . $row['topic_solved']) : '',
-			'SOLVED_STYLE' => ($forum_info['forum_solve_color']) ? ' style="color: #' . $forum_info['forum_solve_color'] . '"' : '',
-			// END Topic solved
 			'ATTACH_ICON_IMG'		=> ($auth->acl_get('u_download') && $auth->acl_get('f_download', $row['forum_id']) && $row['topic_attachment']) ? $user->img('icon_topic_attach', $user->lang['TOTAL_ATTACHMENTS']) : '',
 			'TOPIC_FOLDER_IMG'		=> $user->img($folder_img, $folder_alt),
 			'TOPIC_FOLDER_IMG_SRC'	=> $user->img($folder_img, $folder_alt, false, '', 'src'),
@@ -419,13 +421,16 @@ function merge_topics($forum_id, $topic_ids, $to_topic_id)
 		// Message and return links
 		$success_msg = 'POSTS_MERGED_SUCCESS';
 
-		// If the topic no longer exist, we will update the topic watch table.
-		// To not let it error out on users watching both topics, we just return on an error...
-		$db->sql_return_on_error(true);
-		$db->sql_query('UPDATE ' . TOPICS_WATCH_TABLE . ' SET topic_id = ' . (int) $to_topic_id . ' WHERE ' . $db->sql_in_set('topic_id', $topic_ids));
-		$db->sql_return_on_error(false);
+		if (!function_exists('phpbb_update_rows_avoiding_duplicates_notify_status'))
+		{
+			include($phpbb_root_path . 'includes/functions_database_helper.' . $phpEx);
+		}
 
-		$db->sql_query('DELETE FROM ' . TOPICS_WATCH_TABLE . ' WHERE ' . $db->sql_in_set('topic_id', $topic_ids));
+		// Update the topic watch table.
+		phpbb_update_rows_avoiding_duplicates_notify_status($db, TOPICS_WATCH_TABLE, 'topic_id', $topic_ids, $to_topic_id);
+
+		// Update the bookmarks table.
+		phpbb_update_rows_avoiding_duplicates($db, BOOKMARKS_TABLE, 'topic_id', $topic_ids, $to_topic_id);
 
 		// Link to the new topic
 		$return_link .= (($return_link) ? '<br /><br />' : '') . sprintf($user->lang['RETURN_NEW_TOPIC'], '<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", 'f=' . $to_forum_id . '&amp;t=' . $to_topic_id) . '">', '</a>');

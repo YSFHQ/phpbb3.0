@@ -11,6 +11,9 @@
 /**
 * @ignore
 */
+//VB
+if (!defined('PHPBB_API_EMBEDDED'))
+{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -18,6 +21,15 @@ include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+}
+else
+{
+include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
+include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+include_once($phpbb_root_path . 'includes/message_parser.' . $phpEx);
+}
+
+//\VB
 
 
 // Start session management
@@ -181,7 +193,16 @@ $user->setup(array('posting', 'mcp', 'viewtopic'), $post_data['forum_style']);
 
 if ($config['enable_post_confirm'] && !$user->data['is_registered'])
 {
+	//VB
+	if (!defined('PHPBB_API_EMBEDDED'))
+	{
 	include($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
+	}
+	else
+	{
+	include_once($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
+	}  
+	//\VB
 	$captcha =& phpbb_captcha_factory::get_instance($config['captcha_plugin']);
 	$captcha->init(CONFIRM_POST);
 }
@@ -288,6 +309,7 @@ if (($post_data['forum_status'] == ITEM_LOCKED || (isset($post_data['topic_statu
 {
 	trigger_error(($post_data['forum_status'] == ITEM_LOCKED) ? 'FORUM_LOCKED' : 'TOPIC_LOCKED');
 }
+
 //! Topic Age Warning - imkingdavid
 if($mode == 'reply' || $mode == 'quote')
 {
@@ -397,6 +419,7 @@ if ($mode == 'edit')
 }
 
 $orig_poll_options_size = sizeof($post_data['poll_options']);
+
 
 $message_parser = new parse_message();
 
@@ -724,6 +747,7 @@ if ($submit || $preview || $refresh)
 		$post_data['poll_vote_change']	= ($auth->acl_get('f_votechg', $forum_id) && $auth->acl_get('f_vote', $forum_id) && isset($_POST['poll_vote_change'])) ? 1 : 0;
 	}
 
+
 	// If replying/quoting and last post id has changed
 	// give user option to continue submit or return to post
 	// notify and show user the post made between his request and the final submit
@@ -840,7 +864,16 @@ if ($submit || $preview || $refresh)
 	// Validate username
 	if (($post_data['username'] && !$user->data['is_registered']) || ($mode == 'edit' && $post_data['poster_id'] == ANONYMOUS && $post_data['username'] && $post_data['post_username'] && $post_data['post_username'] != $post_data['username']))
 	{
+		//VB
+		if (!defined('PHPBB_API_EMBEDDED'))
+		{
 		include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+		}
+		else
+		{
+		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+		}  
+		//\VB
 
 		$user->add_lang('ucp');
 
@@ -1597,6 +1630,16 @@ function handle_post_delete($forum_id, $topic_id, $post_id, &$post_data)
 			);
 
 			$next_post_id = delete_post($forum_id, $topic_id, $post_id, $data);
+			// BEGIN mChat Mod Add-on
+			if (!empty($config['mchat_enable']) && !empty($config['mchat_new_posts']))
+			{
+				if (!function_exists('mchat_delete_topic'))
+				{
+					include($phpbb_root_path . 'includes/functions_mchat.' . $phpEx);
+				}
+				mchat_delete_topic($post_id);
+			}
+			// END mChat Mod Add-on
 			if (!function_exists('get_thanks'))
 			{
 				include($phpbb_root_path . 'includes/functions_thanks.' . $phpEx);

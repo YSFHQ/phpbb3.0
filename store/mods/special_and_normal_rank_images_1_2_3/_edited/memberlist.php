@@ -11,11 +11,20 @@
 /**
 * @ignore
 */
+//VB
+if (!defined('PHPBB_API_EMBEDDED'))
+{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+}
+else
+{
+include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+}
+//\VB
 //Begin: National_Flag
 include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
 //End: National_Flag
@@ -72,7 +81,17 @@ switch ($mode)
 {
 	case 'leaders':
 		// Display a listing of board admins, moderators
+		//VB
+		if (!defined('PHPBB_EMBEDDED'))
+		{
 		include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+		}
+		else
+		{
+		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+		}
+
+		//\VB
 
 		$page_title = $user->lang['THE_TEAM'];
 		$template_html = 'memberlist_leaders.html';
@@ -152,7 +171,7 @@ switch ($mode)
 		$db->sql_freeresult($result);
 
 		$sql = $db->sql_build_query('SELECT', array(
-			'SELECT'	=> 'u.user_id, u.group_id as default_group, u.username, u.username_clean, u.user_colour, u.user_rank, u.user_posts, u.user_allow_pm, u.user_flag, g.group_id, g.group_name, g.group_colour, g.group_type, ug.user_id as ug_user_id',
+			'SELECT'	=> 'u.user_id, u.group_id as default_group, u.username, u.username_clean, u.user_colour, u.user_rank, u.user_posts, u.user_allow_pm, g.group_id, g.group_name, g.group_colour, g.group_type, ug.user_id as ug_user_id',
 
 			'FROM'		=> array(
 				USERS_TABLE		=> 'u',
@@ -172,9 +191,6 @@ switch ($mode)
 			'ORDER_BY'	=> 'g.group_name ASC, u.username_clean ASC'
 		));
 		$result = $db->sql_query($sql);
-		//Begin: National_Flag
-		$flag_count = 0;
-		//End: National_Flag
 
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -241,17 +257,6 @@ switch ($mode)
 			}
 
 
-			//Begin: National_Flag
-			if (!empty($config['allow_flags']) && !empty($row['user_flag']))
-			{
-				$user_flag = get_user_flag($row['user_flag']);
-				++$flag_count;
-			}
-			else
-			{
-				$user_flag = '';
-			}			
-			//End: National_Flag
 			$rank_title = $rank_img = '';
 			get_user_rank($row['user_rank'], (($row['user_id'] == ANONYMOUS) ? false : $row['user_posts']), $rank_title, $rank_img, $rank_img_src);
 
@@ -272,18 +277,12 @@ switch ($mode)
 				'USERNAME'			=> get_username_string('username', $row['user_id'], $row['username'], $row['user_colour']),
 				'USER_COLOR'		=> get_username_string('colour', $row['user_id'], $row['username'], $row['user_colour']),
 				'U_VIEW_PROFILE'	=> get_username_string('profile', $row['user_id'], $row['username'], $row['user_colour']),
-				//Begin: National_Flag
-				'USER_FLAG'			=> $user_flag,
-				//End: National_Flag
 			));
 		}
 		$db->sql_freeresult($result);
 
 		$template->assign_vars(array(
 
-			//Begin: National_Flag
-			'S_USER_FLAG'	=> $flag_count,
-			//End: National_Flag
 			'PM_IMG'		=> $user->img('icon_contact_pm', $user->lang['SEND_PRIVATE_MESSAGE']))
 		);
 	break;
@@ -664,6 +663,7 @@ switch ($mode)
 			'U_REMOVE_FRIEND'	=> ($friend && $friends_enabled) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=zebra&amp;remove=1&amp;usernames[]=' . $user_id) : '',
 			'U_REMOVE_FOE'		=> ($foe && $foes_enabled) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=zebra&amp;remove=1&amp;mode=foes&amp;usernames[]=' . $user_id) : '',
 		));
+
 
 
 		require_once($phpbb_root_path . 'wp-united/wpu-actions.' . $phpEx);
@@ -1597,15 +1597,6 @@ switch ($mode)
 				);
 
 
-				$user_rank = $row['user_rank'];
-
-				if (defined('SHOW_ONLY_NORMAL_RANKS_ON_MEMBERLIST') && SHOW_ONLY_NORMAL_RANKS_ON_MEMBERLIST)
-				{
-					$user_rank = 0;
-				}
-
-				//Reset our ranks, since show_profile() gets the values for the profile page
-				get_user_rank($user_rank, (($user_id == ANONYMOUS) ? false : $row['user_posts']), $memberrow['RANK_TITLE'], $memberrow['RANK_IMG'], $memberrow['RANK_IMG_SRC']);
 				if (isset($cp_row['row']) && sizeof($cp_row['row']))
 				{
 					$memberrow = array_merge($memberrow, $cp_row['row']);
@@ -1692,24 +1683,6 @@ function show_profile($data, $user_notes_enabled = false, $warn_user_enabled = f
 	get_user_rank($data['user_rank'], (($user_id == ANONYMOUS) ? false : $data['user_posts']), $rank_title, $rank_img, $rank_img_src);
 
 
-	$extra_rank_title = $extra_rank_img = $extra_rank_img_src = '';
-
-	if (!empty($data['user_rank']))
-	{
-		if (defined('SHOW_SPECIAL_AS_EXTRA') && SHOW_SPECIAL_AS_EXTRA)
-		{
-			$extra_rank_title = $rank_title;
-			$extra_rank_img = $rank_img;
-			$extra_rank_img_src = $rank_img_src;
-			$rank_title = $rank_img = $rank_img_src = '';
-
-			get_user_additional_rank($data['user_rank'], $data['user_posts'], $rank_title, $rank_img, $rank_img_src);
-		}
-		else
-		{
-			get_user_additional_rank($data['user_rank'], $data['user_posts'], $extra_rank_title, $extra_rank_img, $extra_rank_img_src);
-		}
-	}
 	if ((!empty($data['user_allow_viewemail']) && $auth->acl_get('u_sendemail')) || $auth->acl_get('a_user'))
 	{
 		$email = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=email&amp;u=' . $user_id) : (($config['board_hide_emails'] && !$auth->acl_get('a_user')) ? '' : 'mailto:' . $data['user_email']);
@@ -1763,19 +1736,6 @@ function show_profile($data, $user_notes_enabled = false, $warn_user_enabled = f
 	}
 
 	// Dump it out to the template
-	//Begin: National_Flag
-	if (!empty($config['allow_flags']) && !empty($data['user_flag']))
-	{
-		$user_flag = get_user_flag($data['user_flag']);
-		$template->assign_vars(array(
-			'S_USER_FLAG'	=> true,
-		));		
-	}
-	else
-	{
-		$user_flag = '';
-	}			
-	//End: National_Flag
 	return array(
 		'AGE'			=> $age,
 		'RANK_TITLE'	=> $rank_title,
@@ -1797,9 +1757,6 @@ function show_profile($data, $user_notes_enabled = false, $warn_user_enabled = f
 		'RANK_IMG'			=> $rank_img,
 		'RANK_IMG_SRC'		=> $rank_img_src,
 
-		'EXTRA_RANK_TITLE'	=> $extra_rank_title,
-		'EXTRA_RANK_IMG'	=> $extra_rank_img,
-		'EXTRA_RANK_IMG_SRC'=> $extra_rank_img_src,
 		'ICQ_STATUS_IMG'	=> (!empty($data['user_icq'])) ? '<img src="http://web.icq.com/whitepages/online?icq=' . $data['user_icq'] . '&amp;img=5" width="18" height="18" />' : '',
 		'S_JABBER_ENABLED'	=> ($config['jab_enable']) ? true : false,
 
@@ -1825,9 +1782,6 @@ function show_profile($data, $user_notes_enabled = false, $warn_user_enabled = f
 		'USER_MSN'			=> $data['user_msnm'],
 		'USER_JABBER'		=> $data['user_jabber'],
 		'USER_JABBER_IMG'	=> ($data['user_jabber']) ? $user->img('icon_contact_jabber', $data['user_jabber']) : '',
-		//Begin: National_Flag
-		'USER_FLAG'		=> $user_flag,
-		//End: National_Flag
 
 		'L_VIEWING_PROFILE'	=> sprintf($user->lang['VIEWING_PROFILE'], $username),
 	);

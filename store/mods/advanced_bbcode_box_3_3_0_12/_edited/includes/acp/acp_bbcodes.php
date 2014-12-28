@@ -49,9 +49,9 @@ class acp_bbcodes
 			break;
 
 			case 'edit':
-				$sql = 'SELECT bbcode_match, bbcode_tpl, display_on_posting, bbcode_helpline, abbcode 
+				$sql = 'SELECT bbcode_match, bbcode_tpl, display_on_posting, bbcode_helpline
 					FROM ' . BBCODES_TABLE . '
-					WHERE bbcode_id = ' . $bbcode_id . ' AND abbcode = 0';
+					WHERE bbcode_id = ' . $bbcode_id;
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
@@ -68,9 +68,9 @@ class acp_bbcodes
 			break;
 
 			case 'modify':
-				$sql = 'SELECT bbcode_id, bbcode_tag, abbcode 
+				$sql = 'SELECT bbcode_id, bbcode_tag
 					FROM ' . BBCODES_TABLE . '
-					WHERE bbcode_id = ' . $bbcode_id . ' AND abbcode = 0';
+					WHERE bbcode_id = ' . $bbcode_id;
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
@@ -113,8 +113,8 @@ class acp_bbcodes
 				{
 					$template->assign_block_vars('token', array(
 						'TOKEN'		=> '{' . $token . '}',
-						'EXPLAIN'	=> $token_explain)
-					);
+						'EXPLAIN'	=> ($token === 'LOCAL_URL') ? sprintf($token_explain, generate_board_url() . '/') : $token_explain,
+					));
 				}
 
 				return;
@@ -219,15 +219,7 @@ class acp_bbcodes
 						}
 
 						$sql_ary['bbcode_id'] = (int) $bbcode_id;
-// MOD : MSSTI ABBC3 - Start
-						$sql = 'SELECT MAX(bbcode_order) as max_bbcode_order
-							FROM ' . BBCODES_TABLE;
-						$result = $db->sql_query($sql);
-						$row = $db->sql_fetchrow($result);
-						$db->sql_freeresult($result);
-						$bbcode_order = $row['max_bbcode_order'] + 1;
-						$sql_ary['bbcode_order'] = (int) $bbcode_order;
-// MOD : MSSTI ABBC3 - End
+
 
 						$db->sql_query('INSERT INTO ' . BBCODES_TABLE . $db->sql_build_array('INSERT', $sql_ary));
 						$cache->destroy('sql', BBCODES_TABLE);
@@ -268,9 +260,9 @@ class acp_bbcodes
 
 			case 'delete':
 
-				$sql = 'SELECT bbcode_tag, abbcode 
+				$sql = 'SELECT bbcode_tag
 					FROM ' . BBCODES_TABLE . "
-					WHERE bbcode_id = $bbcode_id" . ' AND abbcode = 0';
+					WHERE bbcode_id = $bbcode_id";
 				$result = $db->sql_query($sql);
 				$row = $db->sql_fetchrow($result);
 				$db->sql_freeresult($result);
@@ -303,7 +295,7 @@ class acp_bbcodes
 
 		$sql = 'SELECT *
 			FROM ' . BBCODES_TABLE . '
-			WHERE abbcode = 0 ORDER BY bbcode_tag';
+			ORDER BY bbcode_tag';
 		$result = $db->sql_query($sql);
 
 		while ($row = $db->sql_fetchrow($result))
@@ -354,6 +346,9 @@ class acp_bbcodes
 			'LOCAL_URL'	 => array(
 				'!(' . str_replace(array('!', '\#'), array('\!', '#'), get_preg_expression('relative_url')) . ')!e'	=>	"\$this->bbcode_specialchars('$1')"
 			),
+			'RELATIVE_URL'	=> array(
+				'!(' . str_replace(array('!', '\#'), array('\!', '#'), get_preg_expression('relative_url')) . ')!e'	=>	"\$this->bbcode_specialchars('$1')"
+			),
 			'EMAIL' => array(
 				'!(' . get_preg_expression('email') . ')!ie'	=>	"\$this->bbcode_specialchars('$1')"
 			),
@@ -380,6 +375,7 @@ class acp_bbcodes
 		$sp_tokens = array(
 			'URL'	 => '(?i)((?:' . str_replace(array('!', '\#'), array('\!', '#'), get_preg_expression('url')) . ')|(?:' . str_replace(array('!', '\#'), array('\!', '#'), get_preg_expression('www_url')) . '))(?-i)',
 			'LOCAL_URL'	 => '(?i)(' . str_replace(array('!', '\#'), array('\!', '#'), get_preg_expression('relative_url')) . ')(?-i)',
+			'RELATIVE_URL'	 => '(?i)(' . str_replace(array('!', '\#'), array('\!', '#'), get_preg_expression('relative_url')) . ')(?-i)',
 			'EMAIL' => '(' . get_preg_expression('email') . ')',
 			'TEXT' => '(.*?)',
 			'SIMPLETEXT' => '([a-zA-Z0-9-+.,_ ]+)',
@@ -436,7 +432,11 @@ class acp_bbcodes
 				$fp_replace = str_replace($token, $replace, $fp_replace);
 
 				$sp_match = str_replace(preg_quote($token, '!'), $sp_tokens[$token_type], $sp_match);
-				$sp_replace = str_replace($token, '${' . ($n + 1) . '}', $sp_replace);
+
+				// Prepend the board url to local relative links
+				$replace_prepend = ($token_type === 'LOCAL_URL') ? generate_board_url() . '/' : '';
+
+				$sp_replace = str_replace($token, $replace_prepend . '${' . ($n + 1) . '}', $sp_replace);
 			}
 
 			$fp_match = '!' . $fp_match . '!' . $modifiers;

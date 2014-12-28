@@ -768,8 +768,4 @@ $lang = array_merge($lang, array(
 ));
 // END mChat Mod
 
-// Log Entry email on birthday mod from lefty74
-$lang = array_merge($lang, array(
-	'LOG_BIRTHDAY_EMAIL_SENT'		=> '<strong>Birthday email sent to</strong><br />» %s',
-));
 ?>

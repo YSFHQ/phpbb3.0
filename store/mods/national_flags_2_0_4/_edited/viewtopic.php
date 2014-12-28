@@ -11,12 +11,22 @@
 /**
 * @ignore
 */
+//VB
+if (!defined('PHPBB_EMBEDDED'))
+{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+}
+else
+{
+include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+include_once($phpbb_root_path . 'includes/bbcode.' . $phpEx);
+}
+//\VB
 //Begin: National_Flag
 include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
 //End: National_Flag
@@ -30,6 +40,10 @@ $forum_id	= request_var('f', 0);
 $topic_id	= request_var('t', 0);
 $post_id	= request_var('p', 0);
 $voted_id	= request_var('vote_id', array('' => 0));
+// BEGIN Topic solved
+$solved_id	= request_var('ys', 0);
+$unsolved	= request_var('ns', 0);
+// END Topic solved
 
 $voted_id = (sizeof($voted_id) > 1) ? array_unique($voted_id) : $voted_id;
 
@@ -149,7 +163,14 @@ if ($view && !$post_id)
 
 			if (!$row)
 			{
-				$user->setup('viewtopic');
+				$sql = 'SELECT forum_style
+					FROM ' . FORUMS_TABLE . "
+					WHERE forum_id = $forum_id";
+				$result = $db->sql_query($sql);
+				$forum_style = (int) $db->sql_fetchfield('forum_style');
+				$db->sql_freeresult($result);
+
+				$user->setup('viewtopic', $forum_style);
 				trigger_error(($view == 'next') ? 'NO_NEWER_TOPICS' : 'NO_OLDER_TOPICS');
 			}
 			else
@@ -573,6 +594,48 @@ $topic_mod .= ($allow_change_type && $auth->acl_get('f_sticky', $forum_id) && $t
 $topic_mod .= ($allow_change_type && $auth->acl_get('f_announce', $forum_id) && $topic_data['topic_type'] != POST_ANNOUNCE) ? '<option value="make_announce">' . $user->lang['MAKE_ANNOUNCE'] . '</option>' : '';
 $topic_mod .= ($allow_change_type && $auth->acl_get('f_announce', $forum_id) && $topic_data['topic_type'] != POST_GLOBAL) ? '<option value="make_global">' . $user->lang['MAKE_GLOBAL'] . '</option>' : '';
 $topic_mod .= ($auth->acl_get('m_', $forum_id)) ? '<option value="topic_logs">' . $user->lang['VIEW_TOPIC_LOGS'] . '</option>' : '';
+// BEGIN Topic solved
+if(($solved_id || $unsolved) && $topic_data['topic_type'] != POST_GLOBAL)
+{
+	$ok_solve = $ok_unsolve = FALSE;
+	if($solved_id && $topic_data['forum_allow_solve'])
+	{
+		// Check if the user has permission to solve this topic
+		$ok_solve = (($topic_data['forum_allow_solve'] == TOPIC_SOLVED_MOD || $topic_data['forum_allow_solve'] == TOPIC_SOLVED_YES) && $topic_mod != '') ? TRUE : FALSE;
+		$ok_solve = (($topic_data['forum_allow_solve'] == TOPIC_SOLVED_YES) && $topic_data['topic_poster'] == $user->data['user_id'] && $topic_data['topic_status'] == ITEM_UNLOCKED) ? TRUE : $ok_solve;
+
+		// Check that the post_id in $solved_id is actually in this topic.
+		$sql = 'SELECT topic_id FROM ' . POSTS_TABLE . '
+			WHERE post_id = ' . $solved_id;
+		$result = $db->sql_query($sql);
+		$solve_row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		$ok_solve = ($solve_row['topic_id'] == $topic_data['topic_id']) ? $ok_solve : FALSE;
+
+		$set_solved = $solved_id;
+		$lock_solved = ($topic_data['forum_lock_solved']) ? ', topic_status = ' . ITEM_LOCKED : '';
+	}
+	else if($unsolved && $topic_data['forum_allow_unsolve'])
+	{
+		// Check if the user has permission to unsolve this topic.
+		$ok_unsolve = (($topic_data['forum_allow_unsolve'] == TOPIC_SOLVED_MOD || $topic_data['forum_allow_unsolve'] == TOPIC_SOLVED_YES) && $topic_mod != '') ? TRUE : FALSE;
+		$ok_unsolve = (($topic_data['forum_allow_unsolve'] == TOPIC_SOLVED_YES) && $topic_data['topic_poster'] == $user->data['user_id'] && $topic_data['topic_status'] == ITEM_UNLOCKED) ? TRUE : $ok_unsolve;
+
+		$set_solved = 0;
+		$lock_solved = '';
+	}
+
+	if($ok_solve || $ok_unsolve)
+	{
+		$sql = 'UPDATE ' . TOPICS_TABLE . '
+			SET topic_solved = ' . $set_solved . $lock_solved . '
+			WHERE topic_id = ' . $topic_id;
+		$db->sql_query($sql);
+		redirect(append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=$topic_id&amp;p=$post_id"));
+	}
+}
+// END Topic solved
 
 // If we've got a hightlight set pass it on to pagination.
 $pagination = generate_pagination(append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=$topic_id" . ((strlen($u_sort_param)) ? "&amp;$u_sort_param" : '') . (($highlight_match) ? "&amp;hilit=$highlight" : '')), $total_posts, $config['posts_per_page'], $start);
@@ -621,6 +684,9 @@ $template->assign_vars(array(
 	'FORUM_DESC'	=> generate_text_for_display($topic_data['forum_desc'], $topic_data['forum_desc_uid'], $topic_data['forum_desc_bitfield'], $topic_data['forum_desc_options']),
 	'TOPIC_ID' 		=> $topic_id,
 	'TOPIC_TITLE' 	=> $topic_data['topic_title'],
+// BEGIN Topic solved
+	'TOPIC_SOLVED_TITLE'	=> ($topic_data['topic_solved'] && $topic_data['forum_allow_solve'] && $topic_data['topic_type'] != POST_GLOBAL) ? '&nbsp;<a href="' . append_sid("{$phpbb_root_path}viewtopic.$phpEx", "f=$forum_id&amp;t=" . $topic_data['topic_id'] . '&amp;p=' . $topic_data['topic_solved'] . '&amp;#p' . $topic_data['topic_solved']) . '"' . (($topic_data['forum_solve_color']) ? ' style="color: #' . $topic_data['forum_solve_color'] . '"' : '') . '>' . (($topic_data['forum_solve_text']) ? $topic_data['forum_solve_text'] : $user->img('icon_topic_solved_head', 'TOPIC_SOLVED')) . '</a>' : '',
+// END Topic solved
 	'TOPIC_POSTER'	=> $topic_data['topic_poster'],
 
 	'TOPIC_AUTHOR_FULL'		=> get_username_string('full', $topic_data['topic_poster'], $topic_data['topic_first_poster_name'], $topic_data['topic_first_poster_colour']),
@@ -629,6 +695,7 @@ $template->assign_vars(array(
 
 	'PAGINATION' 	=> $pagination,
 	'PAGE_NUMBER' 	=> on_page($total_posts, $config['posts_per_page'], $start),
+	'START'         => $start,
 	'TOTAL_POSTS'	=> ($total_posts == 1) ? $user->lang['VIEW_TOPIC_POST'] : sprintf($user->lang['VIEW_TOPIC_POSTS'], $total_posts),
 	'U_MCP' 		=> ($auth->acl_get('m_', $forum_id)) ? append_sid("{$phpbb_root_path}mcp.$phpEx", "i=main&amp;mode=topic_view&amp;f=$forum_id&amp;t=$topic_id" . (($start == 0) ? '' : "&amp;start=$start") . ((strlen($u_sort_param)) ? "&amp;$u_sort_param" : ''), true, $user->session_id) : '',
 	'MODERATORS'	=> (isset($forum_moderators[$forum_id]) && sizeof($forum_moderators[$forum_id])) ? implode(', ', $forum_moderators[$forum_id]) : '',
@@ -653,6 +720,10 @@ $template->assign_vars(array(
 	'REPORTED_IMG'		=> $user->img('icon_topic_reported', 'POST_REPORTED'),
 	'UNAPPROVED_IMG'	=> $user->img('icon_topic_unapproved', 'POST_UNAPPROVED'),
 	'WARN_IMG'			=> $user->img('icon_user_warn', 'WARN_USER'),
+// BEGIN Topic Solved. Only used with subsilver2
+	'SOLVED_SET_IMG'	=> $user->img('icon_topic_solved_set', 'SET_TOPIC_SOLVED'),
+	'SOLVED_UNSET_IMG'	=> $user->img('icon_topic_solved_unset', 'SET_TOPIC_NOT_SOLVED'),
+// END Topic Solved. Only used with subsilver2
 
 	'S_IS_LOCKED'			=> ($topic_data['topic_status'] == ITEM_UNLOCKED && $topic_data['forum_status'] == ITEM_UNLOCKED) ? false : true,
 	'S_SELECT_SORT_DIR' 	=> $s_sort_dir,
@@ -745,7 +816,9 @@ if (!empty($topic_data['poll_start']))
 		$topic_data['forum_status'] != ITEM_LOCKED &&
 		(!sizeof($cur_voted_id) ||
 		($auth->acl_get('f_votechg', $forum_id) && $topic_data['poll_vote_change']))) ? true : false;
-	$s_display_results = (!$s_can_vote || ($s_can_vote && sizeof($cur_voted_id)) || $view == 'viewpoll') ? true : false;
+  if ($topic_id==5883) $s_display_results = (!$s_can_vote || ($s_can_vote && sizeof($cur_voted_id)) || $view == 'viewpoll')&&$user->data['user_id']==831 ? true : false;
+  else $s_display_results = (!$s_can_vote || ($s_can_vote && sizeof($cur_voted_id)) || $view == 'viewpoll') ? true : false;
+  
 
 	if ($update && $s_can_vote)
 	{
@@ -914,7 +987,7 @@ if (!empty($topic_data['poll_start']))
 		'S_IS_MULTI_CHOICE'	=> ($topic_data['poll_max_options'] > 1) ? true : false,
 		'S_POLL_ACTION'		=> $viewtopic_url,
 
-		'U_VIEW_RESULTS'	=> $viewtopic_url . '&amp;view=viewpoll')
+		'U_VIEW_RESULTS'	=> $topic_id==5883&&$user->data['user_id']!=831 ? '#' : $viewtopic_url . '&amp;view=viewpoll')
 	);
 
 	unset($poll_end, $poll_info, $voted_id);
@@ -1101,6 +1174,10 @@ while ($row = $db->sql_fetchrow($result))
 				'rank_title'		=> '',
 				'rank_image'		=> '',
 				'rank_image_src'	=> '',
+
+				'extra_rank_title'		=> '',
+				'extra_rank_image'		=> '',
+				'extra_rank_image_src'	=> '',
 				'sig'				=> '',
 				'profile'			=> '',
 				'pm'				=> '',
@@ -1114,9 +1191,6 @@ while ($row = $db->sql_fetchrow($result))
 				'jabber'			=> '',
 				'search'			=> '',
 				'age'				=> '',
-				//Begin: National_Flag
-				'flag'				=> '',
-				//End: National_Flag
 
 				'username'			=> $row['username'],
 				'user_colour'		=> $row['user_colour'],
@@ -1151,6 +1225,8 @@ while ($row = $db->sql_fetchrow($result))
 
 				'viewonline'	=> $row['user_allow_viewonline'],
 				'allow_pm'		=> $row['user_allow_pm'],
+				'allow_thanks_pm' => isset($row['user_allow_thanks_pm']) ? $row['user_allow_thanks_pm'] : false,
+				'allow_thanks_email' => isset($row['user_allow_thanks_email']) ? $row['user_allow_thanks_email'] : false,
 
 				'avatar'		=> ($user->optionget('viewavatars')) ? get_user_avatar($row['user_avatar'], $row['user_avatar_type'], $row['user_avatar_width'], $row['user_avatar_height']) : '',
 				'age'			=> '',
@@ -1159,6 +1235,10 @@ while ($row = $db->sql_fetchrow($result))
 				'rank_image'		=> '',
 				'rank_image_src'	=> '',
 
+
+				'extra_rank_title'		=> '',
+				'extra_rank_image'		=> '',
+				'extra_rank_image_src'	=> '',
 				'username'			=> $row['username'],
 				'user_colour'		=> $row['user_colour'],
 
@@ -1179,6 +1259,23 @@ while ($row = $db->sql_fetchrow($result))
 
 			get_user_rank($row['user_rank'], $row['user_posts'], $user_cache[$poster_id]['rank_title'], $user_cache[$poster_id]['rank_image'], $user_cache[$poster_id]['rank_image_src']);
 
+
+			if (!empty($row['user_rank']))
+			{
+				if (defined('SHOW_SPECIAL_AS_EXTRA') && SHOW_SPECIAL_AS_EXTRA)
+				{
+					$user_cache[$poster_id]['extra_rank_title'] = $user_cache[$poster_id]['rank_title'];
+					$user_cache[$poster_id]['extra_rank_image'] = $user_cache[$poster_id]['rank_image'];
+					$user_cache[$poster_id]['extra_rank_image_src'] = $user_cache[$poster_id]['rank_image_src'];
+					$user_cache[$poster_id]['rank_title'] = $user_cache[$poster_id]['rank_image'] = $user_cache[$poster_id]['rank_image_src'] = '';
+
+					get_user_additional_rank($row['user_rank'], $row['user_posts'], $user_cache[$poster_id]['rank_title'], $user_cache[$poster_id]['rank_image'], $user_cache[$poster_id]['rank_image_src']);
+				}
+				else
+				{
+					get_user_additional_rank($row['user_rank'], $row['user_posts'], $user_cache[$poster_id]['extra_rank_title'], $user_cache[$poster_id]['extra_rank_image'], $user_cache[$poster_id]['extra_rank_image_src']);
+				}
+			}
 			if ((!empty($row['user_allow_viewemail']) && $auth->acl_get('u_sendemail')) || $auth->acl_get('a_email'))
 			{
 				$user_cache[$poster_id]['email'] = ($config['board_email_form'] && $config['email_enable']) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=email&amp;u=$poster_id") : (($config['board_hide_emails'] && !$auth->acl_get('a_email')) ? '' : 'mailto:' . $row['user_email']);
@@ -1198,16 +1295,6 @@ while ($row = $db->sql_fetchrow($result))
 				$user_cache[$poster_id]['icq_status_img'] = '';
 				$user_cache[$poster_id]['icq'] = '';
 			}
-			//Begin: National_Flag
-			if (!empty($config['allow_flags']) && !empty($row['user_flag']))
-			{
-				$user_cache[$poster_id]['flag']	= get_user_flag($row['user_flag']);
-			}
-			else
-			{
-				$user_cache[$poster_id]['flag']	= '';
-			}			
-			//End: National_Flag
 
 			if ($config['allow_birthdays'] && !empty($row['user_birthday']))
 			{
@@ -1230,16 +1317,32 @@ while ($row = $db->sql_fetchrow($result))
 			}
 		}
 	}
+
+
+	require_once($phpbb_root_path . 'wp-united/wpu-actions.' . $phpEx);
+	$GLOBALS['wpu_actions']->generate_viewtopic_link($row['user_wpublog_id'], $user_cache[$poster_id]);
 }
 $db->sql_freeresult($result);
 
 // Load custom profile fields
 if ($config['load_cpf_viewtopic'])
 {
+  //VB
+	if (!defined('PHPBB_API_EMBEDDED'))
+{
 	if (!class_exists('custom_profile'))
 	{
 		include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
 	}
+	}
+	else
+	{
+		if (!class_exists('custom_profile'))
+		{
+		include_once($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
+		}
+	}
+	//\VB
 	$cp = new custom_profile();
 
 	// Grab all profile fields from users in id cache for later use - similar to the poster cache
@@ -1364,6 +1467,38 @@ $template->assign_vars(array(
 	'S_NUM_POSTS' => sizeof($post_list))
 );
 
+
+// Check whether quick reply is enabled
+$s_quick_reply = false;
+
+if ($config['allow_quick_reply'] && ($topic_data['forum_flags'] & FORUM_FLAG_QUICK_REPLY) && $auth->acl_get('f_reply', $forum_id) && (!$user->data['is_registered'] || ($user->data['is_registered'] && $user->optionget('viewquickreply'))))
+{
+	// Quick reply enabled forum
+	$s_quick_reply = (($topic_data['forum_status'] == ITEM_UNLOCKED && $topic_data['topic_status'] == ITEM_UNLOCKED) || $auth->acl_get('m_edit', $forum_id)) ? true : false;
+}
+
+if ($config['quick_reply_lastpage'] && (floor($start / $config['posts_per_page']) + 1) != max(ceil($total_posts / $config['posts_per_page']), 1))
+{
+	$s_quick_reply = false;
+}
+
+if (!function_exists('array_all_thanks'))
+{
+	include($phpbb_root_path . 'includes/functions_thanks.' . $phpEx);
+}
+array_all_thanks($post_list);
+if (isset($_REQUEST['thanks']) && !isset($_REQUEST['rthanks'])) 
+{
+	insert_thanks(request_var('thanks', 0), $user->data['user_id']);
+}
+if (isset($_REQUEST['rthanks']) && !isset($_REQUEST['thanks']))
+{
+	delete_thanks(request_var('rthanks', 0), $user->data['user_id']);
+}
+if (isset($_REQUEST['list_thanks'])) 
+{
+	clear_list_thanks(request_var('p', 0), request_var('list_thanks', ''));
+}
 // Output the posts
 $first_unread = $post_unread = false;
 for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
@@ -1514,6 +1649,31 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 	{
 		$s_first_unread = $first_unread = true;
 	}
+// BEGIN Topic solved
+	$ok_solve = $ok_unsolve = FALSE;
+	// Check if the user has permission tp solve this topic and that this topic can be solved.
+	$ok_solve = (($topic_data['forum_allow_solve'] == TOPIC_SOLVED_MOD || $topic_data['forum_allow_solve'] == TOPIC_SOLVED_YES) && $topic_mod != '') ? TRUE : FALSE;
+	$ok_solve = (($topic_data['forum_allow_solve'] == TOPIC_SOLVED_YES) && $topic_data['topic_poster'] == $user->data['user_id'] && $topic_data['topic_status'] == ITEM_UNLOCKED) ? TRUE : $ok_solve;
+	$ok_solve = ($topic_data['topic_type'] == POST_GLOBAL) ? FALSE : $ok_solve;
+
+	// Check if the user has permission to unsolve this topic and that this topic can be unsolved.
+	$ok_unsolve = (($topic_data['forum_allow_unsolve'] == TOPIC_SOLVED_MOD || $topic_data['forum_allow_unsolve'] == TOPIC_SOLVED_YES) && $topic_mod != '') ? TRUE : FALSE;
+	$ok_unsolve = (($topic_data['forum_allow_unsolve'] == TOPIC_SOLVED_YES) && $topic_data['topic_poster'] == $user->data['user_id'] && $topic_data['topic_status'] == ITEM_UNLOCKED) ? TRUE : $ok_unsolve;
+	$ok_unsolve = ($topic_data['topic_type'] == POST_GLOBAL) ? FALSE : $ok_unsolve;
+
+	$u_set_solved = '';
+	if($ok_solve || $ok_unsolve)
+	{
+		if($ok_unsolve && $topic_data['topic_solved'])
+		{
+			$u_set_solved = append_sid("{$phpbb_root_path}viewtopic.{$phpEx}", 'ns=1&amp;f=' . $forum_id . '&amp;t=' . $topic_data['topic_id'] . '&amp;p=' . $row['post_id'] . '#p' . $row['post_id'], true);
+		}
+		else if($ok_solve && !$topic_data['topic_solved'])
+		{
+			$u_set_solved = append_sid("{$phpbb_root_path}viewtopic.{$phpEx}", 'ys=' . $row['post_id'] . '&amp;f=' . $forum_id . '&amp;t=' . $topic_data['topic_id'] . '&amp;p=' . $row['post_id'] . '#p' . $row['post_id'], true);
+		}
+	}
+// END Topic solved
 
 	$edit_allowed = ($user->data['is_registered'] && ($auth->acl_get('m_edit', $forum_id) || (
 		$user->data['user_id'] == $poster_id &&
@@ -1541,18 +1701,22 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 		'RANK_TITLE'		=> $user_cache[$poster_id]['rank_title'],
 		'RANK_IMG'			=> $user_cache[$poster_id]['rank_image'],
 		'RANK_IMG_SRC'		=> $user_cache[$poster_id]['rank_image_src'],
+		'EXTRA_RANK_TITLE'	=> $user_cache[$poster_id]['extra_rank_title'],
+		'EXTRA_RANK_IMG'	=> $user_cache[$poster_id]['extra_rank_image'],
+		'EXTRA_RANK_IMG_SRC'=> $user_cache[$poster_id]['extra_rank_image_src'],
 		'POSTER_JOINED'		=> $user_cache[$poster_id]['joined'],
 		'POSTER_POSTS'		=> $user_cache[$poster_id]['posts'],
 		'POSTER_FROM'		=> $user_cache[$poster_id]['from'],
 		'POSTER_AVATAR'		=> $user_cache[$poster_id]['avatar'],
 		'POSTER_WARNINGS'	=> $user_cache[$poster_id]['warnings'],
 		'POSTER_AGE'		=> $user_cache[$poster_id]['age'],
-		//Begin: National_Flag
-		'POSTER_FLAG'		=> $user_cache[$poster_id]['flag'],
-		//End: National_Flag
 
 		'POST_DATE'			=> $user->format_date($row['post_time'], false, ($view == 'print') ? true : false),
-		'POST_SUBJECT'		=> $row['post_subject'],
+// BEGIN Topic solved CHANGED 		'POST_SUBJECT'		=> $row['post_subject'],
+		'POST_SUBJECT'		=> ($topic_data['topic_solved'] == $row['post_id'] && $topic_data['topic_type'] != POST_GLOBAL) ? $row['post_subject'] . '&nbsp;&nbsp;' . (($topic_data['forum_solve_text']) ? (($topic_data['forum_solve_color']) ? '<span style="color: #' . $topic_data['forum_solve_color'] . '">' : '') . $topic_data['forum_solve_text'] . (($topic_data['forum_solve_color']) ? '</span>' : '') : $user->img('icon_topic_solved_post', 'TOPIC_SOLVED')) : $row['post_subject'],
+		'U_SET_SOLVED'		=> $u_set_solved,
+		'S_TOPIC_SOLVED'	=> $topic_data['topic_solved'],
+// END Topic solved
 		'MESSAGE'			=> $message,
 		'SIGNATURE'			=> ($row['enable_sig']) ? $user_cache[$poster_id]['sig'] : '',
 		'EDITED_MESSAGE'	=> $l_edited_by,
@@ -1608,13 +1772,19 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 
 		'S_IGNORE_POST'		=> ($row['hide_post']) ? true : false,
 		'L_IGNORE_POST'		=> ($row['hide_post']) ? sprintf($user->lang['POST_BY_FOE'], get_username_string('full', $poster_id, $row['username'], $row['user_colour'], $row['post_username']), '<a href="' . $viewtopic_url . "&amp;p={$row['post_id']}&amp;view=show#p{$row['post_id']}" . '">', '</a>') : '',
+		'S_FORUM_THANKS'	=> ($auth->acl_get('f_thanks', $forum_id)) ? true : false,
 	);
 
+
+	output_thanks($row['user_id']);
 	if (isset($cp_row['row']) && sizeof($cp_row['row']))
 	{
 		$postrow = array_merge($postrow, $cp_row['row']);
 	}
 
+
+
+	$GLOBALS['wpu_actions']->show_viewtopic_link($user_cache[$poster_id], $postrow);
 	// Dump vars into template
 	$template->assign_block_vars('postrow', $postrow);
 
@@ -1645,6 +1815,29 @@ for ($i = 0, $end = sizeof($post_list); $i < $end; ++$i)
 unset($rowset, $user_cache);
 
 // Update topic view and if necessary attachment view counters ... but only for humans and if this is the first 'page view'
+//VB
+if (defined('PHPBB_API_EMBEDDED'))
+{
+	global $_phpbb_embed_mode;
+	if (isset($user->data['session_page']) && !$user->data['is_bot'] && (strpos($user->data['session_page'], '&t=' . $topic_id) === false || isset($user->data['session_created']) || $_phpbb_embed_mode['update_topic_view']))
+	{
+	$sql = 'UPDATE ' . TOPICS_TABLE . '
+		SET topic_views = topic_views + 1, topic_last_view_time = ' . time() . "
+		WHERE topic_id = $topic_id";
+	$db->sql_query($sql);
+
+	// Update the attachment download counts
+	if (sizeof($update_count))
+	{
+		$sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
+			SET download_count = download_count + 1
+			WHERE ' . $db->sql_in_set('attach_id', array_unique($update_count));
+		$db->sql_query($sql);
+	}
+	}
+}
+else
+//\VB
 if (isset($user->data['session_page']) && !$user->data['is_bot'] && (strpos($user->data['session_page'], '&t=' . $topic_id) === false || isset($user->data['session_created'])))
 {
 	$sql = 'UPDATE ' . TOPICS_TABLE . '
@@ -1731,6 +1924,15 @@ else if (!$all_marked_read)
 	}
 }
 
+//! Topic Age Warning - imkingdavid
+if($s_quick_reply)
+{
+	include($phpbb_root_path . 'includes/functions_taw.' . $phpEx);
+	//calls taw::__construct() which in turn calls taw::go()
+	$taw = new taw($topic_data, 'viewtopic');
+}
+//! END Topic Age Warning - imkingdavid
+
 // let's set up quick_reply
 $s_quick_reply = false;
 if ($user->data['is_registered'] && $config['allow_quick_reply'] && ($topic_data['forum_flags'] & FORUM_FLAG_QUICK_REPLY) && $auth->acl_get('f_reply', $forum_id))
@@ -1745,6 +1947,8 @@ if ($s_can_vote || $s_quick_reply)
 
 	if ($s_quick_reply)
 	{
+
+		
 		$s_attach_sig	= $config['allow_sig'] && $user->optionget('attachsig') && $auth->acl_get('f_sigs', $forum_id) && $auth->acl_get('u_sig');
 		$s_smilies		= $config['allow_smilies'] && $user->optionget('smilies') && $auth->acl_get('f_smilies', $forum_id);
 		$s_bbcode		= $config['allow_bbcode'] && $user->optionget('bbcode') && $auth->acl_get('f_bbcode', $forum_id);

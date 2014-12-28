@@ -137,7 +137,18 @@ function request_var($var_name, $default, $multibyte = false, $cookie = false)
 }
 
 /**
-* Set config value. Creates missing config entry.
+* Sets a configuration option's value.
+*
+* Please note that this function does not update the is_dynamic value for
+* an already existing config option.
+*
+* @param string $config_name   The configuration option's name
+* @param string $config_value  New configuration value
+* @param bool   $is_dynamic    Whether this variable should be cached (false) or
+*                              if it changes too frequently (true) to be
+*                              efficiently cached.
+*
+* @return null
 */
 function set_config($config_name, $config_value, $is_dynamic = false)
 {
@@ -166,7 +177,15 @@ function set_config($config_name, $config_value, $is_dynamic = false)
 }
 
 /**
-* Set dynamic config value with arithmetic operation.
+* Increments an integer config value directly in the database.
+*
+* @param string $config_name   The configuration option's name
+* @param int    $increment     Amount to increment by
+* @param bool   $is_dynamic    Whether this variable should be cached (false) or
+*                              if it changes too frequently (true) to be
+*                              efficiently cached.
+*
+* @return null
 */
 function set_config_count($config_name, $increment, $is_dynamic = false)
 {
@@ -289,7 +308,8 @@ function phpbb_gmgetdate($time = false)
 /**
 * Return formatted string for filesizes
 *
-* @param int	$value			filesize in bytes
+* @param mixed	$value			filesize in bytes
+*								(non-negative number; int, float or string)
 * @param bool	$string_only	true if language string should be returned
 * @param array	$allowed_units	only allow these units (data array indexes)
 *
@@ -301,6 +321,12 @@ function get_formatted_filesize($value, $string_only = true, $allowed_units = fa
 	global $user;
 
 	$available_units = array(
+		'tb' => array(
+			'min' 		=> 1099511627776, // pow(2, 40)
+			'index'		=> 4,
+			'si_unit'	=> 'TB',
+			'iec_unit'	=> 'TIB',
+		),
 		'gb' => array(
 			'min' 		=> 1073741824, // pow(2, 30)
 			'index'		=> 3,
@@ -476,6 +502,38 @@ function phpbb_hash($password)
 */
 function phpbb_check_hash($password, $hash)
 {
+	/**
+	 *  Modified by WP-United to allow portability between phpBB and other packages, as phpBB
+	 * applies htmlentities to inbound passwords via it's request_var function.
+	 */
+	
+	$result = wpu_original_phpbb_check_hash($password, $hash);
+	
+	if($result)
+	{
+		return $result;
+	}
+	
+	$portable_password = isset($_REQUEST['password']) ? (string) $_REQUEST['password'] : '';
+	$portable_password = (!STRIP) ? addslashes($portable_password) : $portable_password;
+	
+	if(empty($portable_password) || ($portable_password == $password))
+	{
+		return $result;
+	}
+	
+	return wpu_original_phpbb_check_hash($portable_password, $hash);
+}
+
+function wpu_original_phpbb_check_hash($password, $hash)
+{
+	if (strlen($password) > 4096)
+	{
+		// If the password is too huge, we will simply reject it
+		// and not let the server try to hash it.
+		return false;
+	}
+
 	$itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 	if (strlen($hash) == 34)
 	{
@@ -979,7 +1037,7 @@ if (!function_exists('stripos'))
 */
 function is_absolute($path)
 {
-	return ($path[0] == '/' || (DIRECTORY_SEPARATOR == '\\' && preg_match('#^[a-z]:[/\\\]#i', $path))) ? true : false;
+	return (isset($path[0]) && $path[0] == '/' || preg_match('#^[a-z]:[/\\\]#i', $path)) ? true : false;
 }
 
 /**
@@ -1174,6 +1232,36 @@ else
 
 		return $realpath;
 	}
+}
+
+/**
+* Eliminates useless . and .. components from specified path.
+*
+* @param string $path Path to clean
+* @return string Cleaned path
+*/
+function phpbb_clean_path($path)
+{
+	$exploded = explode('/', $path);
+	$filtered = array();
+	foreach ($exploded as $part)
+	{
+		if ($part === '.' && !empty($filtered))
+		{
+			continue;
+		}
+
+		if ($part === '..' && !empty($filtered) && $filtered[sizeof($filtered) - 1] !== '..')
+		{
+			array_pop($filtered);
+		}
+		else
+		{
+			$filtered[] = $part;
+		}
+	}
+	$path = implode('/', $filtered);
+	return $path;
 }
 
 if (!function_exists('htmlspecialchars_decode'))
@@ -2535,6 +2623,13 @@ function redirect($url, $return = false, $disable_cd_check = false)
 	{
 		return $url;
 	}
+  //VB
+	if (defined('PHPBB_API_EMBEDDED'))
+	{
+		phpbbforum_redirect($url);
+	}
+
+	//\VB
 
 	// Redirect via an HTML form for PITA webservers
 	if (@preg_match('#Microsoft|WebSTAR|Xitami#', getenv('SERVER_SOFTWARE')))
@@ -2680,11 +2775,27 @@ function meta_refresh($time, $url, $disable_cd_check = false)
 	global $template;
 
 	$url = redirect($url, true, $disable_cd_check);
+  //VB
+	if (defined('PHPBB_API_EMBEDDED'))
+	{
+		global $_phpbb_embed_mode;
+		if ($_phpbb_embed_mode['redirect'])
+		{
+		  redirect($url);
+		}  
+	}
+	//\VB
 	$url = str_replace('&', '&amp;', $url);
+	//VB
+	if (defined('PHPBB_API_EMBEDDED'))
+	{
+		$url = phpbbforum_redirect($url, $time);
+	}
+	//\VB
 
 	// For XHTML compatibility we change back & to &amp;
 	$template->assign_vars(array(
-		'META' => '<meta http-equiv="refresh" content="' . $time . ';url=' . $url . '" />')
+		'META' => '<meta http-equiv="refresh" content="' . $time . '; url=' . $url . '" />')
 	);
 
 	return $url;
@@ -2708,7 +2819,7 @@ function meta_refresh($time, $url, $disable_cd_check = false)
 *
 * @param int $code HTTP status code
 * @param string $message Message for the status code
-* @return void
+* @return null
 */
 function send_status_line($code, $message)
 {
@@ -2811,7 +2922,7 @@ function check_form_key($form_name, $timespan = false, $return_page = '', $trigg
 		$diff = time() - $creation_time;
 
 		// If creation_time and the time() now is zero we can assume it was not a human doing this (the check for if ($diff)...
-		if ($diff && ($diff <= $timespan || $timespan === -1))
+		if (defined('DEBUG_TEST') || $diff && ($diff <= $timespan || $timespan === -1))
 		{
 			$token_sid = ($user->data['user_id'] == ANONYMOUS && !empty($config['form_token_sid_guests'])) ? $user->session_id : '';
 			$key = sha1($creation_time . $user->data['user_form_salt'] . $form_name . $token_sid);
@@ -2920,6 +3031,13 @@ function confirm_box($check, $title = '', $hidden = '', $html_body = 'confirm_bo
 	$use_page = ($u_action) ? $phpbb_root_path . $u_action : $phpbb_root_path . str_replace('&', '&amp;', $user->page['page']);
 	$u_action = reapply_sid($use_page);
 	$u_action .= ((strpos($u_action, '?') === false) ? '?' : '&amp;') . 'confirm_key=' . $confirm_key;
+  //VB
+	if (defined('PHPBB_API_EMBEDDED'))
+	{
+		$u_action = _phpbbforum_replace_urls($u_action, true);
+	}
+
+	//\VB
 
 	$template->assign_vars(array(
 		'MESSAGE_TITLE'		=> (!isset($user->lang[$title])) ? $user->lang['CONFIRM'] : $user->lang[$title],
@@ -2953,7 +3071,16 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 
 	if (!class_exists('phpbb_captcha_factory'))
 	{
+		//VB
+		if (defined('PHPBB_API_EMBEDDED')) 
+		{
+		include_once($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
+		}
+		else
+	{
 		include($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
+	}
+		//\VB
 	}
 
 	$err = '';
@@ -3039,6 +3166,15 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 		if ($result['status'] == LOGIN_SUCCESS)
 		{
 			$redirect = request_var('redirect', "{$phpbb_root_path}index.$phpEx");
+      //VB
+			if (defined('PHPBB_API_EMBEDDED'))
+			{
+				if ($redirect == "index.$phpEx")
+				{
+					$redirect = "{$phpbb_root_path}index.$phpEx";
+				}  
+			}
+			//\VB
 			$message = ($l_success) ? $l_success : $user->lang['LOGIN_REDIRECT'];
 			$l_redirect = ($admin) ? $user->lang['PROCEED_TO_ACP'] : (($redirect === "{$phpbb_root_path}index.$phpEx" || $redirect === "index.$phpEx") ? $user->lang['RETURN_INDEX'] : $user->lang['RETURN_PAGE']);
 
@@ -3050,6 +3186,13 @@ function login_box($redirect = '', $l_explain = '', $l_success = '', $admin = fa
 			{
 				return;
 			}
+      //VB
+			if (defined('PHPBB_API_EMBEDDED'))
+			{
+				_phpbb_api_hook('login', array('username' => $username, 'password' => $password, 'redirect' => $redirect));
+			}
+
+			//\VB
 
 			/*
 			* Welcome PM on First Login (WPM)
@@ -3234,6 +3377,7 @@ function login_forum_box($forum_data)
 	page_header($user->lang['LOGIN'], false);
 
 	$template->assign_vars(array(
+		'FORUM_NAME'			=> isset($forum_data['forum_name']) ? $forum_data['forum_name'] : '',
 		'S_LOGIN_ACTION'		=> build_url(array('f')),
 		'S_HIDDEN_FIELDS'		=> build_hidden_fields(array('f' => $forum_data['forum_id'])))
 	);
@@ -3939,7 +4083,7 @@ function msg_handler($errno, $msg_text, $errfile, $errline)
 			echo '	</div>';
 			echo '	</div>';
 			echo '	<div id="page-footer">';
-			echo '		Powered by <a href="http://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group';
+			echo '		Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group';
 			echo '	</div>';
 			echo '</div>';
 			echo '</body>';
@@ -4313,7 +4457,7 @@ function phpbb_optionset($bit, $set, $data)
 *
 * @param array	$param		Parameter array, see $param_defaults array.
 *
-* @return void
+* @return null
 */
 function phpbb_http_login($param)
 {
@@ -4451,12 +4595,30 @@ function page_header($page_title = '', $display_online_list = true, $item_id = 0
 	// Generate logged in/logged out status
 	if ($user->data['user_id'] != ANONYMOUS)
 	{
+		//VB
+		if (function_exists('phpbbforum_get_drupal_login_url'))
+		{
+			$u_login_logout = phpbbforum_get_drupal_login_url('logout');
+		}  
+		else
+	{
 		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=logout', true, $user->session_id);
+		}
+		//\VB
 		$l_login_logout = sprintf($user->lang['LOGOUT_USER'], $user->data['username']);
 	}
 	else
 	{
+		//VB
+		if (function_exists('phpbbforum_get_drupal_login_url'))
+		{
+			$u_login_logout = phpbbforum_get_drupal_login_url('user/login');
+	}
+	else
+	{
 		$u_login_logout = append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login');
+		}
+		//\VB
 		$l_login_logout = $user->lang['LOGIN'];
 	}
 
@@ -4558,6 +4720,7 @@ function page_header($page_title = '', $display_online_list = true, $item_id = 0
 
 	// Send a proper content-language to the output
 	$user_lang = $user->lang['USER_LANG'];
+	$user->add_lang('mods/thanks_mod');
 	if (strpos($user_lang, '-x-') !== false)
 	{
 		$user_lang = substr($user_lang, 0, strpos($user_lang, '-x-'));
@@ -4598,14 +4761,35 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 }
 //END mChat Mod
 
-// MOD : MSSTI ABBC3 - Start
-	if (defined('IN_ABBC3'))
-	{
-		$user->add_lang('mods/abbcode');
-	}
-// MOD : MSSTI ABBC3 - End
+
+
+    //-- mod: Silverbar MOD --------------------------------------------------
+	//-- add
+	include_once($phpbb_root_path . 'includes/functions_sidebar.' . $phpEx);
+	
+	//This sets up the sidebar with the info it needs.  :D
+	setup_sidebar_mods();
+	
+	//This sets up the recent posts display
+	//Uncomment it (remove the double slash in front of it) to use it!
+	grab_recent_topics(5);
+	
+	//Uncomment the following if you have installed the UCP extension for Silverbar
+	//setup_sidebar_ucp();
+	
+	//-- fin mod: Silverbar MOD --------------------------------------------------
+
+// BEGIN First Class member
+    if ( !function_exists('group_memberships') ) include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
+    $template->assign_var('FIRST_CLASS', group_memberships(array(77), $user->data['user_id'], true));
+// END First Class member
+
 	// The following assigns all _common_ variables that may be used at any point in a template.
 	$template->assign_vars(array(
+// BEGIN Topic solved
+		'U_SEARCH_UNSOLVED_TOPICS'		=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=unsolved_topics'),
+		'U_SEARCH_YOUR_UNSOLVED_TOPICS'	=> append_sid("{$phpbb_root_path}search.$phpEx", 'search_id=your_unsolved_topics'),
+// END Topic solved
 		'SITENAME'						=> $config['sitename'],
 		'SITE_DESCRIPTION'				=> $config['site_desc'],
 		'PAGE_TITLE'					=> $page_title,
@@ -4638,6 +4822,8 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 		'U_POPUP_PM'			=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=popup'),
 		'UA_POPUP_PM'			=> addslashes(append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=pm&amp;mode=popup')),
 		'U_MEMBERLIST'			=> append_sid("{$phpbb_root_path}memberlist.$phpEx"),
+		'U_THANKSLIST'			=> append_sid("{$phpbb_root_path}thankslist.$phpEx"),
+		'U_REPUT_TOPLIST'		=> append_sid("{$phpbb_root_path}toplist.$phpEx"),
 		'U_VIEWONLINE'			=> ($auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel')) ? append_sid("{$phpbb_root_path}viewonline.$phpEx") : '',
 		'U_LOGIN_LOGOUT'		=> $u_login_logout,
 		'U_INDEX'				=> append_sid("{$phpbb_root_path}index.$phpEx"),
@@ -4681,6 +4867,8 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 		'S_DISPLAY_SEARCH'		=> (!$config['load_search']) ? 0 : (isset($auth) ? ($auth->acl_get('u_search') && $auth->acl_getf_global('f_search')) : 1),
 		'S_DISPLAY_PM'			=> ($config['allow_privmsg'] && !empty($user->data['is_registered']) && ($auth->acl_get('u_readpm') || $auth->acl_get('u_sendpm'))) ? true : false,
 		'S_DISPLAY_MEMBERLIST'	=> (isset($auth)) ? $auth->acl_get('u_viewprofile') : 0,
+		'S_DISPLAY_THANKSLIST'	=> (isset($auth)) ? $auth->acl_get('u_viewthanks') : 0,
+		'S_DISPLAY_TOPLIST'		=> (isset($auth)) ? $auth->acl_get('u_viewtoplist') : 0,
 		'S_NEW_PM'				=> ($s_privmsg_new) ? 1 : 0,
 		'S_REGISTER_ENABLED'	=> ($config['require_activation'] != USER_ACTIVATION_DISABLE) ? true : false,
 		'S_FORUM_ID'			=> $forum_id,
@@ -4732,7 +4920,17 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 
 		'A_COOKIE_SETTINGS'		=> addslashes('; path=' . $config['cookie_path'] . ((!$config['cookie_domain'] || $config['cookie_domain'] == 'localhost' || $config['cookie_domain'] == '127.0.0.1') ? '' : '; domain=' . $config['cookie_domain']) . ((!$config['cookie_secure']) ? '' : '; secure')),
 	));
+  //VB
+	if (!defined('PHPBB_API_EMBEDDED'))
+	{
 
+
+	//-- mod: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//
+	//-- add
+	$user->add_lang('mods/Silverbar_MOD');
+	$redirectside = $user->page['page_dir'] ? '' : '&amp;redirect=' . urlencode(str_replace('&amp;', '&', build_url(array('_f_'))));
+	$template->assign_var('S_LOGIN_SIDE', append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=login' .  $redirectside));
+	//-- end: Silverbar MOD with Prime Quick Login plugin (courtesy of primehalo on phpbb.com) -------------------------------------------------//
 	// application/xhtml+xml not used because of IE
 	header('Content-type: text/html; charset=UTF-8');
 
@@ -4745,6 +4943,13 @@ if(!empty($config['mchat_version']) && !empty($config['mchat_enable']))
 		// Let reverse proxies know we detected a bot.
 		header('X-PHPBB-IS-BOT: yes');
 	}
+	}
+	else
+	{
+		global $_phpbb_result;
+		$_phpbb_result['page_title'] = $page_title;
+	}
+	//\VB
 
 	return;
 }
@@ -4790,7 +4995,7 @@ function page_footer($run_cron = true)
 	$template->assign_vars(array(
 		'DEBUG_OUTPUT'			=> (defined('DEBUG')) ? $debug_output : '',
 		'TRANSLATION_INFO'		=> (!empty($user->lang['TRANSLATION_INFO'])) ? $user->lang['TRANSLATION_INFO'] : '',
-		'CREDIT_LINE'			=> $user->lang('POWERED_BY', '<a href="http://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group'),
+		'CREDIT_LINE'			=> $user->lang('POWERED_BY', '<a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group'),
 
 		'U_ACP' => ($auth->acl_get('a_') && !empty($user->data['is_registered'])) ? append_sid("{$phpbb_root_path}adm/index.$phpEx", false, true, $user->session_id) : '')
 	);
@@ -4854,6 +5059,13 @@ function page_footer($run_cron = true)
 			$template->assign_var('RUN_CRON_TASK', '<img src="' . append_sid($phpbb_root_path . 'cron.' . $phpEx, 'cron_type=' . $cron_type) . '" width="1" height="1" alt="cron" />');
 		}
 	}
+  //VB
+	if (defined('PHPBB_API_EMBEDDED'))
+	{
+		ob_start();
+	}  
+
+	//\VB
 
 	$template->display('body');
 
@@ -4874,12 +5086,17 @@ function garbage_collection()
 	{
 		$cache->unload();
 	}
+	//VB
+	if (!defined('PHPBB_API_EMBEDDED'))
+	{
 
 	// Close our DB connection.
 	if (!empty($db))
 	{
 		$db->sql_close();
 	}
+	}
+	//\VB
 }
 
 /**

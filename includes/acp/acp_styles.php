@@ -1469,7 +1469,7 @@ inherit_from = {INHERIT_FROM}
 		{
 			while (($file = readdir($dp)) !== false)
 			{
-				if ($file[0] != '.' && strtoupper($file) != 'CVS' && !is_file($dir . '/' . $file) && !is_link($dir . '/' . $file) && $file != 'abbcode')
+				if ($file[0] != '.' && strtoupper($file) != 'CVS' && !is_file($dir . '/' . $file) && !is_link($dir . '/' . $file))
 				{
 					$langs[] = $file;
 				}

@@ -1045,23 +1045,7 @@ function parse_attachments($forum_id, &$message, &$attachments, &$update_count, 
 				'U_DOWNLOAD_LINK'		=> $download_link,
 				'L_DOWNLOAD_COUNT'		=> $l_download_count
 			);
-// MOD : MSSTI ABBC3 - Start
-			global $abbcode;
-			// We need to check if ABBC3 is properly initialized for attached images and the ABBC3 img resizer
-			if (@$config['ABBC3_MOD'])
-			{
-				// For attached images being resized in private messages only when bbcodes are not present
-				if (!class_exists('abbcode'))
-				{
-					include($phpbb_root_path . 'includes/abbcode.' . $phpEx);
-				}
-				// For attached image resizer regular messages when bbcodes are not present
- 				if ($abbcode->abbcode_config['S_ABBC3_RESIZE'] && !isset($template->_rootref['S_ABBC3_RESIZE']) && ($display_cat == ATTACHMENT_CATEGORY_IMAGE || $display_cat == ATTACHMENT_CATEGORY_THUMB))
- 				{
-					$abbcode->abbcode_init();
- 				}
-			}
-// MOD : MSSTI ABBC3 - End
+
 		}
 
 		$template->assign_block_vars('_file', $block_array);

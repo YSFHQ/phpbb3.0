@@ -46,14 +46,8 @@ function initInsertions()
 
 	if (is_ie && typeof(baseHeight) != 'number')
 	{
-				/* === mChat focus fix Start === */
-				var mChatFocus = window.mChatFocusFix || false;
-				if(!mChatFocus)
-				{
-					textarea.focus();
-				}
-				baseHeight = doc.selection.createRange().duplicate().boundingHeight;
-				/* ==== mChat focus fix End ==== */
+		textarea.focus();
+		baseHeight = doc.selection.createRange().duplicate().boundingHeight;
 		if (!document.forms[form_name])
 		{
 			document.body.focus();
@@ -392,8 +386,8 @@ function colorPalette(dir, width, height)
 			for (b = 0; b < 5; b++)
 			{
 				color = String(numberList[r]) + String(numberList[g]) + String(numberList[b]);
-				document.write('<td bgcolor="#' + color + '" style="width: ' + width + 'px; height: ' + height + 'px;">');
-				document.write('<a href="#" onclick="bbfontstyle(\'[color=#' + color + ']\', \'[/color]\'); return false;"><img src="images/spacer.gif" width="' + width + '" height="' + height + '" alt="#' + color + '" title="#' + color + '" /></a>');
+				document.write('<td bgcolor="#' + color + '" style="width: ' + width + 'px; height: ' + height + 'px; background-color: #' + color + '">');
+				document.write('<a href="#" onclick="bbfontstyle(\'[color=#' + color + ']\', \'[color]\'); return false;"><img src="/images/spacer.gif" width="' + width + '" height="' + height + '" alt="#' + color + '" title="#' + color + '" /></a>');
 				document.writeln('</td>');
 			}
 
@@ -449,8 +443,6 @@ function getCaretPosition(txtarea)
 		// calculate selection start point by moving beginning of range_all to beginning of range
 		var sel_start;
 
-try
-		{
 		for (sel_start = 0; range_all.compareEndPoints('StartToStart', range) < 0; sel_start++)
 		{		
 			range_all.moveStart('character', 1);
@@ -460,11 +452,7 @@ try
 	
 		// we ignore the end value for IE, this is already dirty enough and we don't need it
 		caretPos.start = txtarea.sel_start;
-		caretPos.end = txtarea.sel_start;			
-}
-		catch(e)
-		{
-		}
+		caretPos.end = txtarea.sel_start;
 	}
 
 	return caretPos;

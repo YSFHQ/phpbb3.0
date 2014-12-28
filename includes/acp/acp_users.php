@@ -1304,9 +1304,6 @@ class acp_users
 
 				include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 				include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
-				//Begin: National_Flag
-				include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
-				//End: National_Flag
 
 				$cp = new custom_profile();
 
@@ -1334,9 +1331,6 @@ class acp_users
 					'bday_day'		=> 0,
 					'bday_month'	=> 0,
 					'bday_year'		=> 0,
-					//Begin: National_Flag 
-					'flag'		=> request_var('flag', (int) $user_row['user_flag']),
-					//End: National_Flag
 				);
 
 				if ($user_row['user_birthday'])
@@ -1372,9 +1366,6 @@ class acp_users
 						'bday_month'	=> array('num', true, 1, 12),
 						'bday_year'		=> array('num', true, 1901, gmdate('Y', time())),
 						'user_birthday'	=> array('date', true),
-						//Begin: National_Flag 
-						'flag'      	=> array('num', true, 0, 300),
-						//End: National_Flag
 					));
 
 					// validate custom profile fields
@@ -1402,9 +1393,6 @@ class acp_users
 							'user_occ'		=> $data['occupation'],
 							'user_interests'=> $data['interests'],
 							'user_birthday'	=> $data['user_birthday'],
-							//Begin: National_Flag
-							'user_flag'		=> $data['flag'],
-							//End: National_Flag
 						);
 
 						$sql = 'UPDATE ' . USERS_TABLE . '
@@ -1460,11 +1448,6 @@ class acp_users
 					'S_BIRTHDAY_DAY_OPTIONS'	=> $s_birthday_day_options,
 					'S_BIRTHDAY_MONTH_OPTIONS'	=> $s_birthday_month_options,
 					'S_BIRTHDAY_YEAR_OPTIONS'	=> $s_birthday_year_options,
-					//Begin: National_Flag
-					'S_FLAG_OPTIONS'	=> list_all_flags($data['flag']),
-					'S_FLAG_IMAGE'		=> get_user_flag($data['flag']),
-					'S_FLAG'			=> !empty($config['allow_flags']) ? $config['allow_flags'] : false,
-					//End: National_Flag
 
 					'S_PROFILE'		=> true)
 				);
@@ -1494,8 +1477,6 @@ class acp_users
 					'notifypm'			=> request_var('notifypm', $user_row['user_notify_pm']),
 					'popuppm'			=> request_var('popuppm', $this->optionget($user_row, 'popuppm')),
 					'allowpm'			=> request_var('allowpm', $user_row['user_allow_pm']),
-					'allowthankspm'		=> request_var('allowthankspm', $user_row['user_allow_thanks_pm']),
-					'allowthanksemail'	=> request_var('allowthanksemail', $user_row['user_allow_thanks_email']),
 
 					'topic_sk'			=> request_var('topic_sk', ($user_row['user_topic_sortby_type']) ? $user_row['user_topic_sortby_type'] : 't'),
 					'topic_sd'			=> request_var('topic_sd', ($user_row['user_topic_sortby_dir']) ? $user_row['user_topic_sortby_dir'] : 'd'),
@@ -1555,8 +1536,6 @@ class acp_users
 							'user_options'			=> $user_row['user_options'],
 
 							'user_allow_pm'			=> $data['allowpm'],
-							'user_allow_thanks_pm'	=> $data['allowthankspm'],
-							'user_allow_thanks_email'	=> $data['allowthanksemail'],
 							'user_allow_viewemail'	=> $data['viewemail'],
 							'user_allow_massemail'	=> $data['massemail'],
 							'user_allow_viewonline'	=> !$data['hideonline'],
@@ -1680,8 +1659,6 @@ class acp_users
 					'VIEW_EMAIL'		=> $data['viewemail'],
 					'MASS_EMAIL'		=> $data['massemail'],
 					'ALLOW_PM'			=> $data['allowpm'],
-					'ALLOW_THANKS_PM'	=> $data['allowthankspm'],
-					'ALLOW_THANKS_EMAIL' => $data['allowthanksemail'],
 					'HIDE_ONLINE'		=> $data['hideonline'],
 					'NOTIFY_EMAIL'		=> ($data['notifymethod'] == NOTIFY_EMAIL) ? true : false,
 					'NOTIFY_IM'			=> ($data['notifymethod'] == NOTIFY_IM) ? true : false,

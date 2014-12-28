@@ -421,10 +421,6 @@ class fulltext_native extends search_backend
 	function keyword_search($type, $fields, $terms, $sort_by_sql, $sort_key, $sort_dir, $sort_days, $ex_fid_ary, $m_approve_fid_ary, $topic_id, $author_ary, $author_name, &$id_ary, $start, $per_page)
 	{
 		global $config, $db;
-// BEGIN Topic solved
-		global $search_solv;
-		$search_solv = (isset($search_solv)) ? $search_solv : 0;
-// END Topic solved
 
 		// No keywords? No posts.
 		if (empty($this->search_query))
@@ -505,12 +501,6 @@ class fulltext_native extends search_backend
 		}
 
 
-// BEGIN Topic solved
-		if($search_solv > 0)
-		{
-			$sql_where[] = 't.topic_solved > 0';
-		}
-// END Topic solved
 		if ($type == 'topics')
 		{
 			$left_join_topics = true;
@@ -830,10 +820,6 @@ class fulltext_native extends search_backend
 	function author_search($type, $firstpost_only, $sort_by_sql, $sort_key, $sort_dir, $sort_days, $ex_fid_ary, $m_approve_fid_ary, $topic_id, $author_ary, $author_name, &$id_ary, $start, $per_page)
 	{
 		global $config, $db;
-// BEGIN Topic solved
-		global $search_solv;
-		$search_solv = (isset($search_solv)) ? $search_solv : 0;
-// END Topic solved
 
 		// No author? No posts.
 		if (!sizeof($author_ary))
@@ -894,9 +880,6 @@ class fulltext_native extends search_backend
 			case 't':
 				$sql_sort_table	= ($type == 'posts' && !$firstpost_only) ? TOPICS_TABLE . ' t, ' : '';
 				$sql_sort_join	= ($type == 'posts' && !$firstpost_only) ? ' AND t.topic_id = p.topic_id ' : '';
-// BEGIN Topic solved
-				$sql_sort_join .= ($search_solv) ? ' AND t.topic_solved > 0 ' : '';
-// END Topic solved
 			break;
 
 			case 'f':

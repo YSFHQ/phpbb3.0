@@ -31,7 +31,7 @@ class acp_board
 		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 		global $cache;
 
-		$user->add_lang(array('acp/board', 'mods/full_quick_reply_editor'));
+		$user->add_lang('acp/board');
 
 		$action	= request_var('action', '');
 		$submit = (isset($_POST['submit']) || isset($_POST['allow_quick_reply_enable'])) ? true : false;
@@ -90,7 +90,6 @@ class acp_board
 						'allow_bookmarks'		=> array('lang' => 'ALLOW_BOOKMARKS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_birthdays'		=> array('lang' => 'ALLOW_BIRTHDAYS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_quick_reply'		=> array('lang' => 'ALLOW_QUICK_REPLY',		'validate' => 'bool',	'type' => 'custom', 'method' => 'quick_reply', 'explain' => true),
-						'quick_reply_lastpage'	=> array('lang' => 'QUICK_REPLY_LASTPAGE',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 
 						'legend2'				=> 'ACP_LOAD_SETTINGS',
 						'load_birthdays'		=> array('lang' => 'YES_BIRTHDAYS',			'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
@@ -175,7 +174,6 @@ class acp_board
 						'allow_bookmarks'		=> array('lang' => 'ALLOW_BOOKMARKS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'enable_post_confirm'	=> array('lang' => 'VISUAL_CONFIRM_POST',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 						'allow_quick_reply'		=> array('lang' => 'ALLOW_QUICK_REPLY',		'validate' => 'bool',	'type' => 'custom', 'method' => 'quick_reply', 'explain' => true),
-						'quick_reply_lastpage'	=> array('lang' => 'QUICK_REPLY_LASTPAGE',	'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 
 						'legend2'				=> 'POSTING',
 						'bump_type'				=> false,
@@ -198,7 +196,15 @@ class acp_board
 						'max_post_img_width'	=> array('lang' => 'MAX_POST_IMG_WIDTH',	'validate' => 'int:0',		'type' => 'text:5:4', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
 						'max_post_img_height'	=> array('lang' => 'MAX_POST_IMG_HEIGHT',	'validate' => 'int:0',		'type' => 'text:5:4', 'explain' => true, 'append' => ' ' . $user->lang['PIXEL']),
 
-						'legend3'					=> 'ACP_SUBMIT_CHANGES',
+						'legend3'					=> 'TOPIC_AGE_WARNING',
+						'taw_interval_type'		=> false,
+						'taw_interval'			=> array('lang' => 'TAW_INTERVAL',			'validate' => 'int:0',		'type' => 'custom', 'method' => 'taw_interval', 'explain' => true),
+						'taw_lock'				=> array('lang' => 'TAW_LOCK',				'validate' => 'bool',		'type' => 'radio:yes_no', 'explain' => true),
+						'taw_author_exempt'		=> array('lang' => 'TAW_AUTHOR_EXEMPT',		'validate' => 'bool',		'type' => 'radio:yes_no', 'explain' => true),
+						'taw_last_post'			=> array('lang' => 'TAW_LAST_POST',			'validate' => 'bool',		'type' => 'radio:yes_no', 'explain' => true),
+						'taw_quickreply'		=> array('lang' => 'TAW_QUICKREPLY',		'validate' => 'bool',		'type' => 'radio:yes_no', 'explain' => true),
+
+						'legend4'					=> 'ACP_SUBMIT_CHANGES',
 					)
 				);
 			break;
@@ -410,8 +416,8 @@ class acp_board
 						'board_email_form'		=> array('lang' => 'BOARD_EMAIL_FORM',		'validate' => 'bool',	'type' => 'radio:enabled_disabled', 'explain' => true),
 						'email_function_name'	=> array('lang' => 'EMAIL_FUNCTION_NAME',	'validate' => 'string',	'type' => 'text:20:50', 'explain' => true),
 						'email_package_size'	=> array('lang' => 'EMAIL_PACKAGE_SIZE',	'validate' => 'int:0',	'type' => 'text:5:5', 'explain' => true),
-						'board_contact'			=> array('lang' => 'CONTACT_EMAIL',			'validate' => 'string',	'type' => 'text:25:100', 'explain' => true),
-						'board_email'			=> array('lang' => 'ADMIN_EMAIL',			'validate' => 'string',	'type' => 'text:25:100', 'explain' => true),
+						'board_contact'			=> array('lang' => 'CONTACT_EMAIL',			'validate' => 'email',	'type' => 'text:25:100', 'explain' => true),
+						'board_email'			=> array('lang' => 'ADMIN_EMAIL',			'validate' => 'email',	'type' => 'text:25:100', 'explain' => true),
 						'board_email_sig'		=> array('lang' => 'EMAIL_SIG',				'validate' => 'string',	'type' => 'textarea:5:30', 'explain' => true),
 						'board_hide_emails'		=> array('lang' => 'BOARD_HIDE_EMAILS',		'validate' => 'bool',	'type' => 'radio:yes_no', 'explain' => true),
 
@@ -868,6 +874,24 @@ class acp_board
 		}
 
 		return '<input id="' . $key . '" type="text" size="3" maxlength="4" name="config[bump_interval]" value="' . $value . '" />&nbsp;<select name="config[bump_type]">' . $s_bump_type . '</select>';
+	}
+
+	/**
+	* Select Topic Age Warning interval
+	*/
+	function taw_interval($value, $key)
+	{
+		global $user;
+
+		$s_taw_type = '';
+		$types = array('d' => 'DAYS', 'm' => 'MONTHS', 'y' => 'YEARS');
+		foreach ($types as $type => $lang)
+		{
+			$selected = ($this->new_config['taw_interval_type'] == $type) ? ' selected="selected"' : '';
+			$s_taw_type .= '<option value="' . $type . '"' . $selected . '>' . $user->lang[$lang] . '</option>';
+		}
+
+		return '<input id="' . $key . '" type="text" size="3" maxlength="4" name="config[taw_interval]" value="' . $value . '" />&nbsp;<select name="config[taw_interval_type]">' . $s_taw_type . '</select>';
 	}
 
 	/**

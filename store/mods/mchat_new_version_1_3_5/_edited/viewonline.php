@@ -199,12 +199,6 @@ while ($row = $db->sql_fetchrow($result))
 			$location = $user->lang['INDEX'];
 			$location_url = append_sid("{$phpbb_root_path}index.$phpEx");
 		break;
-// BEGIN mChat Mod		
-		case 'mchat':
-			$location = $user->lang['MCHAT_TITLE'];
-			$location_url = append_sid("{$phpbb_root_path}mchat.$phpEx");
-		break;		
-// END mChat Mod
 
 		case 'adm/index':
 			$location = $user->lang['ACP'];

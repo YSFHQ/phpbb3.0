@@ -1479,7 +1479,6 @@ class acp_users
 			case 'prefs':
 
 				include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
-				$user->add_lang('mods/full_quick_reply_editor');
 
 				$data = array(
 					'dateformat'		=> utf8_normalize_nfc(request_var('dateformat', $user_row['user_dateformat'], true)),
@@ -1494,6 +1493,8 @@ class acp_users
 					'notifypm'			=> request_var('notifypm', $user_row['user_notify_pm']),
 					'popuppm'			=> request_var('popuppm', $this->optionget($user_row, 'popuppm')),
 					'allowpm'			=> request_var('allowpm', $user_row['user_allow_pm']),
+					'allowthankspm'		=> request_var('allowthankspm', $user_row['user_allow_thanks_pm']),
+					'allowthanksemail'	=> request_var('allowthanksemail', $user_row['user_allow_thanks_email']),
 
 					'topic_sk'			=> request_var('topic_sk', ($user_row['user_topic_sortby_type']) ? $user_row['user_topic_sortby_type'] : 't'),
 					'topic_sd'			=> request_var('topic_sd', ($user_row['user_topic_sortby_dir']) ? $user_row['user_topic_sortby_dir'] : 'd'),
@@ -1508,7 +1509,6 @@ class acp_users
 					'view_smilies'		=> request_var('view_smilies', $this->optionget($user_row, 'viewsmilies')),
 					'view_sigs'			=> request_var('view_sigs', $this->optionget($user_row, 'viewsigs')),
 					'view_avatars'		=> request_var('view_avatars', $this->optionget($user_row, 'viewavatars')),
-					'view_quickreply'	=> request_var('view_quickreply', $this->optionget($user_row, 'viewquickreply')),
 					'view_wordcensor'	=> request_var('view_wordcensor', $this->optionget($user_row, 'viewcensors')),
 
 					'bbcode'	=> request_var('bbcode', $this->optionget($user_row, 'bbcode')),
@@ -1543,7 +1543,6 @@ class acp_users
 						$this->optionset($user_row, 'viewsmilies', $data['view_smilies']);
 						$this->optionset($user_row, 'viewsigs', $data['view_sigs']);
 						$this->optionset($user_row, 'viewavatars', $data['view_avatars']);
-						$this->optionset($user_row, 'viewquickreply', $data['view_quickreply']);
 						$this->optionset($user_row, 'viewcensors', $data['view_wordcensor']);
 						$this->optionset($user_row, 'bbcode', $data['bbcode']);
 						$this->optionset($user_row, 'smilies', $data['smilies']);
@@ -1553,6 +1552,8 @@ class acp_users
 							'user_options'			=> $user_row['user_options'],
 
 							'user_allow_pm'			=> $data['allowpm'],
+							'user_allow_thanks_pm'	=> $data['allowthankspm'],
+							'user_allow_thanks_email'	=> $data['allowthanksemail'],
 							'user_allow_viewemail'	=> $data['viewemail'],
 							'user_allow_massemail'	=> $data['massemail'],
 							'user_allow_viewonline'	=> !$data['hideonline'],
@@ -1676,6 +1677,8 @@ class acp_users
 					'VIEW_EMAIL'		=> $data['viewemail'],
 					'MASS_EMAIL'		=> $data['massemail'],
 					'ALLOW_PM'			=> $data['allowpm'],
+					'ALLOW_THANKS_PM'	=> $data['allowthankspm'],
+					'ALLOW_THANKS_EMAIL' => $data['allowthanksemail'],
 					'HIDE_ONLINE'		=> $data['hideonline'],
 					'NOTIFY_EMAIL'		=> ($data['notifymethod'] == NOTIFY_EMAIL) ? true : false,
 					'NOTIFY_IM'			=> ($data['notifymethod'] == NOTIFY_IM) ? true : false,
@@ -1692,7 +1695,6 @@ class acp_users
 					'VIEW_SMILIES'		=> $data['view_smilies'],
 					'VIEW_SIGS'			=> $data['view_sigs'],
 					'VIEW_AVATARS'		=> $data['view_avatars'],
-					'VIEW_QUICKREPLY'	=> $data['view_quickreply'],
 					'VIEW_WORDCENSOR'	=> $data['view_wordcensor'],
 
 					'S_TOPIC_SORT_DAYS'		=> $s_limit_topic_days,
@@ -2358,6 +2360,62 @@ class acp_users
 
 			break;
 
+
+//BEGIN	mChat Mod
+			case 'mchat':
+
+				$user->add_lang('mods/mchat_lang');
+
+				$data = array(
+					'user_mchat_index'	=> request_var('user_mchat_index',(bool) $user_row['user_mchat_index']),
+					'user_mchat_sound'	=> request_var('user_mchat_sound', (bool) $user_row['user_mchat_sound']),
+					'user_mchat_stats_index'	=> request_var('user_mchat_stats_index', (bool) $user_row['user_mchat_stats_index']),
+					'user_mchat_topics'	=> request_var('user_mchat_topics', (bool) $user_row['user_mchat_topics']),
+					'user_mchat_avatars'	=> request_var('user_mchat_avatars', (bool) $user_row['user_mchat_avatars']),
+				);
+
+				if ($submit)
+				{
+					$error = array();
+					
+					if (!check_form_key($form_name))
+					{
+						$error[] = 'FORM_INVALID';
+					}
+
+					if (!sizeof($error))
+					{
+
+						$sql_ary = array(					
+							'user_mchat_index'	=> $data['user_mchat_index'],
+							'user_mchat_sound'	=> $data['user_mchat_sound'],
+							'user_mchat_stats_index'	=> $data['user_mchat_stats_index'],
+							'user_mchat_topics'	=> $data['user_mchat_topics'],
+							'user_mchat_avatars'	=> $data['user_mchat_avatars'],
+						);
+
+						$sql = 'UPDATE ' . USERS_TABLE . '
+							SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
+							WHERE user_id = $user_id";
+						$db->sql_query($sql);
+
+						trigger_error($user->lang['USER_MCHAT_UPDATED'] . adm_back_link($this->u_action . '&amp;u=' . $user_id));
+					}
+
+					// Replace "error" strings with their real, localised form
+					$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
+				}
+
+				$template->assign_vars(array(
+					'S_MCHAT'		=> true,
+					'DISPLAY_MCHAT'	=> $data['user_mchat_index'],
+					'SOUND_MCHAT'	=> $data['user_mchat_sound'],
+					'STATS_MCHAT'	=> $data['user_mchat_stats_index'],
+					'TOPICS_MCHAT'	=> $data['user_mchat_topics'],
+					'AVATARS_MCHAT'	=> $data['user_mchat_avatars'],
+				));
+			break;
+// END mChat Mod
 		}
 
 		// Assign general variables

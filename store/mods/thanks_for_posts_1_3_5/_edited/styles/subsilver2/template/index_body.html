@@ -9,9 +9,8 @@
 <!-- ENDIF -->
 
 
-<!-- IF S_MCHAT_ENABLE and S_MCHAT_ON_INDEX and S_MCHAT_LOCATION --><!-- INCLUDE mchat_body.html --><!-- ENDIF -->
+
 <!-- INCLUDE forumlist_body.html -->
-<!-- IF S_MCHAT_ENABLE and S_MCHAT_ON_INDEX and not S_MCHAT_LOCATION --><!-- INCLUDE mchat_body.html --><!-- ENDIF -->
 
 <!-- IF not S_IS_BOT or U_TEAM -->
 <span class="gensmall"><!-- IF not S_IS_BOT --><a href="{U_DELETE_COOKIES}">{L_DELETE_COOKIES}</a><!-- ENDIF --><!-- IF not S_IS_BOT and U_TEAM --> | <!-- ENDIF --><!-- IF U_TEAM --><a href="{U_TEAM}">{L_THE_TEAM}</a><!-- ENDIF --></span><br />
@@ -47,7 +46,6 @@
 
  <!-- INCLUDE top_flags.html -->
 
-<!-- INCLUDE mchat_stats.html -->
 <!-- IF S_DISPLAY_BIRTHDAY_LIST -->
 	<br clear="all" />
 

@@ -562,10 +562,4 @@ $lang = array_merge($lang, array(
 ));
 
 
-// BEGIN mChat Mod
-$lang = array_merge($lang, array(
-	'UCP_CAT_MCHAT'		=> 'mChat',
-	'UCP_MCHAT_CONFIG'	=> 'Preferences',
-));
-// END mChat Mod
 ?>

@@ -748,16 +748,6 @@ $lang = array_merge($lang, array(
 	'LOG_WORD_DELETE'		=> '<strong>Deleted word censor</strong><br />» %s',
 	'LOG_WORD_EDIT'			=> '<strong>Edited word censor</strong><br />» %s',
 ));
-// BEGIN Warning Reasons Mod
-$lang = array_merge($lang, array(
-	'ACP_WARNING_REASONS'			=> 'Warning Reasons',
-	'ACP_MANAGE_WARNING_REASONS'	=> 'Manage Warning Reasons',
-	'LOG_WARNING_REASON_ADDED'		=> '<strong>Added warning reason</strong><br />» %s',
-	'LOG_WARNING_REASON_UPDATED'	=> '<strong>Updated warning reason</strong><br />» %s',
-	'LOG_WARNING_REASON_REMOVED'	=> '<strong>Removed warning reason</strong><br />» %s',	
-
-));
-// END Warning Reasons Mod
 
 
 // BEGIN mChat Mod
@@ -768,8 +758,4 @@ $lang = array_merge($lang, array(
 ));
 // END mChat Mod
 
-// Log Entry email on birthday mod from lefty74
-$lang = array_merge($lang, array(
-	'LOG_BIRTHDAY_EMAIL_SENT'		=> '<strong>Birthday email sent to</strong><br />» %s',
-));
 ?>

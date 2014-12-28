@@ -1304,9 +1304,6 @@ class acp_users
 
 				include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 				include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);
-				//Begin: National_Flag
-				include($phpbb_root_path . 'includes/functions_flag.' . $phpEx);
-				//End: National_Flag
 
 				$cp = new custom_profile();
 
@@ -1334,9 +1331,6 @@ class acp_users
 					'bday_day'		=> 0,
 					'bday_month'	=> 0,
 					'bday_year'		=> 0,
-					//Begin: National_Flag 
-					'flag'		=> request_var('flag', (int) $user_row['user_flag']),
-					//End: National_Flag
 				);
 
 				if ($user_row['user_birthday'])
@@ -1372,9 +1366,6 @@ class acp_users
 						'bday_month'	=> array('num', true, 1, 12),
 						'bday_year'		=> array('num', true, 1901, gmdate('Y', time())),
 						'user_birthday'	=> array('date', true),
-						//Begin: National_Flag 
-						'flag'      	=> array('num', true, 0, 300),
-						//End: National_Flag
 					));
 
 					// validate custom profile fields
@@ -1402,9 +1393,6 @@ class acp_users
 							'user_occ'		=> $data['occupation'],
 							'user_interests'=> $data['interests'],
 							'user_birthday'	=> $data['user_birthday'],
-							//Begin: National_Flag
-							'user_flag'		=> $data['flag'],
-							//End: National_Flag
 						);
 
 						$sql = 'UPDATE ' . USERS_TABLE . '
@@ -1460,11 +1448,6 @@ class acp_users
 					'S_BIRTHDAY_DAY_OPTIONS'	=> $s_birthday_day_options,
 					'S_BIRTHDAY_MONTH_OPTIONS'	=> $s_birthday_month_options,
 					'S_BIRTHDAY_YEAR_OPTIONS'	=> $s_birthday_year_options,
-					//Begin: National_Flag
-					'S_FLAG_OPTIONS'	=> list_all_flags($data['flag']),
-					'S_FLAG_IMAGE'		=> get_user_flag($data['flag']),
-					'S_FLAG'			=> !empty($config['allow_flags']) ? $config['allow_flags'] : false,
-					//End: National_Flag
 
 					'S_PROFILE'		=> true)
 				);

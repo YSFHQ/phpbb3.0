@@ -301,14 +301,8 @@ class ucp_profile
           $data['bday_day'] = request_var('bday_day', $data['bday_day']);
           $data['bday_month'] = request_var('bday_month', $data['bday_month']);
           $data['bday_year'] = request_var('bday_year', $data['bday_year']);
-          $data['user_birthday'] = sprintf('%2d-%2d-%4d', $data['bday_day'], $data['bday_month'], $data['bday_year']);
-        }
-        //Begin: National_Flag
-        if (!empty($config['allow_flags']))
-        {					
-          $data['flag'] = request_var('flag', (int) $user->data['user_flag']);					
-        }
-        //End: National_Flag
+					$data['user_birthday'] = sprintf('%2d-%2d-%4d', $data['bday_day'], $data['bday_month'], $data['bday_year']);
+				}
 
         add_form_key('ucp_profile_info');
 
@@ -333,19 +327,9 @@ class ucp_profile
           );
 
 
-          //Begin: National_Flag
-          //Currently set to validate up to 300, if you want more
-          //flags than 300 change to the amount you want
-          if (!empty($config['allow_flags']))
-          {
-            $validate_array = array_merge($validate_array, array(
-              'flag'      	=> array('num', true, 0, 300),
-            ));
-          }
-          //End: National_Flag
-          if ($config['allow_birthdays'])
-          {
-            $validate_array = array_merge($validate_array, array(
+					if ($config['allow_birthdays'])
+					{
+						$validate_array = array_merge($validate_array, array(
               'bday_day'		=> array('num', true, 1, 31),
               'bday_month'	=> array('num', true, 1, 12),
               'bday_year'		=> array('num', true, 1901, gmdate('Y', time()) + 50),
@@ -393,16 +377,10 @@ class ucp_profile
             );
 
 
-            //Begin: National_Flag
-            if (!empty($config['allow_flags']))
-            {
-              $sql_ary['user_flag'] = $data['flag'];
-            }
-            //End: National_Flag
-            if ($config['allow_birthdays'])
-            {
-              $sql_ary['user_birthday'] = $data['user_birthday'];
-            }
+						if ($config['allow_birthdays'])
+						{
+							$sql_ary['user_birthday'] = $data['user_birthday'];
+						}
 
             $sql = 'UPDATE ' . USERS_TABLE . '
               SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
@@ -451,32 +429,9 @@ class ucp_profile
             'S_BIRTHDAY_DAY_OPTIONS'	=> $s_birthday_day_options,
             'S_BIRTHDAY_MONTH_OPTIONS'	=> $s_birthday_month_options,
             'S_BIRTHDAY_YEAR_OPTIONS'	=> $s_birthday_year_options,
-            'S_BIRTHDAYS_ENABLED'		=> true,
-          ));
-        }
-        //Begin: National_Flag
-        if (!empty($config['allow_flags']))
-        {
-          global $cache;
-          get_user_flag();
-          $flags = $cache->get('_user_flags');
-          $flag_name = '';
-          if ($data['flag'] && $config['flag_type'] != USER_FLAG_TEXT)
-          {
-            $flag_name = $flags[$data['flag']]['flag_image'];
-          }
-          unset($flags);				
-          $s_flag_options = list_all_flags($data['flag']);
-          
-          $template->assign_vars(array(
-            'S_FLAG_OPTIONS'	=> $s_flag_options,
-            'S_FLAGS_ENABLED'	=> true,
-            'FLAG_IMAGE'		=> ($flag_name) ? "{$phpbb_root_path}images/flags/$flag_name" : '',
-            'FLAG_NAME'			=> $flag_name,
-            'AJAX_FLAG_INFO'	=> append_sid("{$phpbb_root_path}ajax_user_flag.$phpEx", 'flag_id=FLAG_ID'),
-          ));
-        }
-        //End: National_Flag
+						'S_BIRTHDAYS_ENABLED'		=> true,
+					));
+				}
 
         $template->assign_vars(array(
           'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',

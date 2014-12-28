@@ -48,18 +48,8 @@
 				<!-- IF forumrow.MODERATORS -->
 					<p class="forumdesc"><strong>{forumrow.L_MODERATOR_STR}:</strong> {forumrow.MODERATORS}</p>
 				<!-- ENDIF -->
-					<!-- BEGIN reput -->
-					<!-- IF forumrow.reput.S_THANKS_FORUM_REPUT_VIEW and forumrow.reput.FORUM_REPUT and not S_IS_BOT -->
-					<span style="display: block;">
-						<!-- IF forumrow.reput.S_THANKS_REPUT_GRAPHIC -->
-						<span style="display: block; float: left; width: {forumrow.reput.THANKS_REPUT_GRAPHIC_WIDTH}; height: {forumrow.reput.THANKS_REPUT_HEIGHT}; background: URL({forumrow.reput.THANKS_REPUT_IMAGE_BACK}); background-repeat: repeat-x;"><span style="display: block; height: {forumrow.reput.THANKS_REPUT_HEIGHT}; width: {forumrow.reput.FORUM_REPUT}; background: URL({forumrow.reput.THANKS_REPUT_IMAGE}); background-repeat: repeat-x;"></span></span>&nbsp;
-						<!-- ENDIF -->
-					{L_REPUT}:{forumrow.reput.FORUM_REPUT}
-					</span>
-					<!-- ENDIF -->
-					<!-- END reput -->
 				<!-- IF forumrow.SUBFORUMS and forumrow.S_LIST_SUBFORUMS -->
-					<p class="forumdesc" style="clear: left"><strong>{forumrow.L_SUBFORUM_STR}</strong> {forumrow.SUBFORUMS}</p>
+					<p class="forumdesc"><strong>{forumrow.L_SUBFORUM_STR}</strong> {forumrow.SUBFORUMS}</p>
 				<!-- ENDIF -->
 			</td>
 			<td class="row2" align="center"><p class="topicdetails">{forumrow.TOPICS}</p></td>

@@ -25,7 +25,7 @@ if (!defined('IN_PHPBB'))
 */
 
 // phpBB Version
-define('PHPBB_VERSION', '3.0.11');
+define('PHPBB_VERSION', '3.0.12');
 
 // QA-related
 // define('PHPBB_QA', 1);
@@ -157,6 +157,7 @@ define('PHYSICAL_LINK', 2);
 define('CONFIRM_REG', 1);
 define('CONFIRM_LOGIN', 2);
 define('CONFIRM_POST', 3);
+define('CONFIRM_REPORT', 4);
 
 // Categories - Attachments
 define('ATTACHMENT_CATEGORY_NONE', 0);
@@ -209,6 +210,10 @@ define('CAPTCHA_MIN_CHARS', 4);
 define('CAPTCHA_MAX_CHARS', 7);
 
 // Additional constants
+// BEGIN Topic solved
+define('TOPIC_SOLVED_YES', 1); // Topic starter and moderators
+define('TOPIC_SOLVED_MOD', 2); // Only moderators
+// END Topic solved
 define('WPM_CONFIG_ID', 1);
 //Begin: National_Flag 
 define('FLAGS_DATA_TABLE',			$table_prefix . 'flags');
@@ -283,6 +288,8 @@ define('WORDS_TABLE',				$table_prefix . 'words');
 define('ZEBRA_TABLE',				$table_prefix . 'zebra');
 
 // Additional tables
+define('THANKS_TABLE', $table_prefix . 'thanks');
+
 // BEGIN mChat Mod
 define('MCHAT_TABLE',				$table_prefix . 'mchat');
 define('MCHAT_CONFIG_TABLE',		$table_prefix . 'mchat_config');

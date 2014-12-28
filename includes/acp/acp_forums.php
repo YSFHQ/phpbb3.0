@@ -30,9 +30,6 @@ class acp_forums
 		global $config, $phpbb_admin_path, $phpbb_root_path, $phpEx;
 
 		$user->add_lang('acp/forums');
-// Begin : Anti Double Posts		
-		$user->add_lang('mods/anti_double_post');
-// End : Anti Double Posts
 		$this->tpl_name = 'acp_forums';
 		$this->page_title = 'ACP_MANAGE_FORUMS';
 
@@ -152,18 +149,6 @@ class acp_forums
 						'forum_password'		=> request_var('forum_password', '', true),
 						'forum_password_confirm'=> request_var('forum_password_confirm', '', true),
 						'forum_password_unset'	=> request_var('forum_password_unset', false),
-// Begin : Anti Double Posts
-						'adp_enable'			=> request_var('adp_enable', true),
-						'adp_admins'			=> request_var('adp_admins', false),
-						'adp_modos'				=> request_var('adp_modos', false),
-						'adp_auto_edit'			=> request_var('adp_auto_edit', true),
-						'adp_text_edit'			=> utf8_normalize_nfc(request_var('adp_text_edit', '-- %D --',true)),
-						'adp_always'			=> request_var('adp_always', true),
-						'adp_days'				=> request_var('adp_days', 1),
-						'adp_hours'				=> request_var('adp_hours', 0),
-						'adp_mins'				=> request_var('adp_mins', 0),
-						'adp_secs'				=> request_var('adp_secs', 0),
-// End : Anti Double Posts
 // BEGIN Topic solved
 						'forum_allow_solve'		=> request_var('forum_allow_solve', 1),
 						'forum_allow_unsolve'	=> request_var('forum_allow_unsolve', 1),
@@ -184,15 +169,6 @@ class acp_forums
 					{
 						$forum_data['display_on_index'] = request_var('link_display_on_index', false);
 					}
-// Begin: Subforums list in categories
-// add
-					// Use cat_display_subforum_list and display_on_index settings if forum type is category
-					if ($forum_data['forum_type'] == FORUM_CAT)
-					{
-						$forum_data['display_subforum_list'] = request_var('cat_display_subforum_list', false);
-						$forum_data['display_on_index'] = request_var('cat_display_on_index', true);
-					}
-// End: Subforums list in categories
 
 					// Linked forums and categories are not able to be locked...
 					if ($forum_data['forum_type'] == FORUM_LINK || $forum_data['forum_type'] == FORUM_CAT)
@@ -219,31 +195,6 @@ class acp_forums
 					if (!sizeof($errors))
 					{
 
-// Begin : Anti Double Posts
-						// Copy Anti-Double post settings ?
-						$adp_apply_to_all = request_var('adp_apply_to_all', 0);
-						if($adp_apply_to_all)
-						{
-							$forum_data_adp = array();
-							$forum_data_adp['adp_enable'] = $forum_data['adp_enable'];
-							$forum_data_adp['adp_admins'] = $forum_data['adp_admins'];
-							$forum_data_adp['adp_modos'] = $forum_data['adp_modos'];
-							$forum_data_adp['adp_auto_edit'] = $forum_data['adp_auto_edit'];
-							$forum_data_adp['adp_text_edit'] = $forum_data['adp_text_edit'];
-							$forum_data_adp['adp_always'] = $forum_data['adp_always'];
-							$forum_data_adp['adp_days'] = $forum_data['adp_days'];
-							$forum_data_adp['adp_hours'] = $forum_data['adp_hours'];
-							$forum_data_adp['adp_mins'] = $forum_data['adp_mins'];
-							$forum_data_adp['adp_secs'] = $forum_data['adp_secs'];
-							
-							$sql = "UPDATE " . FORUMS_TABLE . "
-								SET " . $db->sql_build_array('UPDATE', $forum_data_adp) . "
-								WHERE forum_type = " . FORUM_POST;
-							$db->sql_query($sql);
-							
-							unset($forum_data_adp);
-						}
-// End : Anti Double Posts
 						$forum_perm_from = request_var('forum_perm_from', 0);
 						$cache->destroy('sql', FORUMS_TABLE);
 
@@ -508,18 +459,6 @@ class acp_forums
 							'forum_options'			=> 0,
 							'forum_password'		=> '',
 							'forum_password_confirm'=> '',
-// Begin : Anti Double Posts
-							'adp_enable'			=> true,
-							'adp_admins'			=> false,
-							'adp_modos'				=> false,
-							'adp_auto_edit'			=> true,
-							'adp_text_edit'			=> '-- %D --',
-							'adp_always'			=> true,
-							'adp_days'				=> 1,
-							'adp_hours'				=> 0,
-							'adp_mins'				=> 0,
-							'adp_secs'				=> 0,
-// End : Anti Double Posts
 // BEGIN Topic solved
 							'forum_allow_solve'		=> 1,
 							'forum_allow_unsolve'	=> 1,
@@ -736,18 +675,6 @@ class acp_forums
 					'S_ENABLE_POST_REVIEW'		=> ($forum_data['forum_flags'] & FORUM_FLAG_POST_REVIEW) ? true : false,
 					'S_ENABLE_QUICK_REPLY'		=> ($forum_data['forum_flags'] & FORUM_FLAG_QUICK_REPLY) ? true : false,
 					'S_CAN_COPY_PERMISSIONS'	=> ($action != 'edit' || empty($forum_id) || ($auth->acl_get('a_fauth') && $auth->acl_get('a_authusers') && $auth->acl_get('a_authgroups') && $auth->acl_get('a_mauth'))) ? true : false,
-// Begin : Anti Double Posts 					
-					'S_ADP_ENABLE'				=> ($forum_data['adp_enable']) ? true : false,
-					'S_ADP_ADMINS'				=> ($forum_data['adp_admins']) ? true : false,
-					'S_ADP_MODOS'				=> ($forum_data['adp_modos']) ? true : false,
-					'S_ADP_AUTO_EDIT'			=> ($forum_data['adp_auto_edit']) ? true : false,
-					'S_ADP_ALWAYS'				=> ($forum_data['adp_always']) ? true : false,
-					'ADP_TEXT_EDIT'				=> $forum_data['adp_text_edit'],
-					'ADP_DAYS'					=> $forum_data['adp_days'],
-					'ADP_HOURS'					=> $forum_data['adp_hours'],
-					'ADP_MINS'					=> $forum_data['adp_mins'],
-					'ADP_SECS'					=> $forum_data['adp_secs'],
-// End : Anti Double Posts
 				));
 
 				return;

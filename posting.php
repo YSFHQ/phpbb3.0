@@ -11,9 +11,6 @@
 /**
 * @ignore
 */
-//VB
-if (!defined('PHPBB_API_EMBEDDED'))
-{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
@@ -21,15 +18,6 @@ include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 include($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-}
-else
-{
-include_once($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
-include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-include_once($phpbb_root_path . 'includes/message_parser.' . $phpEx);
-}
-
-//\VB
 
 
 // Start session management
@@ -193,16 +181,7 @@ $user->setup(array('posting', 'mcp', 'viewtopic'), $post_data['forum_style']);
 
 if ($config['enable_post_confirm'] && !$user->data['is_registered'])
 {
-	//VB
-	if (!defined('PHPBB_API_EMBEDDED'))
-	{
 	include($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
-	}
-	else
-	{
-	include_once($phpbb_root_path . 'includes/captcha/captcha_factory.' . $phpEx);
-	}  
-	//\VB
 	$captcha =& phpbb_captcha_factory::get_instance($config['captcha_plugin']);
 	$captcha->init(CONFIRM_POST);
 }
@@ -310,15 +289,6 @@ if (($post_data['forum_status'] == ITEM_LOCKED || (isset($post_data['topic_statu
 	trigger_error(($post_data['forum_status'] == ITEM_LOCKED) ? 'FORUM_LOCKED' : 'TOPIC_LOCKED');
 }
 
-//! Topic Age Warning - imkingdavid
-if($mode == 'reply' || $mode == 'quote')
-{
-	include($phpbb_root_path . 'includes/functions_taw.' . $phpEx);
-	//calls taw::__construct() which in turn calls taw::go()
-	$taw = new taw($post_data);
-}
-//! END Topic Age Warning - imkingdavid
-
 // Can we edit this post ... if we're a moderator with rights then always yes
 // else it depends on editing times, lock status and if we're the correct user
 if ($mode == 'edit' && !$auth->acl_get('m_edit', $forum_id))
@@ -421,102 +391,6 @@ if ($mode == 'edit')
 $orig_poll_options_size = sizeof($post_data['poll_options']);
 
 
-// Begin : Anti Double Posts 
-$mod_adp = false;
-if (!empty($post_data['adp_enable']))
-{
-	if ($mode == 'quote')
-	{
-		// Get topic id for this post
-		$sql_topic = 'SELECT topic_id
-					FROM ' . POSTS_TABLE . '
-					WHERE post_id = ' . $post_id;
-			
-		$result_topic = $db->sql_query_limit($sql_topic, 1);
-		
-		if ($row_topic = $db->sql_fetchrow($result_topic))
-		{
-			$topic_id = $row_topic['topic_id'];
-		}
-
-		$db->sql_freeresult($result_topic);
-	}
-	
-	$adp_time = $post_data['adp_days'] * 86400 + $post_data['adp_hours'] * 3600 + $post_data['adp_mins'] * 60 + $post_data['adp_secs'];
-		
-	
-	if ($mode == 'reply' || $mode == 'quote')
-	{ 
-		// Check if last poster is the current poster
-		$sql = 'SELECT t.topic_last_post_id,t.topic_last_poster_id, t.topic_last_post_time, t.poll_title, t.poll_start, t.poll_length, t.poll_max_options, t.poll_last_vote, t.poll_vote_change, p.post_subject, p.post_text, p.post_checksum, p.bbcode_uid, p.bbcode_bitfield
-				FROM ' . TOPICS_TABLE . ' AS t, ' . POSTS_TABLE . ' AS p 
-				WHERE t.topic_id = ' . $topic_id . '
-					AND p.post_id = t.topic_last_post_id';
-				
-		$result = $db->sql_query_limit($sql, 1);
-		
-		if ($row = $db->sql_fetchrow($result))
-		{
-			$adp_post_subject = $row['post_subject'];
-			$adp_topic_last_post_id = $row['topic_last_post_id'];
-			$adp_topic_last_poster_id = $row['topic_last_poster_id'];
-			$adp_topic_last_post_time = $row['topic_last_post_time'];
-			$adp_post_text = $row['post_text'];
-			$adp_post_checksum = $row['post_checksum'];
-			$adp_post_bbcode_uid = $row['bbcode_uid'];
-			$adp_post_bbcode_bitfield = $row['bbcode_bitfield'];
-			
-			//Poll options			
-			$adp_poll_title = $row['poll_title'];
-			$adp_poll_start = $row['poll_start'];
-			$adp_poll_length = $row['poll_length'];
-			$adp_poll_max_options = $row['poll_max_options'];
-			$adp_poll_last_vote = $row['poll_last_vote'];
-			$adp_poll_vote_change = $row['poll_vote_change'];
-
-		}
-		$db->sql_freeresult($result);		
-		
-		//Poll options
-		$adp_poll_option_text = implode("\n", $post_data['poll_options']);
-		
-		
-		// Conditions
-		if($post_data['adp_always'] || (($adp_topic_last_post_time + $adp_time) > $current_time))
-		{
-			$adp_time_parameter = true;
-		}
-		else
-		{
-			$adp_time_parameter = false;
-		}
-		
-		if (($user->data['user_id'] == $adp_topic_last_poster_id) && $adp_time_parameter)
-		{
-			if(!$post_data['adp_admins'] && $auth->acl_get('a_')) //Check if user is admin and admins are allowed to double post
-			{
-				$mod_adp = true;
-			}
-			else if(!$post_data['adp_modos'] && $auth->acl_get('m_',$forum_id) && !$auth->acl_get('a_')) //Check if user is moderator and moderators are allowed to double post
-			{
-				$mod_adp = true;
-			}
-			else if(!$auth->acl_get('u_adp_allow') && !$auth->acl_get('a_') && !$auth->acl_get('m_',$forum_id))
-			{
-				$mod_adp = true;
-			}
-		}
-	}
-
-	if ($mod_adp && !$post_data['adp_auto_edit'])
-	{
-		$user->add_lang('mods/anti_double_post');
-		$adp_error = sprintf($user->lang['ADP_DOUBLE_POST'], '<a href="' . append_sid("{$phpbb_root_path}posting.$phpEx", 'mode=edit&amp;f=' . $forum_id . '&amp;p=' . $adp_topic_last_post_id) . '">', '</a>');
-
-		trigger_error($adp_error);
-	}
-}
-// End : Anti Double Posts
 $message_parser = new parse_message();
 
 if (isset($post_data['post_text']))
@@ -844,53 +718,6 @@ if ($submit || $preview || $refresh)
 	}
 
 
-// Begin : Anti Double Posts 
-	if ($submit && $mod_adp && !empty($post_data['adp_auto_edit']))
-	{		
-		$mode = 'edit';
-		$post_id = $adp_topic_last_post_id;
-		$post_data['poster_id'] = $adp_topic_last_poster_id;
-		$post_data['post_subject'] = $adp_post_subject;
-		$post_data['post_checksum'] = $adp_post_checksum;
-		$post_data['username'] = $user->data['username'];
-		
-		$post_data['poll_title'] = $adp_poll_title;
-		$post_data['poll_start'] = $adp_poll_start;
-		$post_data['poll_length'] = $adp_poll_length;
-		$post_data['poll_max_options'] = $adp_poll_max_options;
-		$post_data['poll_last_vote'] = $adp_poll_last_vote;
-		$post_data['poll_vote_change'] = $adp_poll_vote_change;
-		$post_data['poll_option_text'] = $adp_poll_option_text;
-
-		// Attachments
-		// Do not change to SELECT *
-		$sql = 'SELECT attach_id, is_orphan, attach_comment, real_filename
-			FROM ' . ATTACHMENTS_TABLE . "
-			WHERE post_msg_id = $post_id
-				AND in_message = 0
-				AND is_orphan = 0
-			ORDER BY filetime DESC";
-		$result = $db->sql_query($sql);
-		$message_parser->attachment_data = array_merge($message_parser->attachment_data, $db->sql_fetchrowset($result));
-		$db->sql_freeresult($result);
-		// End Attachments
-		
-		$message_parser->bbcode_uid = $adp_post_bbcode_uid;
-		$message_parser->bbcode_bitfield = $adp_post_bbcode_bitfield;
-
-		//Decode last post
-		decode_message($adp_post_text,$adp_post_bbcode_uid);
-		
-		// Decode URLs
-		$adp_post_text = str_replace(array('&#58;', '&#46;'), array(':', '.'), $adp_post_text);
-		
-		//Parse "%D" in the ADP Text edit
-		$post_data['adp_text_edit'] = str_replace("%D", $user->format_date($current_time,false,true), $post_data['adp_text_edit']);					
-		
-		//Do the job...
-		$message_parser->message = $adp_post_text . '<br /><br />' . $post_data['adp_text_edit'] . '<br /><br />' . $message_parser->message;
-	}
-// End : Anti Double Posts
 	// If replying/quoting and last post id has changed
 	// give user option to continue submit or return to post
 	// notify and show user the post made between his request and the final submit
@@ -1007,16 +834,7 @@ if ($submit || $preview || $refresh)
 	// Validate username
 	if (($post_data['username'] && !$user->data['is_registered']) || ($mode == 'edit' && $post_data['poster_id'] == ANONYMOUS && $post_data['username'] && $post_data['post_username'] && $post_data['post_username'] != $post_data['username']))
 	{
-		//VB
-		if (!defined('PHPBB_API_EMBEDDED'))
-		{
 		include($phpbb_root_path . 'includes/functions_user.' . $phpEx);
-		}
-		else
-		{
-		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
-		}  
-		//\VB
 
 		$user->add_lang('ucp');
 
@@ -1773,11 +1591,6 @@ function handle_post_delete($forum_id, $topic_id, $post_id, &$post_data)
 			);
 
 			$next_post_id = delete_post($forum_id, $topic_id, $post_id, $data);
-			if (!function_exists('get_thanks'))
-			{
-				include($phpbb_root_path . 'includes/functions_thanks.' . $phpEx);
-			}			
-			delete_post_thanks($post_id);
 			$post_username = ($post_data['poster_id'] == ANONYMOUS && !empty($post_data['post_username'])) ? $post_data['post_username'] : $post_data['username'];
 
 			if ($next_post_id === false)

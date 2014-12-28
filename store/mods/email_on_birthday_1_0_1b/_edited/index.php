@@ -14,11 +14,20 @@
 /**
 * @ignore
 */
+//VB
+if (!defined('PHPBB_API_EMBEDDED'))
+{
 define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
 include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+}
+else
+{
+include_once($phpbb_root_path . 'includes/functions_display.' . $phpEx);
+}
+//\VB
 
 // Start session management
 $user->session_begin();
@@ -81,7 +90,6 @@ $legend = implode(', ', $legend);
 
 // Generate birthday list if required ...
 $birthday_list = '';
-$bd_list_ary = $bd_list_log_ary = array();
 if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('u_viewprofile', 'a_user', 'a_useradd', 'a_userdel'))
 {
 	$now = phpbb_gmgetdate(time() + $user->timezone + $user->dst);
@@ -93,7 +101,7 @@ if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('
 		$leap_year_birthdays = " OR u.user_birthday LIKE '" . $db->sql_escape(sprintf('%2d-%2d-', 29, 2)) . "%'";
 	}
 
-	$sql = 'SELECT u.user_id, u.username, u.user_colour, u.user_birthday, u.user_email, u.user_lang,u.user_notify_type, u.user_jabber 
+	$sql = 'SELECT u.user_id, u.username, u.user_colour, u.user_birthday
 		FROM ' . USERS_TABLE . ' u
 		LEFT JOIN ' . BANLIST_TABLE . " b ON (u.user_id = b.ban_userid)
 		WHERE (b.ban_id IS NULL
@@ -110,51 +118,8 @@ if ($config['load_birthdays'] && $config['allow_birthdays'] && $auth->acl_gets('
 		{
 			$birthday_list .= ' (' . max(0, $now['year'] - $age) . ')';
 		}
-		if (trim($row['user_email']) && $config['birthday_emails'])
-		{
-			$bd_list_ary[] = array(
-				'method'	=> $row['user_notify_type'],
-				'email'		=> $row['user_email'],
-				'jabber'	=> $row['user_jabber'],
-				'name'		=> $row['username'],
-				'lang'		=> $row['user_lang']
-			);
-		}
 	}
 	$db->sql_freeresult($result);
-
-	$check_time_bdemail = (int) gmdate('mdY',time() + (3600 * ($config['board_timezone'] + $config['board_dst'])));
-
-	if ( sizeof($bd_list_ary) && ($user->data['user_timezone'] == $config['board_timezone'] && $user->data['user_dst'] == $config['board_dst']) && ($config['birthday_run'] != $check_time_bdemail) && $config['birthday_emails'] )
-	{
-		set_config('birthday_run', $check_time_bdemail);
-		
-		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
-		$messenger = new messenger();
-
-		foreach ($bd_list_ary as $pos => $addr)
-		{
-			$messenger->template('birthday_email', $addr['lang']);
-			
-			$messenger->to($addr['email'], $addr['name']);
-			$messenger->im($addr['jabber'], $addr['name']);
-			// if you want to receive copies of the birthday emails, just uncomment below line 
-			//$messenger->cc('your@email.com', 'your_name');
-			
-			$messenger->assign_vars(array(
-				'USERNAME'		=> htmlspecialchars_decode($addr['name'])
-			));
-			$messenger->send($addr['method']);
-			
-			$bd_list_log_ary[] = $addr['name']; 
-		}
-		add_log('admin', 'LOG_BIRTHDAY_EMAIL_SENT', implode(', ', $bd_list_log_ary));				
-		unset($bd_list_ary);
-		unset($bd_list_log_ary);
-		
-		$messenger->save_queue();
-		unset($messenger);
-	}
 }
 
 

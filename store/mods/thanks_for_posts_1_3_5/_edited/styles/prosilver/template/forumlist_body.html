@@ -7,23 +7,50 @@
 	<!-- ENDIF -->
 
 	<!-- IF forumrow.S_IS_CAT or forumrow.S_FIRST_ROW  or forumrow.S_NO_CAT  -->
-		<!-- IF forumrow.FORUM_ID == 238 or forumrow.FORUM_ID == 234 or forumrow.FORUM_ID == 222 -->
-			<!-- PHP -->if ($_GET['forum']=='ysu') echo '<div class="forabg">'; else echo '<div style="display: none;">';<!-- ENDPHP -->
-		<!-- ELSE -->
-			<!-- PHP -->if ($_GET['forum']=='ysu') echo '<div style="display: none;">'; else echo '<div class="forabg">';<!-- ENDPHP -->
-		<!-- ENDIF -->
+    <div class="forabg">
 			<div class="inner"><span class="corners-top"><span></span></span>
 			<ul class="topiclist">
 				<li class="header">
 					<dl class="icon">
-						<dt><!-- IF forumrow.S_IS_CAT --><a href="{forumrow.U_VIEWFORUM}">{forumrow.FORUM_NAME}</a><!-- ELSE -->{L_FORUM}<!-- ENDIF --></dt>
+            <dt<!-- IF not forumrow.S_IS_CAT --> style="font-size: 16px;"<!-- ENDIF -->><!-- IF forumrow.S_IS_CAT --><a href="{forumrow.U_VIEWFORUM}">{forumrow.FORUM_NAME}</a><!-- ELSE --><a href="#" class="collapseforums" style="line-height: 1;">&ndash;</a> Sub{L_FORUM}s<!-- ENDIF --></dt>
 						<dd class="topics">{L_TOPICS}</dd>
 						<dd class="posts">{L_POSTS}</dd>
 						<dd class="lastpost"><span>{L_LAST_POST}</span></dd>
 					</dl>
 				</li>
 			</ul>
-			<ul class="topiclist forums">
+      <!-- IF not forumrow.S_IS_CAT -->
+<script>
+$("dt a.collapseforums").click(function () {
+    $(this).closest(".inner").find(".forums").toggle();
+    if ($(this).html()=="+") {
+      $(this).html("&ndash;");
+      $(this).css("line-height", "1");
+    } else {
+      $(this).html("+");
+      $(this).css("line-height", "1.2");
+    }
+});
+</script>
+<style>
+.forabg .topiclist .header dl dt a.collapseforums {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #002B99;
+  border-radius: 5px;
+  font-size: 18px;
+  text-align: center;
+  line-height: 1.2;
+  border: 2px solid white;
+}
+.topiclist .header dl dt a.collapseforums:hover {
+  text-decoration: none;
+  background: #113CAA;
+}
+</style>
+      <!-- ENDIF -->
+      <ul class="topiclist forums"<!-- IF not forumrow.S_IS_CAT --> style="display: block;"<!-- ENDIF -->>
 	<!-- ENDIF -->
 
 	<!-- IF not forumrow.S_IS_CAT -->

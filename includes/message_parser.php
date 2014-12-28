@@ -159,21 +159,10 @@ class bbcode_firstpass extends bbcode
 		foreach ($rowset as $row)
 		{
 
-// MOD : MSSTI ABBC3 - Start
-			if ($row['bbcode_match'] == '.')
-			{
-				if (isset($this->bbcodes[$row['bbcode_tag']]) && $this->bbcodes[$row['bbcode_tag']])
-				{
-					$this->bbcodes[$row['bbcode_tag']]['bbcode_group'] = $row['bbcode_group'];
-				}
-				continue;
-			}
-// MOD : MSSTI ABBC3 - End
+
 			$this->bbcodes[$row['bbcode_tag']] = array(
 
-// MOD : MSSTI ABBC3 - Start
-				'bbcode_group'	=> $row['bbcode_group'],
-// MOD : MSSTI ABBC3 - End
+
 				'bbcode_id'	=> (int) $row['bbcode_id'],
 				'regexp'	=> array($row['first_pass_match'] => str_replace('$uid', $this->bbcode_uid, $row['first_pass_replace']))
 			);
@@ -1163,22 +1152,7 @@ class parse_message extends bbcode_firstpass
 		}
 
 
-// MOD : MSSTI ABBC3 - Start
-		// Check phpbb permissions status
-		// Check ABBC3 groups permission
-		// try to make it as quicky as it can be 
-		foreach ($this->bbcodes as $bbcode_name => $bbcode_data)
-		{
-			$auth_tag = preg_replace('#\=(.*)?#', '', strtoupper(trim($bbcode_name)));
-			if ((isset($bbcode_data['bbcode_group']) && $bbcode_data['bbcode_group']) || in_array($auth_tag, $this->need_permissions))
-			{
-				if (!$this->abbcode_permissions($auth_tag, (isset($bbcode_data['bbcode_group']) ? $bbcode_data['bbcode_group'] : 0)))
-				{
-					$this->bbcodes[$bbcode_name]['disabled'] = true;
-				}
-			}
-		}
-// MOD : MSSTI ABBC3 - End
+
 		// Parse smilies
 		if ($allow_smilies)
 		{

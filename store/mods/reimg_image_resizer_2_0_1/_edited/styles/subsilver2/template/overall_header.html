@@ -13,6 +13,7 @@
 {META}
 <title>{SITENAME} &bull; <!-- IF S_IN_MCP -->{L_MCP} &bull; <!-- ELSEIF S_IN_UCP -->{L_UCP} &bull; <!-- ENDIF -->{PAGE_TITLE}</title>
 <!-- IF PHPBB_BASE --><base href="{PHPBB_BASE}" /><!-- ENDIF -->
+<!-- IF PHPBB_BASE --><base href="{PHPBB_BASE}" /><!-- ENDIF -->
 
 <!-- IF S_ENABLE_FEEDS -->
 	<!-- IF S_ENABLE_FEEDS_OVERALL --><link rel="alternate" type="application/atom+xml" title="{L_FEED} - {SITENAME}" href="{U_FEED}" /><!-- ENDIF -->
@@ -26,8 +27,39 @@
 
 
 <!-- IF WP_HEADERINFO_EARLY -->{WP_HEADERINFO_EARLY}<!-- ENDIF -->
+
+
+<!-- IF WP_HEADERINFO_EARLY -->{WP_HEADERINFO_EARLY}<!-- ENDIF -->
 <link rel="stylesheet" href="{T_STYLESHEET_LINK}" type="text/css" />
 
+
+<script type="text/JavaScript">
+// &lt;![CDATA[
+function getElement(iElementId)
+{
+   if (document.all) 
+   {
+      return document.all[iElementId];
+   }
+   if (document.getElementById)
+   {
+      return document.getElementById(iElementId);
+   }
+}
+
+function toggleElement(oElement)
+{
+   if (oElement.style.display == "none")
+   {
+      oElement.style.display = "";
+   }
+   else
+   {
+      oElement.style.display = "none";
+   }
+}
+// ]]&gt;
+</script>
 <script type="text/javascript">
 // <![CDATA[
 <!-- IF S_USER_PM_POPUP and S_NEW_PM -->
@@ -151,6 +183,16 @@ function marklist(id, name, state)
 <!-- INCLUDE mods/reimg_content.html -->
 
 <!-- INCLUDE mods/reimg_content.html -->
+
+<!-- IF S_MCHAT_ENABLE and (S_MCHAT_ON_INDEX or U_MCHAT) -->
+<script type="text/javascript" src="{ROOT_PATH}mchat/jquery-1.5.0.min.js"></script>
+<script type="text/javascript" src="{ROOT_PATH}mchat/jquery_cookie_mini.js"></script>
+<!-- ENDIF -->
+
+
+
+
+<!-- IF WP_HEADERINFO_LATE -->{WP_HEADERINFO_LATE}<!-- ENDIF -->
 </head>
 <body class="{S_CONTENT_DIRECTION}">
 
@@ -183,10 +225,14 @@ function marklist(id, name, state)
 			</td>
 			<td class="genmed" align="{S_CONTENT_FLOW_END}">
 <!-- IF S_BLOG --><a href="{U_BLOG}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="{L_BLOG}" />{L_BLOG} </a>&nbsp;<!-- ENDIF -->
+<!-- IF S_BLOG --><a href="{U_BLOG}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="{L_BLOG}" />{L_BLOG} </a>&nbsp;<!-- ENDIF -->
 				<a href="{U_FAQ}"><img src="{T_THEME_PATH}/images/icon_mini_faq.gif" width="12" height="13" alt="*" /> {L_FAQ}</a>
+				<!-- IF S_MCHAT_ENABLE and U_MCHAT -->&nbsp; &nbsp;<a href="{U_MCHAT}#mChat"><img src="{T_THEME_PATH}/images/icon_mini_groups.gif" width="12" height="13" alt="{L_MCHAT_TITLE}" /> {L_MCHAT_TITLE}</a><!-- ENDIF -->
 				<!-- IF S_DISPLAY_SEARCH -->&nbsp; &nbsp;<a href="{U_SEARCH}"><img src="{T_THEME_PATH}/images/icon_mini_search.gif" width="12" height="13" alt="*" /> {L_SEARCH}</a><!-- ENDIF -->
 				<!-- IF not S_IS_BOT -->
 					<!-- IF S_DISPLAY_MEMBERLIST -->&nbsp; &nbsp;<a href="{U_MEMBERLIST}"><img src="{T_THEME_PATH}/images/icon_mini_members.gif" width="12" height="13" alt="*" /> {L_MEMBERLIST}</a><!-- ENDIF -->
+					<!-- IF S_DISPLAY_TOPLIST -->&nbsp; &nbsp;<a href="{U_REPUT_TOPLIST}"><img src="{T_THEME_PATH}/images/icon_mini_toplist.gif" width="15" height="14" alt="*" />{L_REPUT_TOPLIST}</a><!-- ENDIF -->
+				<!-- IF S_DISPLAY_THANKSLIST -->&nbsp; &nbsp;<a href="{U_THANKSLIST}"><img src="{T_THEME_PATH}/images/icon_mini_thanks.gif" width="12" height="13" alt="*" /> {L_GRATITUDES}</a><!-- ENDIF -->
 					<!-- IF S_USER_LOGGED_IN -->&nbsp; &nbsp;<a href="{U_PROFILE}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> {L_PROFILE}</a><!-- ENDIF -->
 				<!-- ENDIF -->
 			</td>

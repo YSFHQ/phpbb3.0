@@ -44,7 +44,7 @@ $iflychat = array(
   'show_admin_list' => FALSE,
   'enable_relationships' => FALSE,
   'load_async' => FALSE,
-  'minimize_chat_user_list' => FALSE,
+  'minimize_chat_user_list' => TRUE,
 );
 
 $_iflychat = array (
